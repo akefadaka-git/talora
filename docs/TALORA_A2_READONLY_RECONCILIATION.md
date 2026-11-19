@@ -51,7 +51,7 @@ The current default branch is not the Android implementation baseline. The appli
 | `docs/talora-iroka-integration-contract-v0.1.0` | `6e9c2db1d0779fa099c619b8cf5711f3e479aa79` | 1 commit ahead | Historical IROKA contract v0.1.0 |
 | `docs/talora-iroka-a2-reconciliation-v0.1.1` | `c1174778fa4af8c944468e537c73f294fce56a9b` | 3 commits ahead | IROKA contracts v0.1.1/v0.1.2 and A2 integration assessment/decision documents |
 | `feat/android-offline-test-mvp` | `fa8b2c60f1c9787071a98c054ec337d26501ccac` | 52 commits ahead | Android implementation, tests, native archive, interchange, PDF exporter, and copied IROKA integration documents |
-| `docs/talora-product-spec-four-tier-fonts` | `f5cbad1d4ba75b4d9ebf853580041798e6e33550` | Documentation branch based on main; head recorded in this report | Newly Owner-approved product specification, roadmap, and this A2 report |
+| `docs/talora-product-spec-four-tier-fonts` | Owner-approved documentation branch | Based on main | Approved product specification, roadmap, and A2 report |
 
 The A1/A2 evidence branch at `dca5df6` and Android branch at `fa8b2c6` are **DIVERGED**: comparison reports 60 commits on the A2 evidence side and 52 on the Android side, with no direct ancestry between those branch heads beyond their shared main lineage. Their documentation and decisions are not automatically present in one another.
 
