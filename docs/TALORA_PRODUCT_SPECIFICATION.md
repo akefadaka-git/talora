@@ -1,6 +1,6 @@
 # TALORA Product Specification — Professional Writing & Production Studio
 
-**Document status:** Draft for Owner review  
+**Document status:** OWNER-APPROVED / FROZEN — 19 November 2026  
 **Specification stage:** A1 — product scope and requirements  
 **Implementation authorization:** Not granted  
 **Target product:** TALORA Android application  
@@ -297,14 +297,16 @@ A1 specification can be marked ready for Owner closure only when:
 
 ## 14. Approval record
 
+This approved specification is a supplementary product-scope amendment. It preserves the previously frozen 11-document A1 baseline (commit `599bcb4a71bd7ca7e1b5945c8034f29ecff4bc06`) and the separately approved native-format/import-export/entitlement amendment. It does not rewrite those historical commits. A2 must reconcile the four-level feature subscription model with the existing one-time project-license, watermark/export, referral, and fixed-term entitlement decisions before commerce design is frozen.
+
 | Gate | Status |
 |---|---|
 | Owner font decision — both Noto Sans Ethiopic and Noto Serif Ethiopic | **APPROVED FOR SPECIFICATION** |
 | Owner subscription decision — four levels | **APPROVED FOR SPECIFICATION** |
 | Proposed labels Free / Creator / Professional / Studio | **PROPOSED; confirm names** |
 | Owner authorization — specification first | **APPROVED** |
-| A1 specification closure | **PENDING REVIEW** |
-| A2 read-only technical reconciliation | **NEXT; not yet started** |
+| A1 specification closure | **VERIFIED-CLOSED — Owner approval 19 November 2026** |
+| A2 read-only technical reconciliation | **IN PROGRESS — initial repository scan started 19 November 2026** |
 | A3 implementation | **NOT AUTHORIZED** |
 | A4 verification | **NOT AUTHORIZED** |
 | A5 deployment | **NOT AUTHORIZED** |
