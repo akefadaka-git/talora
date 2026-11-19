@@ -3,7 +3,7 @@
 - **Document ID:** TALORA-A2-TDR-002
 - **Version:** 1.0.0
 - **Date:** 19 November 2026
-- **Status:** A2 working decision register; technical defaults ODR-01–ODR-10 and ODR-12 approved by Owner on 19 November 2026, subject to stated validation gates
+- **Status:** A2 working decision register; technical defaults ODR-01–ODR-12 approved by Owner on 19 November 2026, subject to stated validation gates
 - **Branch:** `docs/a1-import-export-referral-entitlements`
 - **Base A2 assessment:** `TALORA_A2_Impact_Assessment_Native_Format_Export_Economy_v1.0.0.md`
 - **Implementation:** NOT AUTHORIZED
@@ -14,7 +14,7 @@ This register advances A2 by defining implementable technical recommendations, r
 
 ### Owner decision record — 19 November 2026
 
-The Owner answered **Yes** to the explicit request to approve the proposed technical defaults in this register as written. Accordingly, ODR-01 through ODR-10 and ODR-12 are recorded as approved defaults, subject to the mandatory external, security, licensing, compatibility and test gates stated throughout this document. This approval settles the architecture/product defaults; it does not certify external compliance or evidence, and does not authorize implementation, merge or deployment. ODR-11 remains partially open because the register presents alternative non-paginated export mechanisms without a single quantified policy.
+The Owner answered **Yes** on 19 November 2026 to the explicit ODR-11 proposal. Accordingly, ODR-01 through ODR-12 are recorded as approved technical defaults, subject to the mandatory external, security, licensing, compatibility and test gates stated throughout this document. ODR-11 now has a precise approved policy: canonical pagination profile, complete semantic content within pages 1–5, no artificial page breaks or silent mid-block truncation, and explicit disclosure of partial exports. This approval settles the product/technical default; it does not certify external compliance or evidence, and does not authorize implementation, merge or deployment.
 
 The following Owner-approved product requirements are fixed inputs:
 - Native extension `.talora`.
@@ -198,12 +198,22 @@ PDF import is reconstruction, not guaranteed recovery of the original semantic s
 - The system must not allow repeated page-range exports to be misrepresented as a full-script export reward.
 - Page-count results and entitlement decisions are auditable without retaining full script text in billing records.
 
-### Non-paginated formats
+### Non-paginated formats — ODR-11 APPROVED (19 November 2026)
 
-TXT and Fountain do not have intrinsic pages. The product must not pretend that an arbitrary text file has stable pages. Proposed policy:
-- Free users can export up to a defined content-unit or byte/character budget for non-paginated outputs, or those outputs can be restricted to a five-page-equivalent rendered preview.
-- Premium can export the complete document.
-- The exact Free policy is an Owner decision before A2 closure.
+TXT and Fountain do not have intrinsic pages. Their Free export limit is therefore determined by TALORA's deterministic, fixed and versioned canonical pagination profile, not by arbitrary byte/character counts or inserted text page breaks.
+
+- Apply the same named canonical pagination profile to the source revision before serialization, with fixed page geometry, margins, typography/font metrics, line spacing, screenplay/stage-play layout rules and renderer version.
+- Maintain a stable mapping from semantic content ranges (including scene/block IDs and offsets) to canonical pages.
+- Include only complete semantic content that fits within canonical pages 1–5.
+- Do not insert artificial page-break markers into TXT or Fountain merely to simulate pages.
+- Do not silently truncate within a semantic block. Stop before the next complete semantic block that cannot fit, and disclose the partial-export status, included range and stopping boundary in export metadata and the completion UI (without contaminating the plain-text script body with invented pagination).
+- If the complete document fits within five canonical pages, export it in full.
+- Premium/full-script entitlements may export the complete document subject to the applicable format and watermark rules.
+- Bind every export job to the immutable source revision ID, document type, canonical pagination profile ID, renderer version and settings digest.
+- Failed or cancelled jobs do not consume an entitlement; completed jobs are idempotently accounted.
+- Golden pagination and boundary tests must cover Amharic/Ethiopic and mixed-script content, screenplay and stage-play profiles, and deterministic repeatability.
+
+The profile's concrete page geometry, font set/metrics and versioned renderer configuration remain engineering specifications to be validated in A3/A4; their existence and exact values are not represented as implemented.
 
 ### Premium cap
 
@@ -387,7 +397,7 @@ The client must not be authoritative for page counts, referral qualification, pa
 | ODR-08 | Referral reward expiry | No expiry while account is good standing | **APPROVED — 19 Nov 2026** |
 | ODR-09 | Watermark license output scope | PDF only initially | **APPROVED — 19 Nov 2026** |
 | ODR-10 | Project fork/transfer license behavior | Fork is new project; transfer requires explicit operation | **APPROVED — 19 Nov 2026** |
-| ODR-11 | Non-paginated Free export limit | Use deterministic TALORA canonical pagination to include only complete semantic content fitting pages 1–5; disclose partial export; bind to revision/profile/renderer | **PROPOSED — awaiting Owner decision; see A2 Research Memo RM-003** |
+| ODR-11 | Non-paginated Free export limit | Deterministic TALORA canonical pagination; export complete semantic content fitting pages 1–5; disclose partial range/boundary; bind to revision/profile/renderer | **APPROVED — 19 Nov 2026** |
 | ODR-12 | Offline entitlement validity | Signed bounded cache; numeric period after security review | **APPROVED DEFAULT — numeric period deferred to security review** |
 | ODR-13 | Initial proprietary format support | Official interchange route only | External validation |
 | ODR-14 | Payment provider and prices | Chapa and ArifPay primary due-diligence shortlist; Telebirr direct and SantimPay secondary; no selection until merchant eligibility, fees, settlement, payment methods and legal review are verified | **PARTIAL — public evidence collected; vendor confirmations and legal review outstanding** |
@@ -395,7 +405,7 @@ The client must not be authoritative for page counts, referral qualification, pa
 
 ## 16. A2 supporting research
 
-The detailed non-paginated export proposal and Ethiopia payment-provider evidence are recorded in `TALORA_A2_Payment_Provider_And_NonPaginated_Export_Research_v1.0.0.md` (TALORA-A2-RM-003). ODR-11 remains a proposal pending Owner decision. ODR-14 has a documented shortlist, but no provider is selected and merchant eligibility, fees, settlement, recurring-payment support and legal requirements remain unverified.
+The detailed non-paginated export rationale and Ethiopia payment-provider evidence are recorded in `TALORA_A2_Payment_Provider_And_NonPaginated_Export_Research_v1.0.0.md` (TALORA-A2-RM-003). ODR-11 is approved as recorded above; implementation and pagination-profile validation remain future gates. ODR-14 has a documented shortlist, but no provider is selected and merchant eligibility, fees, settlement, recurring-payment support and legal requirements remain unverified.
 
 ## 17. A1 baseline consistency finding
 
@@ -404,7 +414,7 @@ The repository's `docs/a1-product-definition/00-A1-BASELINE.md` still states “
 ## 18. A2 exit criteria and present disposition
 
 A2 remains **PARTIAL / OPEN** until:
-- ODR-11 receives Owner approval of the canonical-pagination proposal or another precise non-paginated Free export policy.
+- Approved ODR-11 policy is translated into a testable pagination profile specification, boundary behavior and export metadata contract.
 - External format licensing and payment-provider facts are researched and recorded.
 - Initial support matrix is finalized with lawful routes and fidelity classifications.
 - Canonical document model and .talora schema proposal are internally consistent.
@@ -415,4 +425,4 @@ A2 remains **PARTIAL / OPEN** until:
 - The A1 freeze-status discrepancy is resolved.
 - A traceable A3 backlog is prepared.
 
-**Current gate:** Owner-approved technical defaults recorded for ODR-01–ODR-10 and ODR-12. ODR-11 awaits Owner decision; ODR-13 and ODR-15 remain unresolved; ODR-14 has a public-evidence shortlist but awaits vendor and legal validation. The A1 freeze-status discrepancy remains open. A2 is not closed. A3 implementation, PR merge and deployment remain unauthorized.
+**Current gate:** Owner-approved technical defaults recorded for ODR-01–ODR-12. ODR-11 is approved; its detailed pagination profile and test evidence remain to be specified and validated. ODR-13 and ODR-15 remain unresolved; ODR-14 has a public-evidence shortlist but awaits vendor and legal validation. The A1 freeze-status discrepancy remains open. A2 is not closed. A3 implementation, PR merge and deployment remain unauthorized.
