@@ -9,12 +9,16 @@
 | .fountain | Yes | Yes | UTF-8 Fountain screenplay text. Export is enabled for screenplay projects; stage plays should use TXT or the native format. |
 | .pdf | No | Yes | Offline rendered reading/printing copy. It is not an editable source format and does not replace the native project. |
 | Final Draft .fdx | Not yet | Not yet | Deferred until XML mapping, metadata preservation and round-trip fixtures are implemented and validated. |
-| DOCX / RTF | Not yet | Not yet | Deferred; no compatibility claim is made until parser/writer behavior is tested against representative documents. |
+| DOCX | Yes | Yes | Basic WordprocessingML paragraph text; images, tables, comments, tracked changes, styles and page layout are not preserved. |
+| RTF | Yes | Yes | Basic text, paragraph breaks, escaped characters and Unicode; advanced fields, tables, embedded objects and full code-page fidelity are not preserved. |
 
 ## Source preservation
 
 - TALORA remains the canonical owner of project source text.
-- TXT and Fountain are UTF-8 text interchange paths; they do not preserve native project revisions or binary assets.
+- TXT, Fountain, FDX, DOCX and RTF are text interchange paths; they do not preserve native project revisions or binary assets.
+- FDX maps paragraph text and common screenplay paragraph categories; unsupported Final Draft metadata is not retained.
+- DOCX intentionally emits a minimal editable Word document and imports document-body paragraphs only.
+- RTF handles common text and Unicode controls but is not a complete implementation of every RTF specification extension.
 - PDF is a presentation/export artifact only.
 - The .talora archive remains the only currently supported portable format that preserves project structure, revisions and attachments.
 - Format import does not grant subscription, referral or other entitlements.
@@ -31,6 +35,6 @@
 ## Validation required before wider compatibility claims
 
 - Android import/export workflow tests on the exact branch SHA.
-- Golden-file tests for Fountain interoperability with independent parsers/editors.
+- Golden-file tests against independent FDX, DOCX and RTF readers/writers and supported application versions.
 - PDF visual checks for Ethiopic glyph fallback, pagination, long dialogue and mixed-script content.
 - FDX, DOCX and RTF require separately approved implementation and conformance fixtures before being marked supported.
