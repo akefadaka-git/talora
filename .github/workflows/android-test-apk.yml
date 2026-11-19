@@ -53,7 +53,7 @@ jobs:
           fi
           test -x "$SDKMANAGER"
           yes | "$SDKMANAGER" --licenses >/dev/null
-          "$SDKMANAGER" --channel=3 --install "platforms;android-37" "build-tools;37.0.0"
+          "$SDKMANAGER" --channel=3 --install "platforms;android-37.0" "build-tools;37.0.0"
 
       - name: Run unit tests and assemble APK
         run: gradle -p android testDebugUnitTest lintDebug assembleDebug --no-daemon
@@ -119,10 +119,11 @@ jobs:
       - name: Run Android 16 emulator tests
         uses: ReactiveCircus/android-emulator-runner@v2
         with:
-          api-level: 37
+          api-level: "37.0"
           target: google_apis
           arch: x86_64
           profile: pixel_2
+          channel: canary
           disable-animations: true
           script: gradle -p android connectedDebugAndroidTest --no-daemon
 
