@@ -50,10 +50,30 @@ class TaloraArchiveTest {
     }
 
     @Test
+    fun rejectsUnlistedPayloadEntries() {
+        val entries = unzip(TaloraArchive.encode(samplePackage())).toMutableMap()
+        entries["extra.txt"] = "not listed in manifest".toByteArray()
+
+        assertThrows(IllegalArgumentException::class.java) {
+            TaloraArchive.decode(zip(entries))
+        }
+    }
+
+    @Test
+    fun rejectsMismatchedAssetReferencesBeforeWriting() {
+        val source = samplePackage()
+        val invalid = source.copy(document = source.document.copy(assetIds = emptyList()))
+
+        assertThrows(IllegalArgumentException::class.java) {
+            TaloraArchive.encode(invalid)
+        }
+    }
+
+    @Test
     fun rejectsUnsupportedSchemaVersion() {
         val archive = zip(
             mapOf(
-                "manifest.json" to """{"format":"TALORA","schemaVersion":99}""".toByteArray()
+                "manifest.json" to """{"format":"TALORA","schemaVersion":99,"projectId":"project-001","createdAt":1,"updatedAt":2,"currentRevisionId":null,"revisionIds":[],"assets":[],"entrySha256":{}}""".toByteArray()
             )
         )
 
