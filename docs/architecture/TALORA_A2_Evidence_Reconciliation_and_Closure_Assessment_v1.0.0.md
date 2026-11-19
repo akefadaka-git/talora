@@ -219,6 +219,37 @@ GitHub Actions run records were retrieved for the exact candidate commits. All l
 
 The evidence is candidate-specific. It does not prove that separate branches can be composed, that their workspace dependencies and API/tenant/policy/memory/audit interfaces agree, or that a combined TALORA service exists. No combined-graph workflow run was found or executed. **Integrated A4 exact-head verification: NOT RUN.**
 
+## 7.6 Supplemental D01 exact API and immutable-graph verification — 19 November 2026
+
+This pass inspected the exact candidate workspace manifests, Kernel public exports, G05 HTTP host, CIW HTTP routes and the separate Brain fake adapter. It was read-only; no source, manifest, lockfile, workflow or implementation branch was changed.
+
+### Exact candidates and API boundaries
+
+| Candidate | Exact HEAD | Verified boundary |
+|---|---|---|
+| IROKA main | 1aea1447eadf1d827d702fd6c4034fa058aac21e | Root Cargo workspace contains only iroka-kernel; no TALORA task service |
+| G03/G08 | 0680337b7dd0966374acd2649cd9197e56b8d92a | Kernel exports inference/premise/uncertainty/workflow graph; workflow graph validates structure but does not schedule or execute |
+| G05/G02/G11 | 8f7ddb9e9dd2b796cd303ba645a1a3c843eb3810 | Workspace contains kernel + G05 memory; G05 manifest includes SQLite and PostgreSQL/TLS dependencies; HTTP host exposes only POST /v1/g05/execute and GET /healthz |
+| BRAIN/G05/G01/G02/G11 | 0968221b55563a9aacbec4fa499fdac7679e9915 | Workspace contains kernel + G04 contract + SQLite G05; external G01/G02 authority-provider dependencies remain fail-closed; tenant resolver is single-node |
+| Brain fake/local | 9d68b580e06bb8335a626524d64b345c3a5a38aa | Implements ModelAdapter and DeterministicFakeAdapter, but TaskEnvelope.validate() rejects populated principal, tenant or policy context and non-empty domain input refs; no HTTP service |
+| CIW | 69f3c181791a8dd3c5baf3d18d4556f8f316b1a1 | Browser conversation and generation/event routes; not private TALORA task API |
+
+### Concrete source-level incompatibility
+
+The G05/G02/G11 memory crate imports Kernel public symbols G05ActivationDecision, G05ActivationTuple, OrganizationAuthorityResolver, ReviewerKeyBindingResolver, ReviewerProofVerifier, SignedReviewerProof, TenantContext and VerifiedReviewerProof. The G03/G08 Kernel public lib.rs at 0680337b... exports none of these. Conversely, G03/G08 exports InferenceRulesOutput, PremiseModel and workflow_graph, absent from the G05/G02/G11 Kernel lib.rs.
+
+The G03/G08 and G05/G02/G11 histories are diverged: 378 unique commits versus 391 unique commits from common base 1a6f30cc3e64b8551f8e725c4cad8fcc3fa2c472. Their compare includes shared changed files Cargo.toml, Cargo.lock, Kernel lib.rs, identity_crypto.rs, security_store.rs and trust_lifecycle.rs. Brain fake/local versus G03/G08 is also diverged (378 / 10 commits). These are incompatible public API surfaces, not merely separate branch names.
+
+### Exact-head verification
+
+The exact heads 0680337b..., 8f7ddb9e..., 0968221b..., 9d68b580... and d51a971d... returned no combined status checks and no PR-triggered workflow runs in the available first-page lookup. Status is **NOT VERIFIED**, not FAIL. Successful workflows on older G05 HTTP/PostgreSQL or CIW predecessors do not transfer to these exact heads. No combined workspace resolution, build/test, migration test, SBOM or end-to-end private API run was performed.
+
+### D01 conclusion
+
+No compatible immutable graph can be selected and verified for the approved API-only TALORA scope. G03/G08 and G05/G02/G11 Kernel exports are incompatible; the isolated fake adapter rejects the trusted context and domain input references required by TALORA; and no candidate implements the full private capabilities/task/status/events/cancel/memory API.
+
+**D01 remains UNRESOLVED — NO SELECTABLE, VERIFIED IMMUTABLE INTEGRATION BASELINE.** This is the result of the requested read-only reconciliation, not authorization to compose source branches. D03 remains API_ONLY; no source copying, vendoring, modification, SDK distribution or redistribution is authorized by this assessment.
+
 ## 8. A2 exit assessment
 
 | Exit criterion | Status | Evidence / remaining work |
