@@ -1,0 +1,410 @@
+# TALORA A2 Technical Decision Register — Native Format, Conversion and Export Entitlements
+
+- **Document ID:** TALORA-A2-TDR-002
+- **Version:** 1.0.0
+- **Date:** 19 November 2026
+- **Status:** A2 working decision register; proposed technical defaults are not Owner approval unless explicitly stated
+- **Branch:** `docs/a1-import-export-referral-entitlements`
+- **Base A2 assessment:** `TALORA_A2_Impact_Assessment_Native_Format_Export_Economy_v1.0.0.md`
+- **Implementation:** NOT AUTHORIZED
+
+## 1. Executive disposition
+
+This register advances A2 by defining implementable technical recommendations, identifying decisions that can be settled by architecture, and isolating decisions that require further Owner approval or external evidence.
+
+The following Owner-approved product requirements are fixed inputs:
+- Native extension `.talora`.
+- Free export limit: five pages per export.
+- Premium: all officially supported import/export formats.
+- Ten verified referrals: one full-script export entitlement.
+- Watermark-free one-time license: one selected project, including revisions.
+- Watermark-free subscription terms: one, three, six and twelve months; longer terms optional.
+- Referral qualification requires verified account, activation and anti-fraud checks.
+
+**No source code, database schema, application implementation, payment integration, merge or deployment is authorized.**
+
+## 2. Binding requirements versus technical proposals
+
+| Requirement | Authority | A2 treatment |
+|---|---|---|
+| `.talora` extension | Owner-approved | Fixed requirement |
+| Five-page Free export limit | Owner-approved | Fixed requirement; counting semantics still need definition |
+| Premium access to all supported formats | Owner-approved | Fixed entitlement; support matrix remains capability-based |
+| Ten verified referrals = one full-script export | Owner-approved | Fixed reward; output format and reward recurrence need clarification |
+| One-time watermark-free project license includes revisions | Owner-approved | Fixed commercial rule; project transfer/fork lifecycle needs definition |
+| 1/3/6/12-month watermark-free subscriptions | Owner-approved | Fixed term options; renewal/payment policy remains open |
+| ZIP package, JSON manifest | Technical recommendation | Proposed; not Owner-approved |
+| Canonical typed document model | Existing A1 architecture direction | Required design; schema details proposed |
+| Premium removes five-page cap | Inference from full export entitlement | Owner confirmation required |
+| Premium does not automatically remove watermark | Separation of entitlements proposed earlier | Owner confirmation required |
+| Referral reward defaults to watermarked PDF | Consistent with requested watermarked full-script PDF | Owner confirmation required |
+| One-time project license covers PDF watermark removal only | Current product request concerns watermark-free PDF | Confirm scope; do not imply watermark removal for all formats |
+
+## 3. A2-ADR-01 — Native .talora package
+
+**Recommendation: adopt a versioned ZIP-based package with a JSON manifest and typed structured content.**
+
+### Package layout proposal
+
+```
+project.talora
+  manifest.json
+  document/
+    project.json
+    documents/
+      <document-id>.json
+    revisions/
+      <revision-id>.json        # optional, policy-controlled
+  assets/
+    <content-hash>.<extension>
+  previews/
+    <preview-id>.<extension>   # optional, regenerable
+```
+
+### Required properties
+
+- Stable format identifier and semantic schema version.
+- Stable project and document identifiers.
+- UTF-8 content and explicit language/locale metadata.
+- Typed screenplay and stage-play elements, not rendered text alone.
+- Stable element IDs for scene, block, character reference and cue.
+- Asset inventory with media type, byte size and cryptographic digest.
+- Explicit relationships between project, documents, revisions and assets.
+- Optional revision-history inclusion policy; current approved revision must always be recoverable.
+- Unknown extension preservation where safe, to improve forward compatibility.
+- No executable scripts, macros or active content.
+- Atomic save/replacement; interrupted writes must not corrupt the last valid package.
+- Strict archive path, size, entry-count, compression-ratio and nesting limits.
+- Schema validation before a package is opened into the canonical document model.
+- Integrity verification before assets are trusted.
+
+### Manifest proposal
+
+The manifest should identify:
+- `format_id`: stable TALORA format identifier.
+- `format_version`: package schema version.
+- `minimum_reader_version`: minimum compatible application version.
+- `project_id`, `created_at`, `modified_at`.
+- `documents`: document IDs, types, current revision IDs and language.
+- `assets`: relative path, media type, size and SHA-256 digest.
+- `features`: optional capabilities required to interpret the package.
+
+The package should use a deterministic serialization profile for manifest hashing. A signature is not required for ordinary user-created files in v1; authenticity must not be confused with integrity. If signatures are introduced later, key lifecycle and account portability must be separately designed.
+
+### Revision policy
+
+- A normal save updates the current working state using the app's transactional persistence model.
+- A portable package must include the current document state.
+- Revision history inclusion is selectable; it must not be silently omitted where the user explicitly requests a full project archive.
+- Importing a package must not overwrite an existing project without an explicit merge/replace choice.
+- Revision IDs and source provenance must survive round-trip when the target format supports them.
+
+### Open A2 items
+
+- Maximum package size and asset limits: establish from device/storage testing.
+- Whether history is included by default: Owner/product decision.
+- Whether the initial v1 format is a single file only or supports linked external assets: recommend self-contained package for reliable transfer.
+
+## 4. A2-ADR-02 — Canonical document model
+
+A1 already requires a structured, typed document model independent of UI presentation. The native package and converters must use that canonical model.
+
+### Proposed top-level types
+
+- Project
+- Workspace reference
+- Document
+- Document revision
+- Act
+- Scene
+- Typed block
+- Character/persona reference
+- Location reference
+- Transition
+- Stage direction
+- Cue and cue reference
+- Production annotation
+- Media/asset reference
+- Format-specific extension node
+
+### Core invariants
+
+1. Content is stored semantically, not only as rendered pages or a single plain-text field.
+2. Every document, scene and editable block has a stable identity.
+3. Screenplay and stage-play constructs remain distinct where their semantics differ.
+4. Formatting is represented as style/profile metadata and semantic node types, not fragile UI-only styling.
+5. Unknown but valid extension nodes are preserved during import/export where possible.
+6. A converter must report every unsupported or transformed construct.
+7. No converter may silently delete source content.
+8. A conversion is bound to a source revision and emits a conversion report.
+
+### Conversion fidelity levels
+
+- **L0 — Exact/lossless:** semantic content and supported formatting survive round-trip.
+- **L1 — Near-lossless:** minor presentation differences only; no material semantic loss.
+- **L2 — Lossy with disclosure:** known structure or formatting cannot be represented; user is warned and may inspect the conversion.
+- **L3 — Text extraction/reconstruction:** structure is inferred from flattened text or PDF; user review is mandatory.
+- **L4 — Unsupported:** no safe/reliable conversion path.
+
+A format's fidelity level must be measured per format version and construct set, not claimed universally.
+
+## 5. A2-ADR-03 — Import/export compatibility matrix
+
+The following is a planning matrix, not a statement of implemented support or completed legal clearance.
+
+| Format | Import direction | Export direction | Initial fidelity expectation | A2 priority |
+|---|---|---|---|---|
+| `.talora` | Required | Required | Exact for supported schema versions | P0 |
+| PDF | Text/layout extraction and reconstruction | Required | Import L3; export deterministic rendered output | P0 |
+| TXT | Required | Required | Text-level; semantic structure may be lost | P0 |
+| Fountain | Required | Required | L0/L1 for supported Fountain constructs | P1 |
+| DOCX | Required | Required | L1/L2 depending on document features | P1 |
+| RTF | Assess and support where reliable | Required | L1/L2 | P1 |
+| Final Draft FDX | Assess lawful, documented interchange | Assess lawful, documented interchange | L1/L2, format-version-specific | P1 |
+| HTML | Assess | Assess | L1/L2 for defined semantic subset | P2 |
+| Fade In native format | No promise absent documented lawful route | No promise absent documented lawful route | L4 until verified | Research |
+| Celtx native/project format | No promise absent official export/interchange route | No promise absent official export/interchange route | L4 until verified | Research |
+| Other screenplay apps | Per-format assessment | Per-format assessment | Must be independently validated | Ongoing |
+
+### Compatibility release rule
+
+A format may be displayed as supported only after:
+- A documented specification or official interchange route is identified.
+- License and redistribution obligations are reviewed.
+- Parser/writer dependency licenses are reviewed.
+- A versioned support profile is published.
+- Authorized golden fixtures exist.
+- Round-trip and regression tests pass.
+- Security tests cover malformed and adversarial files.
+- Known losses and unsupported features are disclosed.
+
+PDF import is reconstruction, not guaranteed recovery of the original semantic structure. The import flow must offer a review/edit stage.
+
+## 6. A2-ADR-04 — Free page limit and export job accounting
+
+**Owner-approved product rule:** Free users may export up to five pages per export.
+
+### Proposed semantics
+
+- Page count is determined after applying a named, versioned layout profile and pagination engine.
+- A PDF export is bound to a project ID, immutable document revision, output format, renderer version and export settings digest.
+- The entitlement service is authoritative.
+- A failed or cancelled export does not consume the allowance or a one-time reward.
+- A completed export is idempotently recorded; retries for the same job must not double-consume.
+- The system must not allow repeated page-range exports to be misrepresented as a full-script export reward.
+- Page-count results and entitlement decisions are auditable without retaining full script text in billing records.
+
+### Non-paginated formats
+
+TXT and Fountain do not have intrinsic pages. The product must not pretend that an arbitrary text file has stable pages. Proposed policy:
+- Free users can export up to a defined content-unit or byte/character budget for non-paginated outputs, or those outputs can be restricted to a five-page-equivalent rendered preview.
+- Premium can export the complete document.
+- The exact Free policy is an Owner decision before A2 closure.
+
+### Premium cap
+
+The phrase "Premium format access: all supported import/export formats" does not explicitly state whether Premium removes the five-page limit. The product design needs a full-project export capability. Recommendation: Premium removes the five-page cap for full-project exports while active. **Owner confirmation required.**
+
+## 7. A2-ADR-05 — Referral full-script export entitlement
+
+**Owner-approved rule:** Ten verified referrals grant one full-script export entitlement.
+
+### Proposed lifecycle
+
+`created → attributed → pending_verification → qualified → reward_granted → redeemed`
+
+Additional terminal or review states:
+- rejected
+- reversed
+- disputed
+- expired (only if an expiry policy is approved)
+
+### Qualification requirements
+
+- Invitee account is distinct and verified.
+- Invitee completes a documented activation event.
+- Attribution is recorded server-side and idempotently.
+- Self-referral and duplicate-account checks pass.
+- Suspicious patterns enter review; legitimate shared devices and household cases need a fair exception path.
+- Referral reward is not granted merely because an install event occurred.
+- Invitee data is minimized and is not used to profile the invitee's creative content.
+
+### Activation recommendation
+
+Use account verification plus a meaningful first-use event, such as creating and saving a first project. Do not require uploading a script or sharing private creative content to qualify.
+
+### Reward semantics requiring Owner decision
+
+- Is the milestone once per referring account lifetime, or repeatable for each additional group of ten qualified referrals?
+- Does the reward apply to one full PDF export only, or one full export in any supported Free-eligible format?
+- Is the reward watermarked by default? The product request describes watermarked full-script PDF export separately from paid watermark-free export; recommendation is watermarked PDF.
+- Does the reward expire? Recommendation: no expiry while the account remains in good standing, subject to fraud reversal.
+
+**Recommended default:** One lifetime reward per referring account for the first ten qualified referrals, redeemable for one full-script watermarked PDF export. Further referral rewards can be introduced as separately approved campaigns. This is a recommendation, not an approved change to the Owner's requirement.
+
+## 8. A2-ADR-06 — Watermark-free project license and subscriptions
+
+### One-time project license
+
+Owner-approved scope: one selected project, including revisions.
+
+Recommended identity rule:
+- Bind the license to immutable project UUID and owning account/organization scope.
+- Revisions of the same project remain covered.
+- A fork, duplicate or copied project receives a new project UUID and is not covered unless an explicit transfer/relicense operation is approved.
+- A project ownership transfer must not silently move the license.
+- Already exported files remain valid copies and are not remotely altered.
+- Refund, chargeback, account deletion and organization ownership behavior require policy decisions.
+
+### Subscription terms
+
+Approved term options: 1, 3, 6 and 12 months. Longer terms are optional future products.
+
+The backend entitlement ledger should store:
+- subscription product/term ID
+- verified provider transaction reference
+- start and end timestamps
+- state (pending, active, grace, cancelled, expired, refunded/revoked)
+- renewal/cancellation status where applicable
+- project or account scope
+- audit provenance
+
+Expiration must not invalidate prior downloads. The policy for in-progress exports at expiry must be defined; recommendation: entitlement is evaluated at job acceptance and a short-lived job token permits that accepted job to finish.
+
+### Scope confirmation required
+
+The product request specifically describes watermark-free PDF export. Recommendation: watermark entitlement applies to PDF only in initial release; other formats should not carry a TALORA watermark unless the Owner approves format-specific branding. Confirm before closure.
+
+## 9. A2-ADR-07 — Payment and commerce boundary
+
+- Use a provider-neutral internal transaction and entitlement model.
+- Verify provider webhooks/signatures server-side.
+- Enforce idempotency for purchase, renewal, refund and chargeback events.
+- Never grant paid entitlements from client-only callbacks.
+- Support purchase restoration and account/device migration.
+- Define refund and dispute behavior.
+- No prices or provider are selected by this record.
+- Validate Ethiopia payment-provider availability, app-store rules, taxes, FX and consumer obligations before selecting a provider.
+- No automatic top-ups, hidden recurring charges or unapproved spending.
+- The existing Premium one-time core software purchase must remain distinct from the new time-limited watermark-free export subscription unless a future approved bundle explicitly changes that.
+
+## 10. A2-ADR-08 — Offline entitlement policy
+
+Ordinary project creation, editing and local storage remain available offline.
+
+Recommended entitlement behavior:
+- Cache a signed, time-bounded entitlement snapshot.
+- Bind snapshot to account, device registration and entitlement scope.
+- Use a monotonic time source where available; detect wall-clock rollback and require reconciliation.
+- Do not allow offline referral qualification or payment-state mutation.
+- Define maximum offline validity based on security review and operational requirements.
+- When the signed snapshot expires, preserve local editing and allow only the explicitly approved offline export fallback.
+- Never delete or lock the user's source project because entitlement verification is unavailable.
+
+Numeric offline validity period remains open pending security and product decision.
+
+## 11. A2-ADR-09 — Security and privacy requirements
+
+### File processing
+
+- Treat every import as hostile input.
+- Process complex formats in isolated workers with CPU, memory, time and output-size limits.
+- Reject path traversal, symlink escape, archive bombs, excessive nesting, malformed XML, external entity resolution and unsafe embedded content.
+- Disable macros, scripts, external resource fetches and active content.
+- Use temporary-file isolation and deterministic cleanup.
+- Validate output before making it available to the user.
+- Do not let parser content or embedded instructions alter IROKA/system authorization.
+
+### Data and audit
+
+- Keep creative content out of referral and payment ledgers.
+- Store only IDs, digests, format, counts and necessary operational metadata.
+- Define retention and deletion for source uploads, temporary conversions and exports.
+- Ensure project authorization is checked on every conversion job and download.
+- Keep security/admin events auditable.
+- Preserve user control over creative content and collaborator access.
+
+## 12. A2-ADR-10 — Amharic and multilingual fidelity
+
+Required test corpus:
+- Amharic/Ethiopic text in scene headings, dialogue, character names and stage directions.
+- Mixed Ethiopic and Latin script.
+- Ethiopic punctuation and numerals where used.
+- Combining marks and Unicode normalization edge cases.
+- Font embedding and glyph fallback.
+- Line wrapping, dialogue indentation, page breaks and headers.
+- DOCX/PDF round-trip and copy/paste.
+- Search, cursor navigation and text selection.
+- Right-to-left content only where supported by the target format and product requirements.
+
+Normalization must be non-destructive. Export must disclose font substitution or unsupported glyphs. Human review is required for Amharic layout acceptance.
+
+## 13. Proposed data ownership and service boundaries
+
+Conceptual domains only; not approved database schema:
+
+- **Creative Project service:** canonical projects, documents, revisions and permissions.
+- **Package service/library:** .talora package validation, import and export.
+- **Conversion service:** isolated parser/writer jobs and conversion reports.
+- **Rendering service:** pagination, PDF generation, watermark application and visual QA.
+- **Entitlement service:** Free, Premium, export usage and project license decisions.
+- **Referral service:** promo attribution, qualification and reward ledger.
+- **Commerce adapter:** provider verification and transaction reconciliation.
+- **Audit service:** entitlement, payment, administrative and security event evidence.
+
+The client must not be authoritative for page counts, referral qualification, payment confirmation or watermark entitlement.
+
+## 14. A2 risk register
+
+| Risk | Rating | Required mitigation/evidence |
+|---|---|---|
+| Parser exploit or archive bomb | Critical | Isolated conversion worker, resource limits, adversarial tests |
+| Payment spoofing or replay | Critical | Verified webhook, idempotency, reconciliation |
+| Cross-project license leakage | High | Stable project UUID, tenant checks, authorization tests |
+| Referral abuse | High | Verification, activation, risk review, appeals |
+| Page-limit bypass | High | Server-side deterministic pagination and job binding |
+| Lossy conversion | High | Fidelity labels, warnings, golden fixtures |
+| Proprietary format rights | High | Per-format legal/license review |
+| Ethiopic glyph/pagination loss | High | Golden corpus, visual and text regression |
+| Offline clock rollback | High | Signed bounded entitlement, reconciliation |
+| Data leakage through logs | High | Data minimization and redaction review |
+
+## 15. A2 open decision register
+
+| ID | Decision required | Recommendation | Status |
+|---|---|---|---|
+| ODR-01 | ZIP + JSON .talora container | Adopt | Owner confirmation |
+| ODR-02 | Self-contained package default | Adopt | Owner confirmation |
+| ODR-03 | Include revision history by default | Current revision mandatory; history selectable | Owner decision |
+| ODR-04 | Premium removes five-page cap | Yes | Owner confirmation |
+| ODR-05 | Premium includes watermark-free PDF | No; separate entitlement | Owner confirmation |
+| ODR-06 | Referral reward output | One watermarked full-script PDF | Owner confirmation |
+| ODR-07 | Referral milestone recurrence | First ten once per account; additional campaigns separate | Owner decision |
+| ODR-08 | Referral reward expiry | No expiry while account is good standing | Owner decision |
+| ODR-09 | Watermark license output scope | PDF only initially | Owner confirmation |
+| ODR-10 | Project fork/transfer license behavior | Fork is new project; transfer requires explicit operation | Owner confirmation |
+| ODR-11 | Non-paginated Free export limit | Define separate content budget or five-page-equivalent preview | Owner decision |
+| ODR-12 | Offline entitlement validity | Signed bounded cache; numeric period after security review | Open |
+| ODR-13 | Initial proprietary format support | Official interchange route only | External validation |
+| ODR-14 | Payment provider and prices | No selection until Ethiopia availability, fees and legal review | External validation |
+| ODR-15 | Existing A1 freeze status | Repository A1 baseline file still says draft/not frozen; reconcile with Owner's later A1 approval | Unresolved evidence discrepancy |
+
+## 16. A1 baseline consistency finding
+
+The repository's `docs/a1-product-definition/00-A1-BASELINE.md` still states “Draft prepared for Owner review; not frozen” and says A1 closure requires review of all specification documents. The later Owner approval of the product and the new amendment must be reconciled with that file before an A2 closure claim. This assessment does not silently rewrite the baseline status.
+
+## 17. A2 exit criteria and present disposition
+
+A2 remains **PARTIAL / OPEN** until:
+- ODR-01 through ODR-12 receive decisions or are explicitly deferred by Owner.
+- External format licensing and payment-provider facts are researched and recorded.
+- Initial support matrix is finalized with lawful routes and fidelity classifications.
+- Canonical document model and .talora schema proposal are internally consistent.
+- Page counting and non-paginated Free export rules are unambiguous.
+- Referral, payment, subscription, refund and project-license state machines are specified.
+- Security/privacy and offline policies are reviewed.
+- Amharic acceptance corpus and test ownership are defined.
+- The A1 freeze-status discrepancy is resolved.
+- A traceable A3 backlog is prepared.
+
+**Current gate:** A2 decision register prepared; A2 not closed. A3 implementation, PR merge and deployment remain unauthorized.
