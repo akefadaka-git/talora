@@ -48,6 +48,9 @@ class ProjectStoreTest {
         assertEquals("First draft", restored.body)
         assertEquals(revision.id, restored.currentRevisionId)
         assertEquals(revision.id, store.listRevisions(project.id).single().id)
+        assertEquals("First draft".length, store.listRevisions(project.id).single().contentLength)
+        store.updateRevisionNote(project.id, revision.id, "Reviewed")
+        assertEquals("Reviewed", store.getRevision(project.id, revision.id)?.changeNote)
     }
 
     @Test
@@ -60,6 +63,11 @@ class ProjectStoreTest {
         val packageData = store.exportPackage(project.id)
         assertEquals(listOf(asset.id), packageData.document.assetIds)
         assertArrayEquals(bytes, packageData.assets.single().bytes)
+        assertArrayEquals(bytes, store.getAssetBytes(project.id, asset.id))
+        val replacement = byteArrayOf(9, 8, 7)
+        store.replaceAsset(project.id, asset.id, "replacement.bin", "application/octet-stream", replacement)
+        assertArrayEquals(replacement, store.getAssetBytes(project.id, asset.id))
+        assertEquals("replacement.bin", store.listAssets(project.id).single().fileName)
 
         store.removeAsset(project.id, asset.id)
         assertTrue(store.listAssets(project.id).isEmpty())

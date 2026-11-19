@@ -14,6 +14,16 @@ data class TaloraRevisionSummary(
     val projectId: String,
     val createdAt: Long,
     val title: String,
+    val changeNote: String?,
+    val contentLength: Int = 0
+)
+
+data class TaloraRevisionDetail(
+    val id: String,
+    val projectId: String,
+    val createdAt: Long,
+    val title: String,
+    val content: String,
     val changeNote: String?
 )
 
@@ -121,7 +131,8 @@ class ProjectStore(context: Context) :
         return projects
     }
 
-    fun createProject(initialTitle: String): TaloraProject {
+    fun createProject(initialTitle: String, scriptType: String = "screenplay"): TaloraProject {
+        require(scriptType in setOf("screenplay", "stage_play")) { "Unsupported TALORA script type." }
         val now = System.currentTimeMillis()
         val project = TaloraProject(
             id = UUID.randomUUID().toString(),
@@ -129,7 +140,7 @@ class ProjectStore(context: Context) :
             body = "",
             updatedAt = now,
             createdAt = now,
-            scriptType = "screenplay",
+            scriptType = scriptType,
             languageTag = "am",
             metadata = emptyMap(),
             currentRevisionId = null
@@ -142,6 +153,18 @@ class ProjectStore(context: Context) :
         val values = ContentValues().apply {
             put("title", title)
             put("body", body)
+            put("updated_at", System.currentTimeMillis())
+        }
+        val changed = writableDatabase.update("projects", values, "id = ?", arrayOf(id))
+        check(changed == 1) { "TALORA project no longer exists." }
+    }
+
+    fun updateProjectDetails(id: String, title: String, body: String, scriptType: String) {
+        require(scriptType in setOf("screenplay", "stage_play")) { "Unsupported TALORA script type." }
+        val values = ContentValues().apply {
+            put("title", title)
+            put("body", body)
+            put("script_type", scriptType)
             put("updated_at", System.currentTimeMillis())
         }
         val changed = writableDatabase.update("projects", values, "id = ?", arrayOf(id))
@@ -189,7 +212,7 @@ class ProjectStore(context: Context) :
     fun listRevisions(projectId: String): List<TaloraRevisionSummary> {
         val result = mutableListOf<TaloraRevisionSummary>()
         readableDatabase.rawQuery(
-            "SELECT id, project_id, created_at, title, change_note FROM project_revisions WHERE project_id = ? ORDER BY created_at DESC",
+            "SELECT id, project_id, created_at, title, change_note, length(content) FROM project_revisions WHERE project_id = ? ORDER BY created_at DESC",
             arrayOf(projectId)
         ).use { cursor ->
             while (cursor.moveToNext()) {
@@ -198,11 +221,38 @@ class ProjectStore(context: Context) :
                     projectId = cursor.getString(1),
                     createdAt = cursor.getLong(2),
                     title = cursor.getString(3),
-                    changeNote = if (cursor.isNull(4)) null else cursor.getString(4)
+                    changeNote = if (cursor.isNull(4)) null else cursor.getString(4),
+                    contentLength = cursor.getInt(5)
                 )
             }
         }
         return result
+    }
+
+    fun getRevision(projectId: String, revisionId: String): TaloraRevisionDetail? {
+        return readableDatabase.rawQuery(
+            "SELECT id, project_id, created_at, title, content, change_note FROM project_revisions WHERE id = ? AND project_id = ?",
+            arrayOf(revisionId, projectId)
+        ).use { cursor ->
+            if (!cursor.moveToFirst()) null else TaloraRevisionDetail(
+                id = cursor.getString(0),
+                projectId = cursor.getString(1),
+                createdAt = cursor.getLong(2),
+                title = cursor.getString(3),
+                content = cursor.getString(4),
+                changeNote = if (cursor.isNull(5)) null else cursor.getString(5)
+            )
+        }
+    }
+
+    fun updateRevisionNote(projectId: String, revisionId: String, note: String?) {
+        val changed = writableDatabase.update(
+            "project_revisions",
+            ContentValues().apply { put("change_note", note?.takeIf { it.isNotBlank() }) },
+            "id = ? AND project_id = ?",
+            arrayOf(revisionId, projectId)
+        )
+        check(changed == 1) { "Revision does not belong to this project." }
     }
 
     fun restoreRevision(projectId: String, revisionId: String): TaloraProject {
@@ -286,6 +336,42 @@ class ProjectStore(context: Context) :
             db.endTransaction()
         }
         return TaloraAssetSummary(id, fileName, mediaType, bytes.size)
+    }
+
+    fun getAssetBytes(projectId: String, assetId: String): ByteArray {
+        return readableDatabase.rawQuery(
+            "SELECT content FROM project_assets WHERE id = ? AND project_id = ?",
+            arrayOf(assetId, projectId)
+        ).use { cursor ->
+            check(cursor.moveToFirst()) { "Asset does not belong to this project." }
+            cursor.getBlob(0)
+        }
+    }
+
+    fun replaceAsset(
+        projectId: String,
+        assetId: String,
+        fileName: String,
+        mediaType: String,
+        bytes: ByteArray
+    ): TaloraAssetSummary {
+        require(fileName.isNotBlank() && fileName.length <= 255 && '/' !in fileName && fileName.none { it == 92.toChar() }) {
+            "Invalid asset filename."
+        }
+        require(mediaType.isNotBlank() && mediaType.length <= 255) { "Invalid asset media type." }
+        require(bytes.size <= TaloraArchive.MAX_ENTRY_BYTES) { "Asset exceeds the TALORA size limit." }
+        val changed = writableDatabase.update(
+            "project_assets",
+            ContentValues().apply {
+                put("file_name", fileName)
+                put("media_type", mediaType)
+                put("content", bytes)
+            },
+            "id = ? AND project_id = ?",
+            arrayOf(assetId, projectId)
+        )
+        check(changed == 1) { "Asset does not belong to this project." }
+        return TaloraAssetSummary(assetId, fileName, mediaType, bytes.size)
     }
 
     fun removeAsset(projectId: String, assetId: String) {

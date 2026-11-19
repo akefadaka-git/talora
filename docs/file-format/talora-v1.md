@@ -1,6 +1,6 @@
 # TALORA Native Project Format — Version 1
 
-**Status:** Core archive codec and first Android Storage Access Framework / SQLite integration are implemented on the development branch. Exact-head CI verification is pending.
+**Status:** Core archive codec, Android SAF/SQLite integration, revision comparison controls, and asset preview/save-as/replace workflows are implemented on the development branch. Exact-head CI verification is pending.
 
 ## Goals
 
@@ -50,15 +50,14 @@ Schema changes require a new schema version and an explicit migration path. Vers
 - Local SQLite schema version 2 adds project creation time, script type, language tag, metadata, current revision reference, revision snapshots, and binary asset storage.
 - Project, revision, and asset IDs are remapped on collision; archive references are updated consistently.
 - Project switching and import flush the current editor state before changing the active project.
-- Users can create named revision snapshots, browse revision history, and restore a selected snapshot.
-- Users can attach files through Android's document picker, inspect attachment names/types/sizes, and remove attachments.
+- Users can create named revision snapshots, browse history with timestamps and content-length metadata, edit revision notes, compare two snapshots with a bounded line diff, and restore a selected snapshot.
+- Users can attach files through Android's document picker, preview bounded image/text content, save an independent copy through the document provider, replace an attachment while retaining its identity, inspect attachment names/types/sizes, and remove attachments.
 - Package import/export preserves revision snapshots and attached binary assets.
 - Import/export errors are surfaced in the app; archive reads remain bounded by the codec size limits.
 
 ## Remaining work
 
 - Verify the new Robolectric database migration and package round-trip tests on the exact branch head.
-- Add revision comparison and richer revision metadata/editing.
-- Add asset preview, replacement, and save-as workflows.
+- Verify the new revision comparison and asset preview/save-as/replace workflows on the exact branch head.
 - Add export/import progress for large packages and stronger recovery for provider interruptions.
 - Define entitlement enforcement separately from the file format; the archive itself must not encode or grant premium/referral rights.
