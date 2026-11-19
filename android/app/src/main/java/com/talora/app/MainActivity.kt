@@ -162,6 +162,29 @@ private fun TaloraHome(store: ProjectStore) {
         }
     }
 
+    val formatExportLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument("*/*")
+    ) { uri: Uri? ->
+        val bytes = pendingExport
+        pendingExport = null
+        if (uri != null && bytes != null) {
+            scope.launch {
+                busy = true
+                try {
+                    withContext(Dispatchers.IO) {
+                        context.contentResolver.openOutputStream(uri, "wt")?.use { it.write(bytes) }
+                            ?: error("Unable to open the selected destination.")
+                    }
+                    status = "Script exported."
+                } catch (error: Exception) {
+                    status = error.message ?: "Export failed."
+                } finally {
+                    busy = false
+                }
+            }
+        }
+    }
+
     val pdfExportLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.CreateDocument("application/pdf")
     ) { uri: Uri? ->
@@ -271,8 +294,8 @@ private fun TaloraHome(store: ProjectStore) {
                             ?: error("Unable to read the selected file.")
                     }
                     if (textFormat != null) {
-                        val importedText = withContext(Dispatchers.Default) { ScriptInterchange.decodeUtf8(bytes) }
-                        val importedType = if (textFormat == TextImportFormat.FOUNTAIN) "screenplay" else scriptType
+                        val importedText = withContext(Dispatchers.Default) { ScriptInterchange.importText(textFormat, bytes) }
+                        val importedType = if (textFormat == TextImportFormat.FOUNTAIN || textFormat == TextImportFormat.FDX) "screenplay" else scriptType
                         val importedTitle = selectedName.substringBeforeLast('.').ifBlank { untitled }
                         val (createdProject, refreshedProjects) = withContext(Dispatchers.IO) {
                             val created = store.createProject(importedTitle, importedType)
@@ -378,7 +401,7 @@ private fun TaloraHome(store: ProjectStore) {
             ) { Text(createLabel) }
             TextButton(
                 enabled = !busy,
-                onClick = { importLauncher.launch(arrayOf(TALORA_MIME_TYPE, "application/zip", "application/octet-stream", "text/plain")) }
+                onClick = { importLauncher.launch(arrayOf(TALORA_MIME_TYPE, "application/zip", "application/octet-stream", "text/plain", "application/xml", "text/xml", "application/rtf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")) }
             ) { Text(if (amharic) "ክፈት" else "Open") }
         }
 
@@ -717,6 +740,48 @@ private fun TaloraHome(store: ProjectStore) {
                         textExportLauncher.launch(safeScriptFileName(title, "fountain"))
                     }
                 }) { Text("Fountain") }
+                TextButton(enabled = !busy, onClick = {
+                    scope.launch {
+                        busy = true
+                        try {
+                            saveCurrent()
+                            pendingExport = withContext(Dispatchers.Default) { ScriptInterchange.exportFdx(title, scriptType, body) }
+                            formatExportLauncher.launch(safeScriptFileName(title, "fdx"))
+                        } catch (error: Exception) {
+                            status = error.message ?: "FDX export preparation failed."
+                        } finally {
+                            busy = false
+                        }
+                    }
+                }) { Text("FDX") }
+                TextButton(enabled = !busy, onClick = {
+                    scope.launch {
+                        busy = true
+                        try {
+                            saveCurrent()
+                            pendingExport = withContext(Dispatchers.Default) { ScriptInterchange.exportDocx(title, body) }
+                            formatExportLauncher.launch(safeScriptFileName(title, "docx"))
+                        } catch (error: Exception) {
+                            status = error.message ?: "DOCX export preparation failed."
+                        } finally {
+                            busy = false
+                        }
+                    }
+                }) { Text("DOCX") }
+                TextButton(enabled = !busy, onClick = {
+                    scope.launch {
+                        busy = true
+                        try {
+                            saveCurrent()
+                            pendingExport = withContext(Dispatchers.Default) { ScriptInterchange.exportRtf(body) }
+                            formatExportLauncher.launch(safeScriptFileName(title, "rtf"))
+                        } catch (error: Exception) {
+                            status = error.message ?: "RTF export preparation failed."
+                        } finally {
+                            busy = false
+                        }
+                    }
+                }) { Text("RTF") }
                 TextButton(enabled = !busy, onClick = {
                     scope.launch {
                         busy = true
