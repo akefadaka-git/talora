@@ -93,7 +93,7 @@ object ScriptInterchange {
                 trimmed.isEmpty() -> "Action"
                 trimmed.startsWith("INT.", true) || trimmed.startsWith("EXT.", true) ||
                     trimmed.startsWith("INT/EXT.", true) || trimmed.startsWith("I/E.", true) -> "Scene Heading"
-                trimmed.matches(Regex("^(CUT TO:|FADE OUT\.?|FADE IN:|DISSOLVE TO:)$", RegexOption.IGNORE_CASE)) -> "Transition"
+                trimmed.matches(Regex("""^(CUT TO:|FADE OUT\.?|FADE IN:|DISSOLVE TO:)$""", RegexOption.IGNORE_CASE)) -> "Transition"
                 trimmed.startsWith("(") && trimmed.endsWith(")") -> "Parenthetical"
                 trimmed == trimmed.uppercase(Locale.ROOT) &&
                     trimmed.any { it.isLetter() } && trimmed.length <= 45 && !previousWasCharacter -> "Character"
@@ -187,9 +187,9 @@ object ScriptInterchange {
     private fun buildDocxDocument(title: String, source: String): String {
         fun esc(value: String) = value.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
         val body = buildString {
-            source.split('\\n').forEach { line ->
+            source.split('\n').forEach { line ->
                 append("<w:p><w:r><w:t xml:space=\"preserve\">")
-                append(esc(line.removeSuffix("\\r"))); append("</w:t></w:r></w:p>")
+                append(esc(line.removeSuffix("\r"))); append("</w:t></w:r></w:p>")
             }
         }
         return """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
