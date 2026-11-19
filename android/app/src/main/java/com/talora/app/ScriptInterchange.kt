@@ -305,7 +305,7 @@ object ScriptInterchange {
                     } else if (!next.isLetter()) {
                         when (next) {
                             '*' -> { skip = true; i += 2 }
-                            '~' -> if (!skip && fallback == 0) out.append('\u00a0') else Unit.also { }; i += 2
+                            '~' -> { if (!skip && fallback == 0) out.append('\u00a0'); i += 2 }
                             '-' -> { if (!skip && fallback == 0) out.append('\u00ad'); i += 2 }
                             '_' -> { if (!skip && fallback == 0) out.append('\u2011'); i += 2 }
                             '\n', '\r' -> i += 2
