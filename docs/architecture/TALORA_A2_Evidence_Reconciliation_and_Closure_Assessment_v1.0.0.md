@@ -204,6 +204,21 @@ The two G05 runtime candidates are mutually DIVERGED: G05 SQLite/reviewer versus
 
 **D01 conclusion strengthened:** exact candidate heads and dependency manifests are now identified, but no compatible immutable graph exists as an evidenced, tested, approved unit. The proper status is **RECONCILIATION COMPLETE — BASELINE NOT SELECTABLE / BLOCKED**, not “baseline selected.” A future read-only assessment must prove the selected graph's dependency resolution, API surfaces, tenant/policy/memory/audit authority boundaries and exact-head tests before the Owner can consider freezing it.
 
+## 7.5 Exact-HEAD CI evidence
+
+GitHub Actions run records were retrieved for the exact candidate commits. All listed runs completed successfully. The job covered formatting, compilation, complete unit/contract tests, production-feature exclusion checks and Clippy. CIW additionally checked browser JavaScript syntax and patch whitespace.
+
+| Candidate exact HEAD | Workflow run | Verified result |
+|---|---:|---|
+| Kernel A3 `bb8b9f0ee81b59e793c30cc5c9a0357d3ed48e4a` | [42566869592](https://github.com/akefadaka-git/iroka/actions/runs/42566869592) | **PASS** |
+| G05 reviewer/SQLite `47edea227fdf1dc7b6ac1667b7e7f9cbb5b4cf39` | [42957299023](https://github.com/akefadaka-git/iroka/actions/runs/42957299023) | **PASS** |
+| G05 PostgreSQL/G11 `2bfac619b9601330b3343f86277bb5ba29ae22b2` | [43240878046](https://github.com/akefadaka-git/iroka/actions/runs/43240878046), [43240392654](https://github.com/akefadaka-git/iroka/actions/runs/43240392654) | **PASS / PASS** |
+| G08 coordinator `2cfcf8db9437824cc8181ad8af1e8d819b936e2c` | [43230367894](https://github.com/akefadaka-git/iroka/actions/runs/43230367894) | **PASS** |
+| CIW answer-only `69f3c181791a8dd3c5baf3d18d4556f8f316b1a1` | [42562324737](https://github.com/akefadaka-git/iroka/actions/runs/42562324737) | **PASS** |
+| Brain core `9d68b580e06bb8335a626524d64b345c3a5a38aa` | [42576912231](https://github.com/akefadaka-git/iroka/actions/runs/42576912231) | **PASS** |
+
+The evidence is candidate-specific. It does not prove that separate branches can be composed, that their workspace dependencies and API/tenant/policy/memory/audit interfaces agree, or that a combined TALORA service exists. No combined-graph workflow run was found or executed. **Integrated A4 exact-head verification: NOT RUN.**
+
 ## 8. A2 exit assessment
 
 | Exit criterion | Status | Evidence / remaining work |
