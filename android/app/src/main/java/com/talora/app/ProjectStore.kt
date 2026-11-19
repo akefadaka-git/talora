@@ -131,6 +131,33 @@ class ProjectStore(context: Context) :
         return projects
     }
 
+    /** Lightweight rows for the project switcher; script bodies are fetched only when opened. */
+    fun listProjectSummaries(): List<TaloraProject> {
+        val result = mutableListOf<TaloraProject>()
+        readableDatabase.rawQuery(
+            """
+            SELECT id, title, '' AS body, updated_at, created_at, script_type,
+                   language_tag, metadata_json, current_revision_id
+            FROM projects ORDER BY updated_at DESC
+            """.trimIndent(),
+            null
+        ).use { cursor ->
+            while (cursor.moveToNext()) result += cursor.toProject()
+        }
+        return result
+    }
+
+    fun getProject(id: String): TaloraProject? {
+        return readableDatabase.rawQuery(
+            """
+            SELECT id, title, body, updated_at, created_at, script_type,
+                   language_tag, metadata_json, current_revision_id
+            FROM projects WHERE id = ?
+            """.trimIndent(),
+            arrayOf(id)
+        ).use { cursor -> if (cursor.moveToFirst()) cursor.toProject() else null }
+    }
+
     fun createProject(initialTitle: String, scriptType: String = "screenplay"): TaloraProject {
         require(scriptType in setOf("screenplay", "stage_play")) { "Unsupported TALORA script type." }
         val now = System.currentTimeMillis()

@@ -277,7 +277,7 @@ private fun TaloraHome(store: ProjectStore) {
                         val (createdProject, refreshedProjects) = withContext(Dispatchers.IO) {
                             val created = store.createProject(importedTitle, importedType)
                             store.updateProjectDetails(created.id, importedTitle, importedText, importedType)
-                            created.copy(title = importedTitle, body = importedText, scriptType = importedType) to store.listProjects()
+                            created.copy(title = importedTitle, body = importedText, scriptType = importedType) to store.listProjectSummaries()
                         }
                         projects = refreshedProjects
                         selectedId = createdProject.id
@@ -289,7 +289,7 @@ private fun TaloraHome(store: ProjectStore) {
                         val imported = withContext(Dispatchers.Default) { TaloraArchive.decode(bytes) }
                         val (importedProject, refreshedProjects) = withContext(Dispatchers.IO) {
                             val created = store.importPackage(imported)
-                            created to store.listProjects()
+                            created to store.listProjectSummaries()
                         }
                         projects = refreshedProjects
                         selectedId = importedProject.id
@@ -308,7 +308,7 @@ private fun TaloraHome(store: ProjectStore) {
     }
 
     LaunchedEffect(Unit) {
-        projects = withContext(Dispatchers.IO) { store.listProjects() }
+        projects = withContext(Dispatchers.IO) { store.listProjectSummaries() }
     }
 
     LaunchedEffect(selectedId) {
@@ -329,11 +329,11 @@ private fun TaloraHome(store: ProjectStore) {
 
     LaunchedEffect(selectedId, title, body, scriptType) {
         val id = selectedId ?: return@LaunchedEffect
-        delay(450)
+        delay(750)
         withContext(Dispatchers.IO) {
             store.updateProjectDetails(id, title, ProjectTextPolicy.preserveSourceText(body), scriptType)
         }
-        projects = withContext(Dispatchers.IO) { store.listProjects() }
+        projects = withContext(Dispatchers.IO) { store.listProjectSummaries() }
     }
 
     Column(
@@ -362,7 +362,7 @@ private fun TaloraHome(store: ProjectStore) {
                         try {
                             saveCurrent()
                             val created = withContext(Dispatchers.IO) { store.createProject(untitled, scriptType) }
-                            projects = withContext(Dispatchers.IO) { store.listProjects() }
+                            projects = withContext(Dispatchers.IO) { store.listProjectSummaries() }
                             selectedId = created.id
                             title = created.title
                             body = created.body
@@ -399,10 +399,13 @@ private fun TaloraHome(store: ProjectStore) {
                                     busy = true
                                     try {
                                         saveCurrent()
-                                        selectedId = project.id
-                                        title = project.title
-                                        body = project.body
-                                        scriptType = project.scriptType
+                                        val opened = withContext(Dispatchers.IO) {
+                                            store.getProject(project.id)
+                                        } ?: error("TALORA project no longer exists.")
+                                        selectedId = opened.id
+                                        title = opened.title
+                                        body = opened.body
+                                        scriptType = opened.scriptType
                                         status = ""
                                     } catch (error: Exception) {
                                         status = error.message ?: "Unable to switch project."

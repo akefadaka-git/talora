@@ -36,6 +36,17 @@ class ProjectStoreTest {
     }
 
     @Test
+    fun projectSwitcherLoadsSummariesWithoutReadingEveryScriptBody() {
+        val project = store.createProject("Large draft")
+        store.updateProject(project.id, "Large draft", "Body should load on demand")
+
+        val summary = store.listProjectSummaries().single()
+        assertEquals(project.id, summary.id)
+        assertEquals("", summary.body)
+        assertEquals("Body should load on demand", store.getProject(project.id)?.body)
+    }
+
+    @Test
     fun revisionSnapshotsCanBeListedAndRestored() {
         val project = store.createProject("Draft")
         store.updateProject(project.id, "First title", "First draft")
