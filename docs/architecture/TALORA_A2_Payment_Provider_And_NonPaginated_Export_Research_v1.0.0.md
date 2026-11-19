@@ -178,3 +178,67 @@ The register is regulatory status evidence only. It is not evidence of TALORA me
 - NBE ONPS/10/2025 amendment: https://nbe.gov.et/files/onps-10-2025-oversight-of-the-natioanl-payment-system-licensing-and-authorization-of-payment-instrument-issuer-amendment-directive/
 
 **Current A2 status:** ODR-11 is Owner-approved. ODR-14 is reconciled at the architecture/shortlist level, but provider selection and merchant/legal due diligence remain external pre-implementation gates. No provider selected; no paid activation or live transaction performed. A3 implementation, merge and deployment remain unauthorized.
+
+## 7. Supplemental Ethiopia legal/provider evidence recheck — 19 November 2026
+
+This recheck separates regulatory status, public technical documentation and merchant-specific contractual evidence. Public listing or an API guide is not merchant approval.
+
+### 7.1 National Bank of Ethiopia register and directives
+
+The current NBE Payment Instrument Issuers/System Operators register lists:
+- Chapa Financial Technology S.C. — payment gateway operator, license NPS/PSO/005/2022, status Commercialized.
+- Arif Pay Financial Technology S.C. — POS/payment gateway operator, license NPS/PSO/003/2021, status Commercialized.
+- Ethiotelecom / Telebirr — mobile-money/payment instrument issuer, license NPS PII/01/2021, status Commercialized.
+
+This supports due diligence, not TALORA onboarding, active rails for this merchant, pricing, settlement, refunds, recurring payments, international card acceptance or service-level commitments.
+
+ONPS/02/2020 (Licensing and Authorization of Payment System Operators) sets operator-side requirements for hosted gateway integration, security assessment, evaluation of merchant applications/control environments, payment-data confidentiality, fraud management, settlement and complaint handling. ONPS/10/2025 amends ONPS/09/2023 for payment instrument issuers; it is not the same instrument as the payment gateway operator directive. Counsel/provider must confirm the full current directive set applicable to the final payment route.
+
+### 7.2 Provider-specific findings
+
+**Chapa**
+- Public docs describe transaction initialization, server-side verification, webhook signatures (HMAC-SHA256), idempotent webhook handling and server re-query before fulfillment.
+- Public refund API accepts a full or amount-specific refund and provides refund-status verification. Chapa documentation says processing charges are non-refundable; this affects merchant economics, not statutory customer refund rights.
+- Public terms are last updated August 2022 and prohibit negative-option marketing, renewal or continuity-subscription practices. Do not design auto-renewing subscriptions around Chapa without written provider confirmation. Current TALORA model should use one-off, user-initiated fixed-term purchases, not automatic renewal.
+- Public docs are not an executed merchant agreement. Written confirmation remains required for TALORA eligibility, ETB methods, card/currency rails, fees, settlement, partial/full refund mechanics, disputes/chargebacks, one-off fixed terms, sandbox and data terms.
+
+**ArifPay**
+- Public merchant onboarding requests a renewed business license, company identity, website, annual-turnover band, market segment and intended service. This is an application workflow, not evidence of approval.
+- NBE commercialized status and public API docs do not settle TALORA merchant eligibility, fee/settlement schedule, refund/reversal support, recurring/one-off term handling, data protection, support SLA or sandbox access. Obtain written answers and an executed merchant agreement.
+
+**Telebirr**
+- Ethiotelecom's C2B guide describes hosted web checkout, merchant-side order creation, notify URL whitelisting and signed asynchronous payment notification using SHA256WithRSA. This is a technical route only.
+- Obtain written merchant onboarding, fee/settlement, refund/reversal, dispute, test credential and service-support terms. Do not treat a callback as final without signature validation and independent order/transaction reconciliation.
+
+### 7.3 Ethiopian legal and compliance register
+
+1. **Personal Data Protection Proclamation No. 1321/2024:** Article 22 requires storage in Ethiopia of personal data collected/obtained locally; Article 20 governs cross-border transfer conditions; Article 22(3) requires prior Authority approval for cross-border transfer of sensitive personal data. Article 42 requires appropriate technical/organizational measures, processing records and a DPIA; Articles 43–44 set 72-hour breach notification duties. TALORA scripts and production task payloads must be classified. Map primary storage, replicas, backups, logs, support systems, subprocessors and model-provider regions before any production personal-data use.
+2. **VAT Proclamation No. 1341/2024 and Council of Ministers VAT Regulation No. 570/2025:** both identified as current/in force. Obtain a written tax opinion on software/digital-service classification, registration/thresholds, VAT treatment, invoicing, income tax, withholding, foreign customers and currency/FX. No rate or exemption is assumed here.
+3. **Trade Competition and Consumers Protection Proclamation No. 813/2014:** Ministry of Justice lists it In Force; older Proclamation No. 685/2010 is listed Repealed. Obtain counsel review of consumer disclosures, fair marketing, price presentation, refund/cancellation terms and complaint handling.
+4. **Electronic Transaction Proclamation No. 1205/2020:** include in counsel's review of electronic contract formation, supplier information and online consumer disclosure. The public copy reviewed is not used as a substitute for a formal legal opinion.
+5. **NBE payment-system framework:** confirm applicable NPS Proclamation and current operator/issuer directives for the final selected payment path, including cross-border card and FX restrictions.
+
+### 7.4 Required external due-diligence package before payment activation
+
+For each candidate obtain written: merchant eligibility and KYC; accepted payment instruments/currencies; domestic and international card rules; fee schedule including tax/FX/withdrawal; settlement currency, timetable, minimums and destination-bank conditions; full/partial refund, reversal, dispute and chargeback mechanics; one-off fixed-term purchase support; whether any recurring billing is permitted; webhook signature/version/retry/order guarantees; sandbox access without deposit or paid activation; security/PCI scope; data-processing/subprocessor/retention/cross-border terms; support, incident response and SLA; termination/hold/reserve conditions. Obtain counsel and tax review of the proposed merchant contract and customer terms.
+
+**Current result:** Chapa, ArifPay and Telebirr remain due-diligence candidates only. No provider selected, no merchant application approved, no sandbox credential verified, no fee or settlement schedule confirmed, no live transaction and no paid activation.
+
+### 7.5 Sources reviewed
+
+- NBE Payment Instrument Issuers/System Operators register: https://nbe.gov.et/payment-instrument-issuers-system-operators/
+- NBE ONPS/02/2020: https://nbe.gov.et/wp-content/uploads/2023/04/ONPS-02-2020.pdf
+- NBE ONPS/10/2025 amendment: https://nbe.gov.et/wp-content/uploads/2025/05/ONPS102025-Oversight-of-the-Natioanl-Payment-System-Licensing-and-Authorization-of-Payment-Instrument-Issuer-Amendment-Directive.pdf
+- Chapa developer accept-payments: https://developer.chapa.co/integrations/accept-payments
+- Chapa developer webhooks: https://developer.chapa.co/integrations/webhooks
+- Chapa refund API: https://developer.chapa.co/refund
+- Chapa terms (last updated August 2022): https://chapa.co/terms
+- ArifPay merchant application: https://portal.arifpay.org/apply-to-be-merchant
+- Telebirr C2B guide: https://developer.ethiotelecom.et/docs/H5%20C2B%20Web%20Payment%20Integration%20Quick%20Guide/Introduction
+- Telebirr notify/callback: https://developer.ethiotelecom.et/docs/H5%20C2B%20Web%20Payment%20Integration%20Quick%20Guide/Notify_Callback
+- Ministry of Justice, Personal Data Protection Proclamation No. 1321/2024: https://justice.gov.et/en/law/personal-data-protection-proclamation/
+- Official Federal Negarit Gazette PDF, Personal Data Protection Proclamation No. 1321/2024: https://pdp.eca.et/files/pdfs/pdp-proclamation/pdp_personal_data_protection_proclamation_No_1321_2024.pdf
+- Ministry of Justice, VAT Regulation No. 570/2025: https://justice.gov.et/en/law/570-2025-value-added-tax-regulation/
+- Ministry of Justice, Trade & Commercial Regulations register (Proclamation No. 813/2014 status): https://justice.gov.et/en/sector/trade-commercial-regulations/
+
+**Disposition:** provider architecture is reconciled; provider selection, merchant eligibility, commercial terms, tax and legal compliance remain external gates. No payment integration or activation is authorized by this memo.
