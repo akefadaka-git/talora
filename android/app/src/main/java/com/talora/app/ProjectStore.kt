@@ -9,6 +9,21 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
+data class TaloraRevisionSummary(
+    val id: String,
+    val projectId: String,
+    val createdAt: Long,
+    val title: String,
+    val changeNote: String?
+)
+
+data class TaloraAssetSummary(
+    val id: String,
+    val fileName: String,
+    val mediaType: String,
+    val sizeBytes: Int
+)
+
 data class TaloraProject(
     val id: String,
     val title: String,
@@ -131,6 +146,164 @@ class ProjectStore(context: Context) :
         }
         val changed = writableDatabase.update("projects", values, "id = ?", arrayOf(id))
         check(changed == 1) { "TALORA project no longer exists." }
+    }
+
+    fun createRevision(projectId: String, title: String, content: String, changeNote: String?): TaloraRevisionSummary {
+        val db = writableDatabase
+        db.beginTransaction()
+        try {
+            val projectExists = db.rawQuery("SELECT 1 FROM projects WHERE id = ?", arrayOf(projectId)).use { it.moveToFirst() }
+            check(projectExists) { "TALORA project no longer exists." }
+            val revision = TaloraRevisionSummary(
+                id = UUID.randomUUID().toString(),
+                projectId = projectId,
+                createdAt = System.currentTimeMillis(),
+                title = title,
+                changeNote = changeNote?.takeIf { it.isNotBlank() }
+            )
+            val values = ContentValues().apply {
+                put("id", revision.id)
+                put("project_id", projectId)
+                put("created_at", revision.createdAt)
+                put("title", title)
+                put("content", content)
+                put("change_note", revision.changeNote)
+            }
+            db.insertOrThrow("project_revisions", null, values)
+            db.update(
+                "projects",
+                ContentValues().apply {
+                    put("current_revision_id", revision.id)
+                    put("updated_at", System.currentTimeMillis())
+                },
+                "id = ?",
+                arrayOf(projectId)
+            )
+            db.setTransactionSuccessful()
+            return revision
+        } finally {
+            db.endTransaction()
+        }
+    }
+
+    fun listRevisions(projectId: String): List<TaloraRevisionSummary> {
+        val result = mutableListOf<TaloraRevisionSummary>()
+        readableDatabase.rawQuery(
+            "SELECT id, project_id, created_at, title, change_note FROM project_revisions WHERE project_id = ? ORDER BY created_at DESC",
+            arrayOf(projectId)
+        ).use { cursor ->
+            while (cursor.moveToNext()) {
+                result += TaloraRevisionSummary(
+                    id = cursor.getString(0),
+                    projectId = cursor.getString(1),
+                    createdAt = cursor.getLong(2),
+                    title = cursor.getString(3),
+                    changeNote = if (cursor.isNull(4)) null else cursor.getString(4)
+                )
+            }
+        }
+        return result
+    }
+
+    fun restoreRevision(projectId: String, revisionId: String): TaloraProject {
+        val db = writableDatabase
+        db.beginTransaction()
+        try {
+            val snapshot = db.rawQuery(
+                "SELECT title, content FROM project_revisions WHERE id = ? AND project_id = ?",
+                arrayOf(revisionId, projectId)
+            ).use { cursor ->
+                check(cursor.moveToFirst()) { "Revision does not belong to this project." }
+                cursor.getString(0) to cursor.getString(1)
+            }
+            val values = ContentValues().apply {
+                put("title", snapshot.first)
+                put("body", snapshot.second)
+                put("current_revision_id", revisionId)
+                put("updated_at", System.currentTimeMillis())
+            }
+            check(db.update("projects", values, "id = ?", arrayOf(projectId)) == 1) {
+                "TALORA project no longer exists."
+            }
+            val project = db.rawQuery(
+                "SELECT id, title, body, updated_at, created_at, script_type, language_tag, metadata_json, current_revision_id FROM projects WHERE id = ?",
+                arrayOf(projectId)
+            ).use { cursor ->
+                check(cursor.moveToFirst())
+                cursor.toProject()
+            }
+            db.setTransactionSuccessful()
+            return project
+        } finally {
+            db.endTransaction()
+        }
+    }
+
+    fun listAssets(projectId: String): List<TaloraAssetSummary> {
+        val result = mutableListOf<TaloraAssetSummary>()
+        readableDatabase.rawQuery(
+            "SELECT id, file_name, media_type, length(content) FROM project_assets WHERE project_id = ? ORDER BY file_name COLLATE NOCASE",
+            arrayOf(projectId)
+        ).use { cursor ->
+            while (cursor.moveToNext()) {
+                result += TaloraAssetSummary(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3))
+            }
+        }
+        return result
+    }
+
+    fun addAsset(projectId: String, fileName: String, mediaType: String, bytes: ByteArray): TaloraAssetSummary {
+        require(fileName.isNotBlank() && fileName.length <= 255 && '/' !in fileName && '\\\\' !in fileName) {
+            "Invalid asset filename."
+        }
+        require(mediaType.isNotBlank() && mediaType.length <= 255) { "Invalid asset media type." }
+        require(bytes.size <= TaloraArchive.MAX_ENTRY_BYTES) { "Asset exceeds the TALORA size limit." }
+        val id = UUID.randomUUID().toString()
+        val db = writableDatabase
+        db.beginTransaction()
+        try {
+            val exists = db.rawQuery("SELECT 1 FROM projects WHERE id = ?", arrayOf(projectId)).use { it.moveToFirst() }
+            check(exists) { "TALORA project no longer exists." }
+            db.insertOrThrow(
+                "project_assets",
+                null,
+                ContentValues().apply {
+                    put("id", id)
+                    put("project_id", projectId)
+                    put("file_name", fileName)
+                    put("media_type", mediaType)
+                    put("content", bytes)
+                }
+            )
+            db.update(
+                "projects",
+                ContentValues().apply { put("updated_at", System.currentTimeMillis()) },
+                "id = ?",
+                arrayOf(projectId)
+            )
+            db.setTransactionSuccessful()
+        } finally {
+            db.endTransaction()
+        }
+        return TaloraAssetSummary(id, fileName, mediaType, bytes.size)
+    }
+
+    fun removeAsset(projectId: String, assetId: String) {
+        val db = writableDatabase
+        db.beginTransaction()
+        try {
+            val removed = db.delete("project_assets", "id = ? AND project_id = ?", arrayOf(assetId, projectId))
+            check(removed == 1) { "Asset does not belong to this project." }
+            db.update(
+                "projects",
+                ContentValues().apply { put("updated_at", System.currentTimeMillis()) },
+                "id = ?",
+                arrayOf(projectId)
+            )
+            db.setTransactionSuccessful()
+        } finally {
+            db.endTransaction()
+        }
     }
 
     /** Imports the complete package in one transaction, remapping IDs on collision. */
