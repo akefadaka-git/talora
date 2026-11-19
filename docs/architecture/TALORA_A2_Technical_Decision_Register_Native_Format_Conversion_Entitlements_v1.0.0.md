@@ -387,20 +387,24 @@ The client must not be authoritative for page counts, referral qualification, pa
 | ODR-08 | Referral reward expiry | No expiry while account is good standing | **APPROVED — 19 Nov 2026** |
 | ODR-09 | Watermark license output scope | PDF only initially | **APPROVED — 19 Nov 2026** |
 | ODR-10 | Project fork/transfer license behavior | Fork is new project; transfer requires explicit operation | **APPROVED — 19 Nov 2026** |
-| ODR-11 | Non-paginated Free export limit | Separate content-unit/byte/character budget or five-page-equivalent preview; exact mechanism and threshold must be specified | **PARTIAL — mechanism options accepted for design; exact policy remains open** |
+| ODR-11 | Non-paginated Free export limit | Use deterministic TALORA canonical pagination to include only complete semantic content fitting pages 1–5; disclose partial export; bind to revision/profile/renderer | **PROPOSED — awaiting Owner decision; see A2 Research Memo RM-003** |
 | ODR-12 | Offline entitlement validity | Signed bounded cache; numeric period after security review | **APPROVED DEFAULT — numeric period deferred to security review** |
 | ODR-13 | Initial proprietary format support | Official interchange route only | External validation |
-| ODR-14 | Payment provider and prices | No selection until Ethiopia availability, fees and legal review | External validation |
+| ODR-14 | Payment provider and prices | Chapa and ArifPay primary due-diligence shortlist; Telebirr direct and SantimPay secondary; no selection until merchant eligibility, fees, settlement, payment methods and legal review are verified | **PARTIAL — public evidence collected; vendor confirmations and legal review outstanding** |
 | ODR-15 | Existing A1 freeze status | Repository A1 baseline file still says draft/not frozen; reconcile with Owner's later A1 approval | Unresolved evidence discrepancy |
 
-## 16. A1 baseline consistency finding
+## 16. A2 supporting research
+
+The detailed non-paginated export proposal and Ethiopia payment-provider evidence are recorded in `TALORA_A2_Payment_Provider_And_NonPaginated_Export_Research_v1.0.0.md` (TALORA-A2-RM-003). ODR-11 remains a proposal pending Owner decision. ODR-14 has a documented shortlist, but no provider is selected and merchant eligibility, fees, settlement, recurring-payment support and legal requirements remain unverified.
+
+## 17. A1 baseline consistency finding
 
 The repository's `docs/a1-product-definition/00-A1-BASELINE.md` still states “Draft prepared for Owner review; not frozen” and says A1 closure requires review of all specification documents. The later Owner approval of the product and the new amendment must be reconciled with that file before an A2 closure claim. This assessment does not silently rewrite the baseline status.
 
-## 17. A2 exit criteria and present disposition
+## 18. A2 exit criteria and present disposition
 
 A2 remains **PARTIAL / OPEN** until:
-- ODR-11 receives a precise non-paginated Free export policy or is explicitly deferred by Owner.
+- ODR-11 receives Owner approval of the canonical-pagination proposal or another precise non-paginated Free export policy.
 - External format licensing and payment-provider facts are researched and recorded.
 - Initial support matrix is finalized with lawful routes and fidelity classifications.
 - Canonical document model and .talora schema proposal are internally consistent.
@@ -411,4 +415,4 @@ A2 remains **PARTIAL / OPEN** until:
 - The A1 freeze-status discrepancy is resolved.
 - A traceable A3 backlog is prepared.
 
-**Current gate:** Owner-approved technical defaults recorded for ODR-01–ODR-10 and ODR-12. ODR-11, ODR-13–ODR-15 and the A1 freeze-status discrepancy remain open. A2 is not closed. A3 implementation, PR merge and deployment remain unauthorized.
+**Current gate:** Owner-approved technical defaults recorded for ODR-01–ODR-10 and ODR-12. ODR-11 awaits Owner decision; ODR-13 and ODR-15 remain unresolved; ODR-14 has a public-evidence shortlist but awaits vendor and legal validation. The A1 freeze-status discrepancy remains open. A2 is not closed. A3 implementation, PR merge and deployment remain unauthorized.
