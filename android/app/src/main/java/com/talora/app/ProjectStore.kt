@@ -253,7 +253,7 @@ class ProjectStore(context: Context) :
     }
 
     fun addAsset(projectId: String, fileName: String, mediaType: String, bytes: ByteArray): TaloraAssetSummary {
-        require(fileName.isNotBlank() && fileName.length <= 255 && '/' !in fileName && '\\' !in fileName) {
+        require(fileName.isNotBlank() && fileName.length <= 255 && '/' !in fileName && fileName.none { it == 92.toChar() }) {
             "Invalid asset filename."
         }
         require(mediaType.isNotBlank() && mediaType.length <= 255) { "Invalid asset media type." }
