@@ -17,13 +17,11 @@ jobs:
   build-test-apk:
     name: Build, unit test and package debug APK
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
     steps:
       - name: Checkout exact source revision
         uses: actions/checkout@v4
         with:
-          # PR workflows otherwise check out GitHub's synthetic merge ref.
-          # Build the contributor's exact head commit instead.
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Verify checked-out source revision
@@ -41,10 +39,10 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Set up Gradle 8.9
+      - name: Set up Gradle 8.11.1
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: "8.9"
+          gradle-version: "8.11.1"
 
       - name: Run unit tests and assemble APK
         run: gradle -p android testDebugUnitTest lintDebug assembleDebug --no-daemon
@@ -60,7 +58,7 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
-      - name: Upload Android lint and accessibility report
+      - name: Upload Android lint report
         if: always()
         uses: actions/upload-artifact@v4
         with:
