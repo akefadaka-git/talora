@@ -17,7 +17,7 @@
 
 The A2 evidence reconciliation has been completed to the extent supported by the current repository and public evidence. The historical A1 approval discrepancy is resolved; ODR-11 is approved and recorded; ODR-13 format evidence and ODR-14 payment architecture have been reconciled; all nine TALORA–IROKA Owner dispositions D01–D09 have been transcribed into the integration contract and decision register.
 
-**A2 is not ready for closure.** The decisive blocker is D01: the inspected IROKA component branches do not form one compatible, immutable integration graph. The current IROKA main reference is not automatically approved, and the candidate G03, G05, G08 and CIW workstreams have divergent histories and unresolved owning-domain interfaces. No exact IROKA service/API implementation baseline is selected or verified. ODR-13 also still requires Owner confirmation of the proposed v1 format support matrix.
+**A2 is not ready for closure.** The decisive blocker is D01: the inspected IROKA component branches do not form one compatible, immutable integration graph. The current IROKA main reference is not automatically approved, and the candidate G03, G05, G08 and CIW workstreams have divergent histories and unresolved owning-domain interfaces. No exact IROKA service/API implementation baseline is selected or verified. ODR-13's bounded v1 format support matrix was approved by the Owner on 19 November 2026. Exact dependency and fixture licensing remains a pre-implementation gate.
 
 This is an evidence-based NOT-CLOSED finding, not a request to start A3. The work completed here is documentation and read-only reconciliation only.
 
@@ -96,7 +96,7 @@ The concrete page geometry, font metrics, renderer and golden fixtures are not i
 - Final Draft's official support documentation says it does not directly import `.fountain` or `.spmd`; third-party-generated FDX may not be genuine Final Draft XML or behave as expected.
 - No parser/writer dependency was selected, installed or license-audited. No external application was executed and no round-trip test was performed.
 
-### Recommended bounded v1 support matrix — OWNER CONFIRMATION REQUIRED
+### Owner-approved bounded v1 support matrix — approved 19 November 2026
 
 | Format | Recommended v1 scope | Fidelity / restriction |
 |---|---|---|
@@ -110,7 +110,7 @@ The concrete page geometry, font metrics, renderer and golden fixtures are not i
 | Fade In/Celtx native files | Excluded from initial v1 promise | Reconsider only after documented lawful and testable interchange route |
 | HTML/other | Later assessment | Defined semantic subset only |
 
-**ODR-13 disposition:** Evidence reconciliation complete; exact v1 support list remains a recommendation pending Owner confirmation. Every exact parser/writer library, transitive dependency, fixture and distribution obligation must be reviewed before implementation. No proprietary format is cleared by this report.
+**ODR-13 disposition — APPROVED:** The Owner approved this bounded v1 support matrix on 19 November 2026. FDX, Fade In and Celtx native/project formats are excluded from the initial v1 support promise pending lawful, documented and tested interchange routes. Every exact parser/writer library, transitive dependency, fixture and distribution obligation must still be reviewed before implementation. No proprietary format is cleared by this report.
 
 ## 6. ODR-14 — Ethiopia payment evidence and architecture
 
@@ -228,7 +228,7 @@ The evidence is candidate-specific. It does not prove that separate branches can
 | Canonical document model | **PARTIAL** | Design direction approved; exact schema and migration profile not implemented or verified |
 | Free/Premium/referral/watermark entitlement semantics | **VERIFIED-CLOSED FOR A2 DEFAULTS** | ODR-01–ODR-12 approved; operational tests remain A4 |
 | ODR-11 non-paginated export policy | **VERIFIED-CLOSED FOR POLICY** | Owner approval recorded; profile and golden tests remain future work |
-| Format compatibility and licensing | **PARTIAL** | Evidence reconciled; v1 matrix recommendation requires Owner confirmation; exact libraries/fixtures require review |
+| Format compatibility and licensing | **PARTIAL** | Bounded v1 product scope Owner-approved; exact libraries/fixtures and distribution obligations require review |
 | Payment architecture | **VERIFIED-CLOSED FOR PROVIDER-NEUTRAL DESIGN** | No provider selected; written merchant/vendor/legal verification remains pre-implementation gate |
 | Referral lifecycle and anti-fraud | **PARTIAL** | Main policy recorded; detailed fraud thresholds, review/appeal and operational controls require specification |
 | Project license and subscription lifecycle | **PARTIAL** | Core scope recorded; refunds, chargebacks, account deletion, renewals and transfer edge cases require specification |
@@ -242,7 +242,7 @@ The evidence is candidate-specific. It does not prove that separate branches can
 ## 9. Remaining closure blockers
 
 1. **D01 — IROKA integration graph:** exact candidate branch HEADs, workspace manifests, lockfiles and ancestry have now been captured. They show divergent G05/G08/CIW/G03 code lines and no TALORA-facing API service in current main. Further read-only build/API/dependency/security compatibility assessment is required before any immutable graph can be proposed. Do not choose an integration baseline until that evidence passes.
-2. **ODR-13 — v1 format support matrix:** Owner must approve or amend the bounded v1 format list. Exact dependency and fixture licensing remains mandatory before implementation.
+2. **ODR-13 — v1 format support matrix:** Owner approval recorded 19 November 2026. Exact dependency and fixture licensing remains mandatory before implementation.
 3. **A2 completeness for entitlements:** close detailed refund/chargeback, renewal/cancellation, fraud review/appeal, account deletion and organization/project transfer state transitions as design decisions.
 4. **Offline/security numeric boundaries:** approve a numeric offline entitlement validity policy only after security threat analysis; define the approved fallback behavior.
 5. **Amharic assurance:** approve rights-cleared corpora, competent reviewers and measurable acceptance thresholds before claiming full-workflow support.
@@ -271,7 +271,7 @@ No work package may start without a separate explicit Owner authorization identi
 
 **A2 closure recommendation: DO NOT CLOSE YET.** The evidence work is materially advanced, but D01 remains unresolved and ODR-13's launch format matrix is not Owner-frozen. The A2 integration baseline is therefore not complete.
 
-The appropriate next action remains read-only A2 work: reconcile exact IROKA component/API commits and dependencies, then present a single compatible baseline proposal; obtain Owner confirmation of the v1 format support matrix; close the remaining entitlement/security/localization design details.
+The appropriate next action remains read-only A2 work: reconcile exact IROKA component/API commits and dependencies, then present a single compatible baseline proposal; close the remaining entitlement/security/localization design details.
 
 - **A2:** PARTIAL / NOT CLOSED.
 - **A3:** NOT AUTHORIZED.
