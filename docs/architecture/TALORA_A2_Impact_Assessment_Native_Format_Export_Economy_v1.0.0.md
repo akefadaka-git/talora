@@ -263,7 +263,7 @@ This section records the current A2 evidence position and supersedes earlier ope
 - **ODR-15:** Resolved by the A1 approval record update.
 - **TALORA–IROKA:** D01–D09 are recorded exactly as Owner-approved on 19 November 2026. D01 reconciliation was performed, but no single compatible immutable IROKA component graph was identified. The integration baseline remains unresolved. D02–D09 constrain any future integration but do not authorize implementation.
 
-**Current A2 status:** PARTIAL / NOT READY FOR OWNER CLOSURE APPROVAL. The decisive blocker is D01's unresolved compatible IROKA graph; ODR-13's exact initial support matrix also requires Owner confirmation. A3, merge and A5 remain unauthorized.
+**Current A2 status:** PARTIAL / NOT READY FOR OWNER CLOSURE APPROVAL. The decisive blocker is D01's unresolved compatible IROKA graph. ODR-13's bounded v1 support matrix is Owner-approved; exact parser/writer and fixture licensing remains a pre-implementation gate. A3, merge and A5 remain unauthorized.
 
 
 - **ODR-13 Owner decision (19 November 2026):** The Owner approved the bounded v1 support matrix in the A2 closure assessment. The initial v1 promise excludes Final Draft FDX, Fade In native files and Celtx native/project files until lawful, documented and tested interchange routes are verified. This closes the product-scope decision only; exact parser/writer, transitive dependency, fixture and distribution-license reviews remain mandatory before implementation.
