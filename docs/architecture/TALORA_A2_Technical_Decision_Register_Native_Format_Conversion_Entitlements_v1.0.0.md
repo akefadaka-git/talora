@@ -423,3 +423,14 @@ A2 is **PARTIAL / NOT CLOSED**. The product/export/entitlement decision set is s
 **Resolved:** ODR-01–ODR-13 Owner-approved; ODR-11 policy and ODR-13 bounded v1 format scope recorded; ODR-15 A1 approval discrepancy corrected. ODR-14 architecture is provider-neutral and reconciled, with vendor/legal validation deferred to the pre-implementation gate.
 
 **Current gate:** A2 CLOSURE ASSESSMENT = PARTIAL / NOT READY FOR OWNER CLOSURE APPROVAL because D01 has no compatible immutable integration baseline. ODR-13 product scope is Owner-approved; exact dependency/fixture license review remains a pre-implementation gate. A3 implementation, PR merge and deployment remain unauthorized.
+
+
+### D01 supplemental exact API compatibility evidence — 19 November 2026
+
+The G03/G08 Kernel head 0680337b7dd0966374acd2649cd9197e56b8d92a does not export the G05/G02/G11-required Kernel symbols G05ActivationDecision, G05ActivationTuple, OrganizationAuthorityResolver, ReviewerKeyBindingResolver, ReviewerProofVerifier, SignedReviewerProof, TenantContext and VerifiedReviewerProof. The G05/G02/G11 head 8f7ddb9e9dd2b796cd303ba645a1a3c843eb3810 does not export the G03/G08 symbols InferenceRulesOutput, PremiseModel and workflow_graph. The two heads diverge by 378 / 391 commits from common base 1a6f30cc3e64b8551f8e725c4cad8fcc3fa2c472 and both change the Kernel public API and dependency manifests.
+
+A separate Brain candidate 9d68b580e06bb8335a626524d64b345c3a5a38aa implements DeterministicFakeAdapter, but its TaskEnvelope validator rejects populated principal, tenant and policy context and non-empty domain input references. It is not an integrated TALORA adapter. The G05 HTTP host only exposes /v1/g05/execute; CIW is a browser conversation API. No candidate provides the complete private TALORA task API.
+
+Exact-head combined statuses/workflow runs were not returned for the principal current candidates; this is NOT VERIFIED, not FAIL. No combined build, migration, SBOM or end-to-end API evidence exists.
+
+**D01 current disposition:** RECONCILIATION PERFORMED; NO SELECTABLE, VERIFIED IMMUTABLE GRAPH. The decision remains OWNER-APPROVED — RECONCILE, but its technical exit condition is not met. No source composition, A3 implementation, merge or A5 deployment is authorized.
