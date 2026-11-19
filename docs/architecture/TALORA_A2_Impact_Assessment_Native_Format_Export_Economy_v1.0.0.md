@@ -250,3 +250,17 @@ A2 can be considered for Owner closure only when:
 ## 10. Immediate next action
 
 Complete the remaining A2 decision records, beginning with entitlement semantics (Premium export cap and watermark scope), `.talora` package/canonical document model, supported-format licensing/fidelity matrix, and referral/payment lifecycle. Then present a consolidated A2 closure package for separate Owner approval.
+
+
+## 11. Superseding evidence reconciliation — 19 November 2026
+
+This section records the current A2 evidence position and supersedes earlier open-decision wording in this impact assessment. The detailed disposition is in `TALORA_A2_Evidence_Reconciliation_and_Closure_Assessment_v1.0.0.md`.
+
+- **A1:** The original 11-document A1 specification was explicitly approved on 18 November 2026 at immutable commit `599bcb4a71bd7ca7e1b5945c8034f29ecff4bc06`. The carried-forward baseline record is corrected; A1 is not reopened.
+- **ODR-11:** Owner-approved 19 November 2026. TXT and Fountain Free exports use the deterministic TALORA canonical pagination profile, include only complete semantic content fitting pages 1–5, do not invent page breaks or truncate mid-block, and disclose partial range/boundary.
+- **ODR-13:** Public format evidence is reconciled. A bounded v1 support-matrix recommendation excludes FDX, Fade In and Celtx native formats pending lawful, documented and testable routes. Owner confirmation of the exact v1 list and exact dependency/fixture licensing remain open.
+- **ODR-14:** Provider-neutral commerce architecture is reconciled. Chapa and ArifPay remain due-diligence candidates; Telebirr C2B is an alternative. No provider or price is selected. Written merchant, vendor and legal validation remains mandatory before payment implementation.
+- **ODR-15:** Resolved by the A1 approval record update.
+- **TALORA–IROKA:** D01–D09 are recorded exactly as Owner-approved on 19 November 2026. D01 reconciliation was performed, but no single compatible immutable IROKA component graph was identified. The integration baseline remains unresolved. D02–D09 constrain any future integration but do not authorize implementation.
+
+**Current A2 status:** PARTIAL / NOT READY FOR OWNER CLOSURE APPROVAL. The decisive blocker is D01's unresolved compatible IROKA graph; ODR-13's exact initial support matrix also requires Owner confirmation. A3, merge and A5 remain unauthorized.
