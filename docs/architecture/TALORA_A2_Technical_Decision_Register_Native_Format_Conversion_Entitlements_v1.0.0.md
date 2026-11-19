@@ -3,7 +3,7 @@
 - **Document ID:** TALORA-A2-TDR-002
 - **Version:** 1.0.0
 - **Date:** 19 November 2026
-- **Status:** A2 working decision register; technical defaults ODR-01–ODR-12 approved by Owner on 19 November 2026, subject to stated validation gates
+- **Status:** A2 decision register; ODR-01–ODR-12 Owner-approved; ODR-13/14 evidence reconciled with external gates; ODR-15 resolved; A2 remains PARTIAL / NOT CLOSED
 - **Branch:** `docs/a1-import-export-referral-entitlements`
 - **Base A2 assessment:** `TALORA_A2_Impact_Assessment_Native_Format_Export_Economy_v1.0.0.md`
 - **Implementation:** NOT AUTHORIZED
@@ -399,9 +399,9 @@ The client must not be authoritative for page counts, referral qualification, pa
 | ODR-10 | Project fork/transfer license behavior | Fork is new project; transfer requires explicit operation | **APPROVED — 19 Nov 2026** |
 | ODR-11 | Non-paginated Free export limit | Deterministic TALORA canonical pagination; export complete semantic content fitting pages 1–5; disclose partial range/boundary; bind to revision/profile/renderer | **APPROVED — 19 Nov 2026** |
 | ODR-12 | Offline entitlement validity | Signed bounded cache; numeric period after security review | **APPROVED DEFAULT — numeric period deferred to security review** |
-| ODR-13 | Initial proprietary format support | Official interchange route only | External validation |
-| ODR-14 | Payment provider and prices | Chapa and ArifPay primary due-diligence shortlist; Telebirr direct and SantimPay secondary; no selection until merchant eligibility, fees, settlement, payment methods and legal review are verified | **PARTIAL — public evidence collected; vendor confirmations and legal review outstanding** |
-| ODR-15 | Existing A1 freeze status | Repository A1 baseline file still says draft/not frozen; reconcile with Owner's later A1 approval | Unresolved evidence discrepancy |
+| ODR-13 | Initial format support and licensing | Use a bounded open/documented v1 support matrix; defer FDX/Fade In/Celtx native formats pending lawful, documented and tested routes | **RECONCILED — v1 matrix recommendation documented; Owner confirmation and exact dependency license review remain open** |
+| ODR-14 | Payment provider and prices | Provider-neutral ledger; Chapa and ArifPay primary due-diligence shortlist; Telebirr direct alternative; SantimPay and other NBE-commercialized operators for comparison; no selection or price until written merchant/legal verification | **RECONCILED AT A2 ARCHITECTURE LEVEL — no provider selected; vendor and legal gates remain mandatory before payment implementation** |
+| ODR-15 | Existing A1 freeze status | Record explicit 18 Nov 2026 Owner approval of the 11-document A1 baseline at SHA `599bcb4a71bd7ca7e1b5945c8034f29ecff4bc06`; correct the carried-forward baseline record without rewriting the historical commit | **RESOLVED — approval and immutable baseline recorded; current A1 record updated** |
 
 ## 16. A2 supporting research
 
@@ -409,20 +409,17 @@ The detailed non-paginated export rationale and Ethiopia payment-provider eviden
 
 ## 17. A1 baseline consistency finding
 
-The repository's `docs/a1-product-definition/00-A1-BASELINE.md` still states “Draft prepared for Owner review; not frozen” and says A1 closure requires review of all specification documents. The later Owner approval of the product and the new amendment must be reconciled with that file before an A2 closure claim. This assessment does not silently rewrite the baseline status.
+The original 11-document A1 specification was explicitly approved by the Owner on 18 November 2026 at immutable baseline commit `599bcb4a71bd7ca7e1b5945c8034f29ecff4bc06`. The current A2 branch copy of `docs/a1-product-definition/00-A1-BASELINE.md` has been corrected to record OWNER-APPROVED / FROZEN and to preserve the original commit as the historical authority. The later native-format/import-export amendment remains a separate Owner-approved amendment. The historical baseline commit was not rewritten; ODR-15 is RESOLVED.
 
 ## 18. A2 exit criteria and present disposition
 
-A2 remains **PARTIAL / OPEN** until:
-- Approved ODR-11 policy is translated into a testable pagination profile specification, boundary behavior and export metadata contract.
-- External format licensing and payment-provider facts are researched and recorded.
-- Initial support matrix is finalized with lawful routes and fidelity classifications.
-- Canonical document model and .talora schema proposal are internally consistent.
-- Page counting and non-paginated Free export rules are unambiguous.
-- Referral, payment, subscription, refund and project-license state machines are specified.
-- Security/privacy and offline policies are reviewed.
-- Amharic acceptance corpus and test ownership are defined.
-- The A1 freeze-status discrepancy is resolved.
-- A traceable A3 backlog is prepared.
+A2 is **PARTIAL / NOT CLOSED**. The product/export/entitlement decision set is substantially reconciled, but the following closure blockers remain:
+- Owner confirmation of the recommended bounded v1 format support matrix in the compatibility research memo (ODR-13). The exact parser/writer dependency licenses, transitive dependencies and fixtures must be verified before implementation.
+- IROKA D01: no single compatible immutable component graph has been established. The current main reference and candidate G03/G05/G08/CIW/G01/G02/G11 branches are not one verified graph. See the mirrored TALORA–IROKA contract v0.1.2 and A2 closure assessment.
+- External payment-provider merchant eligibility, fees, settlement, refunds, recurring/one-off terms, payment methods, sandbox access and legal review remain mandatory before payment implementation (ODR-14).
+- Independent security review, exact dependency/SBOM review and A4 test evidence remain future gates; no evidence is claimed as complete.
+- A traceable A3 backlog can be planned from this register, but A3 implementation requires separate explicit Owner authorization.
 
-**Current gate:** Owner-approved technical defaults recorded for ODR-01–ODR-12. ODR-11 is approved; its detailed pagination profile and test evidence remain to be specified and validated. ODR-13 and ODR-15 remain unresolved; ODR-14 has a public-evidence shortlist but awaits vendor and legal validation. The A1 freeze-status discrepancy remains open. A2 is not closed. A3 implementation, PR merge and deployment remain unauthorized.
+**Resolved:** ODR-01–ODR-12 Owner-approved; ODR-11 policy recorded; ODR-15 A1 approval discrepancy corrected. ODR-14 architecture is provider-neutral and reconciled, with vendor/legal validation deferred to the pre-implementation gate. ODR-13 evidence is reconciled, but final v1 support-matrix confirmation remains open.
+
+**Current gate:** A2 CLOSURE ASSESSMENT = PARTIAL / NOT READY FOR OWNER CLOSURE APPROVAL because D01 has no compatible immutable integration baseline and ODR-13's final support list is not yet Owner-frozen. A3 implementation, PR merge and deployment remain unauthorized.
