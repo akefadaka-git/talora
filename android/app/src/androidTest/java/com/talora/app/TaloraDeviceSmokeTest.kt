@@ -38,7 +38,7 @@ class TaloraDeviceSmokeTest {
         assertTrue("Editor should expose title and body fields", fields.size >= 2)
         fields[0].text = "TALORA Device Lifecycle"
         fields[1].text = "INT. TEST ROOM - DAY\nA device lifecycle smoke test."
-        device.waitForIdle()
+        instrumentation.waitForIdleSync()
         Thread.sleep(1_500)
 
         device.executeShellCommand("am force-stop ${targetContext.packageName}")
