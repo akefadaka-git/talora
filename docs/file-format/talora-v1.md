@@ -1,6 +1,6 @@
 # TALORA Native Project Format — Version 1
 
-**Status:** Implemented core archive codec; integration with the Android editor and external document providers remains pending.
+**Status:** Core archive codec and first Android Storage Access Framework / SQLite integration are implemented on the development branch. Exact-head CI verification is pending.
 
 ## Goals
 
@@ -42,10 +42,20 @@ The codec:
 
 Schema changes require a new schema version and an explicit migration path. Version 1 readers fail closed on unknown versions. The app must preserve original source text exactly; display/search normalization must never overwrite canonical content.
 
-## Remaining integration work
+## Android integration status
 
-- Connect the codec to Android Storage Access Framework open/save flows.
-- Add user-visible import/export progress and error recovery.
-- Persist imported revisions and assets into the local project database.
-- Add migration fixtures and cross-version compatibility tests.
+- Android document picker opens `.talora` packages and safe ZIP/octet-stream fallbacks.
+- Android document picker exports `.talora` packages using the registered TALORA MIME type.
+- Import validates the complete archive before writing and imports project, revision, and asset records in a single SQLite transaction.
+- Local SQLite schema version 2 adds project creation time, script type, language tag, metadata, current revision reference, revision snapshots, and binary asset storage.
+- Project, revision, and asset IDs are remapped on collision; archive references are updated consistently.
+- Project switching and import flush the current editor state before changing the active project.
+- Import/export errors are surfaced in the app; archive reads remain bounded by the codec size limits.
+
+## Remaining work
+
+- Add automated database migration and import/export integration tests, including a real version-1 database fixture.
+- Add editor workflows for viewing, creating, restoring, and comparing revision snapshots.
+- Add asset attachment, preview, replacement, and removal workflows.
+- Add export/import progress for large packages and stronger recovery for provider interruptions.
 - Define entitlement enforcement separately from the file format; the archive itself must not encode or grant premium/referral rights.
