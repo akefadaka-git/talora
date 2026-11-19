@@ -3,14 +3,18 @@
 - **Document ID:** TALORA-A2-TDR-002
 - **Version:** 1.0.0
 - **Date:** 19 November 2026
-- **Status:** A2 working decision register; proposed technical defaults are not Owner approval unless explicitly stated
+- **Status:** A2 working decision register; technical defaults ODR-01–ODR-10 and ODR-12 approved by Owner on 19 November 2026, subject to stated validation gates
 - **Branch:** `docs/a1-import-export-referral-entitlements`
 - **Base A2 assessment:** `TALORA_A2_Impact_Assessment_Native_Format_Export_Economy_v1.0.0.md`
 - **Implementation:** NOT AUTHORIZED
 
 ## 1. Executive disposition
 
-This register advances A2 by defining implementable technical recommendations, identifying decisions that can be settled by architecture, and isolating decisions that require further Owner approval or external evidence.
+This register advances A2 by defining implementable technical recommendations, recording the Owner's approval of the proposed technical defaults, and isolating decisions that remain open or require external evidence.
+
+### Owner decision record — 19 November 2026
+
+The Owner answered **Yes** to the explicit request to approve the proposed technical defaults in this register as written. Accordingly, ODR-01 through ODR-10 and ODR-12 are recorded as approved defaults, subject to the mandatory external, security, licensing, compatibility and test gates stated throughout this document. This approval settles the architecture/product defaults; it does not certify external compliance or evidence, and does not authorize implementation, merge or deployment. ODR-11 remains partially open because the register presents alternative non-paginated export mechanisms without a single quantified policy.
 
 The following Owner-approved product requirements are fixed inputs:
 - Native extension `.talora`.
@@ -33,16 +37,16 @@ The following Owner-approved product requirements are fixed inputs:
 | Ten verified referrals = one full-script export | Owner-approved | Fixed reward; output format and reward recurrence need clarification |
 | One-time watermark-free project license includes revisions | Owner-approved | Fixed commercial rule; project transfer/fork lifecycle needs definition |
 | 1/3/6/12-month watermark-free subscriptions | Owner-approved | Fixed term options; renewal/payment policy remains open |
-| ZIP package, JSON manifest | Technical recommendation | Proposed; not Owner-approved |
-| Canonical typed document model | Existing A1 architecture direction | Required design; schema details proposed |
-| Premium removes five-page cap | Inference from full export entitlement | Owner confirmation required |
-| Premium does not automatically remove watermark | Separation of entitlements proposed earlier | Owner confirmation required |
-| Referral reward defaults to watermarked PDF | Consistent with requested watermarked full-script PDF | Owner confirmation required |
-| One-time project license covers PDF watermark removal only | Current product request concerns watermark-free PDF | Confirm scope; do not imply watermark removal for all formats |
+| ZIP package, JSON manifest | Owner-approved 19 Nov 2026 | Approved technical default |
+| Canonical typed document model | Existing A1 direction + Owner-approved technical default | Approved design direction; schema details remain subject to A3 design review |
+| Premium removes five-page cap | Owner-approved 19 Nov 2026 | Approved technical default |
+| Premium does not automatically remove watermark | Owner-approved 19 Nov 2026 | Approved; watermark-free rights remain separate entitlements |
+| Referral reward defaults to watermarked PDF | Owner-approved 19 Nov 2026 | Approved; one full-script watermarked PDF reward per first ten qualified referrals |
+| One-time project license covers PDF watermark removal only | Owner-approved 19 Nov 2026 | Approved initial scope; do not imply watermark removal for all formats |
 
 ## 3. A2-ADR-01 — Native .talora package
 
-**Recommendation: adopt a versioned ZIP-based package with a JSON manifest and typed structured content.**
+**Owner-approved default (19 November 2026): adopt a versioned ZIP-based package with a JSON manifest and typed structured content.**
 
 ### Package layout proposal
 
@@ -203,7 +207,7 @@ TXT and Fountain do not have intrinsic pages. The product must not pretend that 
 
 ### Premium cap
 
-The phrase "Premium format access: all supported import/export formats" does not explicitly state whether Premium removes the five-page limit. The product design needs a full-project export capability. Recommendation: Premium removes the five-page cap for full-project exports while active. **Owner confirmation required.**
+The phrase "Premium format access: all supported import/export formats" does not explicitly state whether Premium removes the five-page limit. The product design needs a full-project export capability. **Owner-approved default (19 November 2026): Premium removes the five-page cap for full-project exports while active.**
 
 ## 7. A2-ADR-05 — Referral full-script export entitlement
 
@@ -240,7 +244,7 @@ Use account verification plus a meaningful first-use event, such as creating and
 - Is the reward watermarked by default? The product request describes watermarked full-script PDF export separately from paid watermark-free export; recommendation is watermarked PDF.
 - Does the reward expire? Recommendation: no expiry while the account remains in good standing, subject to fraud reversal.
 
-**Recommended default:** One lifetime reward per referring account for the first ten qualified referrals, redeemable for one full-script watermarked PDF export. Further referral rewards can be introduced as separately approved campaigns. This is a recommendation, not an approved change to the Owner's requirement.
+**Owner-approved default (19 November 2026):** One lifetime reward per referring account for the first ten qualified referrals, redeemable for one full-script watermarked PDF export. Further referral rewards require separately approved campaigns.
 
 ## 8. A2-ADR-06 — Watermark-free project license and subscriptions
 
@@ -248,7 +252,7 @@ Use account verification plus a meaningful first-use event, such as creating and
 
 Owner-approved scope: one selected project, including revisions.
 
-Recommended identity rule:
+**Owner-approved identity default (19 November 2026):**
 - Bind the license to immutable project UUID and owning account/organization scope.
 - Revisions of the same project remain covered.
 - A fork, duplicate or copied project receives a new project UUID and is not covered unless an explicit transfer/relicense operation is approved.
@@ -373,18 +377,18 @@ The client must not be authoritative for page counts, referral qualification, pa
 
 | ID | Decision required | Recommendation | Status |
 |---|---|---|---|
-| ODR-01 | ZIP + JSON .talora container | Adopt | Owner confirmation |
-| ODR-02 | Self-contained package default | Adopt | Owner confirmation |
-| ODR-03 | Include revision history by default | Current revision mandatory; history selectable | Owner decision |
-| ODR-04 | Premium removes five-page cap | Yes | Owner confirmation |
-| ODR-05 | Premium includes watermark-free PDF | No; separate entitlement | Owner confirmation |
-| ODR-06 | Referral reward output | One watermarked full-script PDF | Owner confirmation |
-| ODR-07 | Referral milestone recurrence | First ten once per account; additional campaigns separate | Owner decision |
-| ODR-08 | Referral reward expiry | No expiry while account is good standing | Owner decision |
-| ODR-09 | Watermark license output scope | PDF only initially | Owner confirmation |
-| ODR-10 | Project fork/transfer license behavior | Fork is new project; transfer requires explicit operation | Owner confirmation |
-| ODR-11 | Non-paginated Free export limit | Define separate content budget or five-page-equivalent preview | Owner decision |
-| ODR-12 | Offline entitlement validity | Signed bounded cache; numeric period after security review | Open |
+| ODR-01 | ZIP + JSON .talora container | Adopt | **APPROVED — 19 Nov 2026** |
+| ODR-02 | Self-contained package default | Adopt | **APPROVED — 19 Nov 2026** |
+| ODR-03 | Include revision history by default | Current revision mandatory; history selectable | **APPROVED — 19 Nov 2026** |
+| ODR-04 | Premium removes five-page cap | Yes | **APPROVED — 19 Nov 2026** |
+| ODR-05 | Premium includes watermark-free PDF | No; separate entitlement | **APPROVED — 19 Nov 2026** |
+| ODR-06 | Referral reward output | One watermarked full-script PDF | **APPROVED — 19 Nov 2026** |
+| ODR-07 | Referral milestone recurrence | First ten once per account; additional campaigns separate | **APPROVED — 19 Nov 2026** |
+| ODR-08 | Referral reward expiry | No expiry while account is good standing | **APPROVED — 19 Nov 2026** |
+| ODR-09 | Watermark license output scope | PDF only initially | **APPROVED — 19 Nov 2026** |
+| ODR-10 | Project fork/transfer license behavior | Fork is new project; transfer requires explicit operation | **APPROVED — 19 Nov 2026** |
+| ODR-11 | Non-paginated Free export limit | Separate content-unit/byte/character budget or five-page-equivalent preview; exact mechanism and threshold must be specified | **PARTIAL — mechanism options accepted for design; exact policy remains open** |
+| ODR-12 | Offline entitlement validity | Signed bounded cache; numeric period after security review | **APPROVED DEFAULT — numeric period deferred to security review** |
 | ODR-13 | Initial proprietary format support | Official interchange route only | External validation |
 | ODR-14 | Payment provider and prices | No selection until Ethiopia availability, fees and legal review | External validation |
 | ODR-15 | Existing A1 freeze status | Repository A1 baseline file still says draft/not frozen; reconcile with Owner's later A1 approval | Unresolved evidence discrepancy |
@@ -396,7 +400,7 @@ The repository's `docs/a1-product-definition/00-A1-BASELINE.md` still states “
 ## 17. A2 exit criteria and present disposition
 
 A2 remains **PARTIAL / OPEN** until:
-- ODR-01 through ODR-12 receive decisions or are explicitly deferred by Owner.
+- ODR-11 receives a precise non-paginated Free export policy or is explicitly deferred by Owner.
 - External format licensing and payment-provider facts are researched and recorded.
 - Initial support matrix is finalized with lawful routes and fidelity classifications.
 - Canonical document model and .talora schema proposal are internally consistent.
@@ -407,4 +411,4 @@ A2 remains **PARTIAL / OPEN** until:
 - The A1 freeze-status discrepancy is resolved.
 - A traceable A3 backlog is prepared.
 
-**Current gate:** A2 decision register prepared; A2 not closed. A3 implementation, PR merge and deployment remain unauthorized.
+**Current gate:** Owner-approved technical defaults recorded for ODR-01–ODR-10 and ODR-12. ODR-11, ODR-13–ODR-15 and the A1 freeze-status discrepancy remain open. A2 is not closed. A3 implementation, PR merge and deployment remain unauthorized.
