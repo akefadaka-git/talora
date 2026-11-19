@@ -115,8 +115,6 @@ object ScriptInterchange {
     fun importFdx(source: String): String {
         require(source.length <= MAX_DOCUMENT_BYTES) { "FDX document exceeds the import size limit." }
         val parser = Xml.newPullParser()
-        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
-        parser.setFeature("http://xmlpull.org/v1/doc/features.html#process-docdecl", false)
         parser.setInput(source.reader())
         val output = mutableListOf<String>()
         var inScriptContent = false
@@ -127,7 +125,7 @@ object ScriptInterchange {
         var totalChars = 0
         while (parser.eventType != XmlPullParser.END_DOCUMENT) {
             when (parser.eventType) {
-                XmlPullParser.START_TAG -> when (parser.name) {
+                XmlPullParser.START_TAG -> when (parser.name.substringAfter(':')) {
                     "TitlePage" -> titlePageDepth++
                     "Content" -> if (titlePageDepth == 0) inScriptContent = true
                     "Paragraph" -> if (inScriptContent && titlePageDepth == 0) {
@@ -233,21 +231,19 @@ object ScriptInterchange {
         }
         val xml = documentXml ?: error("DOCX package is missing word/document.xml.")
         val parser = Xml.newPullParser()
-        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true)
-        parser.setFeature("http://xmlpull.org/v1/doc/features.html#process-docdecl", false)
         parser.setInput(ByteArrayInputStream(xml), "UTF-8")
         val paragraphs = mutableListOf<String>()
         var inParagraph = false
         var current = StringBuilder()
         while (parser.eventType != XmlPullParser.END_DOCUMENT) {
             when (parser.eventType) {
-                XmlPullParser.START_TAG -> when (parser.name) {
+                XmlPullParser.START_TAG -> when (parser.name.substringAfter(':')) {
                     "p" -> { inParagraph = true; current = StringBuilder() }
                     "t" -> if (inParagraph) current.append(parser.nextText())
                     "tab" -> if (inParagraph) current.append('\t')
                     "br", "cr" -> if (inParagraph) current.append('\n')
                 }
-                XmlPullParser.END_TAG -> if (parser.name == "p" && inParagraph) {
+                XmlPullParser.END_TAG -> if (parser.name.substringAfter(':') == "p" && inParagraph) {
                     paragraphs += current.toString()
                     inParagraph = false
                 }
