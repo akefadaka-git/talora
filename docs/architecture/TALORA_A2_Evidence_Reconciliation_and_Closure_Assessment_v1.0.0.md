@@ -342,7 +342,7 @@ This section supersedes earlier statements in Sections 1, 7, 8 and 9 that D01 ha
 
 **D01: VERIFIED-CLOSED for selection/freeze of the bounded development-only baseline.**
 
-- IROKA repository: ake fadaka-git/iroka (canonical slug: ake fadaka-git/iroka).
+- IROKA repository: akefadaka-git/iroka (canonical slug: akefadaka-git/iroka).
 - Branch: integration/talora-a3-private-api.
 - Frozen verified source code commit: 8056cea136f42436d896078046796eba2129092b.
 - Documentation-only branch snapshot at approval: 00b323750fb120f80d56191069d10a825e66dc41.
