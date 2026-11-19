@@ -5,7 +5,7 @@
 **Owner:** Akefa Ayele Daka  
 **Repository:** https://github.com/akefadaka-git/talora  
 **Stage:** A1 — Assessment and specification  
-**Status:** Draft prepared for Owner review; not frozen.
+**Status:** OWNER-APPROVED / FROZEN — 18 November 2026 (11-document A1 baseline; see §7).
 
 ## 1. Baseline identity
 
@@ -57,6 +57,23 @@ A1 documentation work must not modify `main`. No application implementation is a
 7. Open, documented interfaces and exportable user data.
 8. No unsupported claim of production readiness or legal clearance.
 
-## 6. A1 acceptance
+## 6. A1 acceptance and scope boundary
 
-A1 may be closed only after the Owner reviews and approves the complete requirements, architecture, monetization, privacy, localization, roadmap, acceptance criteria and open-decision register. This commit set is a review candidate, not an A1 closure record.
+The original 11-document A1 specification was explicitly approved by the Owner on 18 November 2026. The approved baseline is the immutable commit recorded in §7. The A1 scope and decisions are frozen; changes require an authoritative reason and explicit Owner approval.
+
+This file is a current governance record carried forward on the A2 documentation branch. It does not rewrite the original approved commit. The later Owner-approved A1 amendment on native format, import/export and entitlements is a separately versioned amendment and does not retroactively alter the original 11-document baseline.
+
+A1 approval does not authorize A3 implementation, PR merge, or A5 deployment.
+
+## 7. Owner approval and immutable baseline record
+
+- **Approval date:** 18 November 2026 (UTC).
+- **Owner action:** Explicit “Approve” of the complete 11-document A1 specification.
+- **Approved repository:** `akefadaka-git/talora`.
+- **Approved branch at baseline:** `docs/a1-product-definition`.
+- **Immutable approved baseline commit:** `599bcb4a71bd7ca7e1b5945c8034f29ecff4bc06`.
+- **Main at the original documentation baseline:** `2562962fc44636cdebfa49c7bf3c3cdcb618751c`; main was not modified by the A1 approval.
+- **Approval effect:** A1 approved; scope and decisions frozen. Later changes require an authoritative reason and explicit approval.
+- **Implementation at approval:** Not started and not authorized.
+
+The current A2 documentation branch preserves this historical approval record. The A1 baseline is not reopened by this reconciliation.
