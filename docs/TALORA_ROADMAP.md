@@ -1,6 +1,6 @@
 # TALORA Next-Stage Roadmap
 
-**Status:** Proposed roadmap for Owner review  
+**Status:** Owner-approved roadmap baseline — 19 November 2026  
 **Governing specification:** [TALORA Product Specification](TALORA_PRODUCT_SPECIFICATION.md)  
 **Current stage:** A1 — specification  
 **Implementation status:** Not authorized  
@@ -16,13 +16,15 @@
 
 | Stage | Outcome | Scope | Exit evidence | Status |
 |---|---|---|---|---|
-| A1 | Approved product specification | Product scope, user roles, typography, script editor, character/scene, director, production, IROKA, collaboration, subscriptions, NFRs, TBDs | Owner-approved specification and decision register | **IN PROGRESS — document prepared** |
-| A2 | Verified as-is baseline and reconciliation | Read-only repository, PR, branch, architecture, test, dependency, and compatibility audit | Requirement-to-code matrix; gaps, risks, dependencies, and exact SHA evidence | **NEXT — not started** |
+| A1 | Approved product specification | Product scope, user roles, typography, script editor, character/scene, director, production, IROKA, collaboration, subscriptions, NFRs, TBDs | Owner-approved specification and decision register | **VERIFIED-CLOSED — Owner approved 19 November 2026** |
+| A2 | Verified as-is baseline and reconciliation | Read-only repository, PR, branch, architecture, test, dependency, and compatibility audit | Requirement-to-code matrix; gaps, risks, dependencies, and exact SHA evidence | **IN PROGRESS — initial scan started; not closed** |
 | A3 | Incremental implementation | Only approved work packages, each separately scoped | PRs, exact SHAs, tests, review evidence, no unauthorized merge | **NOT AUTHORIZED** |
 | A4 | Independent verification | Acceptance, regression, accessibility, security, performance, and release-candidate tests | Test evidence, defect register, verified closure report | **NOT AUTHORIZED** |
 | A5 | Deployment/release | Release packaging, signing, distribution, monitoring, rollback | Separate Owner deployment approval and release evidence | **SEPARATE GATE — NOT AUTHORIZED** |
 
 ## A1 — Product specification and decision freeze
+
+**Closure:** Owner approved this specification on 19 November 2026. A1 is VERIFIED-CLOSED for the expanded product scope. This is a supplementary approved amendment; the earlier 11-document A1 baseline and native-format/entitlement amendment remain preserved as historical approved records.
 
 **Deliverable:** `docs/TALORA_PRODUCT_SPECIFICATION.md`
 
