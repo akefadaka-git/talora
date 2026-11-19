@@ -171,7 +171,7 @@ object ScriptInterchange {
 <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
 <Default Extension="xml" ContentType="application/xml"/>
 <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
-<Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>
+
 </Types>""")
             entry("_rels/.rels", """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
@@ -234,8 +234,7 @@ object ScriptInterchange {
         val xml = documentXml ?: error("DOCX package is missing word/document.xml.")
         val parser = Xml.newPullParser()
         parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true)
-        parser.setFeature("http://xml.org/sax/features/external-general-entities", false)
-        parser.setFeature("http://xml.org/sax/features/external-parameter-entities", false)
+        parser.setFeature("http://xmlpull.org/v1/doc/features.html#process-docdecl", false)
         parser.setInput(ByteArrayInputStream(xml), "UTF-8")
         val paragraphs = mutableListOf<String>()
         var inParagraph = false
