@@ -422,3 +422,64 @@ No implementation, merge, PR approval, paid activation, production data use or d
 | Overall A2 | **PARTIAL / NOT CLOSED** | Other entitlement/legal, dependency/licensing, external payment and integration evidence gates remain |
 
 No A3 implementation, merge, PR approval, A4 verification execution or A5 deployment is authorized by this approval. Existing main branches remain outside this documentation-only update.
+
+## 11. Consolidated A2 closure assessment — final evidence reconciliation (19 November 2026)
+
+**Assessment result: PARTIAL — NOT READY FOR FINAL OWNER CLOSURE APPROVAL.** This section consolidates the evidence reviewed after the Owner approved the seven-day offline maximum and Amharic acceptance-plan definition. It supersedes earlier D01 wording only to the bounded scope stated below. It does not authorize additional A3 work, merge, A4 execution or A5 deployment.
+
+### 11.1 Evidence and stage baseline
+
+- TALORA repository: akefadaka-git/talora; A2 documentation branch: docs/a1-import-export-referral-entitlements; main baseline: 2562962fc44636cdebfa49c7bf3c3cdcb618751c.
+- IROKA repository: akefadaka-git/iroka; bounded source baseline: branch integration/talora-a3-private-api, SHA 8056cea136f42436d896078046796eba2129092b; base IROKA main SHA 1aea1447eadf1d827d702fd6c4034fa058aac21e.
+- Exact IROKA code-head CI run 44457815902: SUCCESS; 45 BRAIN, 71 Kernel, 2 integration and 13 TALORA API tests plus formatting, workspace/no-default-features compilation and Clippy. This proves only the bounded fake/local code head, not a production network service or wider component graph.
+- The IROKA A3 slice was separately authorized for private API/fake-local development from the stated main SHA, with synthetic-only inputs and hard caps. The recorded authorization excluded merge, main changes, production creative data, live provider, A4 and A5. This report is A2 reconciliation and does not expand that A3 scope.
+- The TALORA documentation compare was previously verified at 54 commits ahead / 0 behind main; the final compare must be refreshed after this addendum. All changes made for this report are documentation-only.
+
+### 11.2 Consolidated decision register
+
+| Gate | Status | Closure interpretation |
+|---|---|---|
+| A1 baseline and amendment | VERIFIED-CLOSED | Historical approved SHA preserved; no reopening |
+| ODR-01–ODR-13 | VERIFIED-CLOSED FOR POLICY | Product defaults and bounded v1 format scope approved; not implementation or license clearance |
+| ODR-14 provider-neutral architecture | VERIFIED-CLOSED FOR ARCHITECTURE | No provider or price selected; vendor/legal validation remains external gate |
+| D01 bounded IROKA baseline | VERIFIED-CLOSED — BOUNDED DEVELOPMENT/TEST SCOPE | Exact source SHA and exact-head CI evidence recorded |
+| Wider IROKA component graph | NOT VERIFIED | G03/G08 and G05/G02/G11 remain separate/divergent; no combined graph proof |
+| Seven-day offline cache maximum | VERIFIED-CLOSED FOR A2 POLICY | Owner approved max seven calendar days since successful sync; independent threat model/security review remains open |
+| Amharic/Ethiopic acceptance plan | VERIFIED-CLOSED FOR A2 PLAN | Owner approved 30 rights-cleared fixtures, two independent reviewers and measurable targets; corpus and tests do not yet exist as evidence |
+| Detailed payment/entitlement/referral lifecycle | PARTIAL — OWNER DECISIONS REQUIRED | Proposed defaults documented in TDR §21.2; not yet Owner-approved |
+| TALORA dependency/fixture licensing | PARTIAL / PRE-IMPLEMENTATION GATE | No parser/writer/renderer/font pinned; no SBOM or fixture rights register |
+| Payment merchant readiness | PARTIAL / EXTERNAL GATE | NBE operator status and public docs checked; no TALORA merchant acceptance, contract, fees, settlement or live/sandbox proof |
+| Ethiopia tax/consumer/privacy compliance | PARTIAL / LEGAL GATE | Relevant current instruments identified; no counsel opinion, DPIA, data map or residency verification |
+| IROKA production service readiness | NOT VERIFIED | No production host/auth lifecycle/persistence/cancellation/G05 authority-memory/client/e2e/SBOM/security review |
+| A3 backlog traceability | PARTIAL | Work packages mapped; no additional A3 scope approved |
+
+### 11.3 Lifecycle decisions requiring Owner approval
+
+The approved commercial entitlements are clear, but detailed operational behavior is not yet binding. The Owner decision package is TDR §21.2. It asks for approval/revision of: calendar-month term semantics and user-initiated renewal; full/partial refund behavior; dispute/chargeback suspension and restoration; accepted export jobs during refund/revocation; account deletion and retention; organization/project ownership transfer; referral activation; good-standing definition; fraud thresholds; and review/appeal process. Until those decisions are approved, lifecycle completeness is PARTIAL.
+
+### 11.4 Dependency and fixture licensing
+
+No TALORA source code, dependency manifest/lockfile, parser, writer, renderer, OCR library, font binary or SBOM was found in the documentation-only branch comparison. No authorized screenplay/stage-play fixtures or rights register were found. IROKA's workspace Cargo metadata says LicenseRef-Proprietary; D03 remains API_ONLY. No open-source, redistribution or SDK rights may be inferred. The minimum evidence package per dependency/fixture is recorded in TDR §§19.5 and 21.3.
+
+### 11.5 Ethiopia payment, privacy and legal gates
+
+NBE currently lists Chapa, ArifPay and Telebirr as commercialized operators/issuers; this is not TALORA merchant approval. Chapa's public terms last updated August 2022 prohibit negative-option/continuity subscription practices, making automatic renewal unsuitable absent written confirmation. Public Chapa/Telebirr docs describe verifiable callbacks/webhooks, but no negotiated fees, settlement, refunds, recurring terms or merchant eligibility were established. ArifPay onboarding asks for a renewed business license and turnover information; it does not grant merchant acceptance.
+
+Personal Data Protection Proclamation 1321/2024 requires local storage in Ethiopia of locally collected/obtained personal data, conditions for cross-border transfers, prior Authority approval for cross-border transfer of sensitive personal data, risk-appropriate safeguards, processing records/DPIA and 72-hour breach notifications. This is material to TALORA scripts, IROKA service processing, logs, backups, support and any external model provider. VAT Proclamation 1341/2024 and VAT Regulation 570/2025 are in force; digital-service classification, registration, tax, invoice and cross-border sales treatment require written Ethiopian tax advice. Relevant consumer/e-commerce disclosures and refund terms require legal review. No production data-residency or tax/consumer compliance claim is made.
+
+### 11.6 IROKA integration disposition
+
+D01 is VERIFIED-CLOSED only for freezing the development/test baseline at 8056cea. The exact code-head CI passed. The existing slice has no runnable network host, production workload-token verifier/issuer/revocation/key rotation, durable task/event store, effective in-flight cancellation, G05 governed memory, integrated G03/G08 or G05/G02/G11 authority graph, CIW, TALORA backend client, end-to-end network verification, SBOM or independent security review. It is not production-ready. D03 API_ONLY remains binding; no source copying, vendoring, modification, SDK packaging, redistribution or sublicensing is granted.
+
+### 11.7 A2 closure recommendation and next step
+
+**Do not close A2 yet.** The evidence record is now consolidated, but the detailed lifecycle decisions remain unapproved. The external payment, tax, privacy/data-residency, dependency and fixture rights gates are not satisfied and must be preserved as mandatory pre-implementation or production gates. The bounded IROKA D01 baseline selection is closed; the wider graph and production service are not.
+
+**Next step:** Owner review and approval/revision of the lifecycle policy package in TDR §21.2. Once those decisions are recorded, the A2 closure assessment can be refreshed without treating outstanding external evidence or A4 tests as passed.
+
+- A1: VERIFIED-CLOSED.
+- A2: PARTIAL / NOT CLOSED.
+- A3: only the separately authorized IROKA development slice exists; no additional A3 scope is authorized by this report.
+- Merge: NOT AUTHORIZED.
+- A4: NOT STARTED.
+- A5: NOT AUTHORIZED.
