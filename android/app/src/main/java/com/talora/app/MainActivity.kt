@@ -122,20 +122,11 @@ private fun TaloraHome(store: ProjectStore) {
                             ?: error("Unable to read the selected file.")
                         TaloraArchive.decode(bytes)
                     }
-                    require(imported.revisions.isEmpty() && imported.assets.isEmpty()) {
-                        "This app build cannot yet persist TALORA revision history or linked assets. The import was rejected without changing your projects."
-                    }
-                    val (createdId, refreshedProjects) = withContext(Dispatchers.IO) {
-                        val created = store.createProject(imported.document.title.ifBlank { untitled })
-                        store.updateProject(
-                            created.id,
-                            imported.document.title,
-                            ProjectTextPolicy.preserveSourceText(imported.document.content)
-                        )
-                        created.id to store.listProjects()
+                    val (importedProject, refreshedProjects) = withContext(Dispatchers.IO) {
+                        val created = store.importPackage(imported)
+                        created to store.listProjects()
                     }
                     projects = refreshedProjects
-                    val importedProject = refreshedProjects.first { it.id == createdId }
                     selectedId = importedProject.id
                     title = importedProject.title
                     body = importedProject.body
@@ -270,20 +261,11 @@ private fun TaloraHome(store: ProjectStore) {
                             busy = true
                             try {
                                 saveCurrent()
+                                val packageData = withContext(Dispatchers.IO) {
+                                    store.exportPackage(projectId)
+                                }
                                 val packageBytes = withContext(Dispatchers.Default) {
-                                    TaloraArchive.encode(
-                                        TaloraPackage(
-                                            document = TaloraDocument(
-                                                id = projectId,
-                                                title = title,
-                                                scriptType = "screenplay",
-                                                languageTag = "am",
-                                                content = ProjectTextPolicy.preserveSourceText(body),
-                                                createdAt = System.currentTimeMillis(),
-                                                updatedAt = System.currentTimeMillis()
-                                            )
-                                        )
-                                    )
+                                    TaloraArchive.encode(packageData)
                                 }
                                 pendingExport = packageBytes
                                 exportLauncher.launch(safeTaloraFileName(title))
