@@ -110,7 +110,7 @@ object ScriptInterchange {
         var totalChars = 0
         val handler = object : DefaultHandler() {
             override fun startElement(uri: String?, localName: String?, qName: String?, attributes: Attributes?) {
-                when (localName?.ifEmpty { qName?.substringAfter(':') } ?: qName?.substringAfter(':')) {
+                when (xmlName(localName, qName)) {
                     "TitlePage" -> inTitlePage = true
                     "Content" -> if (!inTitlePage) inScriptContent = true
                     "Paragraph" -> if (inScriptContent && !inTitlePage) {
@@ -128,7 +128,7 @@ object ScriptInterchange {
                 }
             }
             override fun endElement(uri: String?, localName: String?, qName: String?) {
-                when (localName?.ifEmpty { qName?.substringAfter(':') } ?: qName?.substringAfter(':')) {
+                when (xmlName(localName, qName)) {
                     "Text" -> inText = false
                     "Paragraph" -> if (inParagraph) {
                         output += paragraph.toString()
@@ -224,7 +224,7 @@ object ScriptInterchange {
         var current = StringBuilder()
         val handler = object : DefaultHandler() {
             override fun startElement(uri: String?, localName: String?, qName: String?, attributes: Attributes?) {
-                when (localName?.ifEmpty { qName?.substringAfter(':') } ?: qName?.substringAfter(':')) {
+                when (xmlName(localName, qName)) {
                     "p" -> { inParagraph = true; current = StringBuilder() }
                     "t" -> if (inParagraph) inText = true
                     "tab" -> if (inParagraph) current.append('\t')
@@ -235,7 +235,7 @@ object ScriptInterchange {
                 if (inParagraph && inText) current.append(ch, start, length)
             }
             override fun endElement(uri: String?, localName: String?, qName: String?) {
-                when (localName?.ifEmpty { qName?.substringAfter(':') } ?: qName?.substringAfter(':')) {
+                when (xmlName(localName, qName)) {
                     "t" -> inText = false
                     "p" -> if (inParagraph) {
                         paragraphs += current.toString()
@@ -249,11 +249,13 @@ object ScriptInterchange {
         return paragraphs.dropWhile { it.isBlank() }.joinToString("\n")
     }
 
+    private fun xmlName(localName: String?, qualifiedName: String?): String? =
+        localName?.takeIf { it.isNotEmpty() } ?: qualifiedName?.substringAfter(':')
+
     private fun parseXml(source: String, handler: DefaultHandler) {
-        val factory = SAXParserFactory.newInstance().apply {
-            isNamespaceAware = false
-            setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true)
-        }
+        val factory = SAXParserFactory.newInstance()
+        factory.isNamespaceAware = false
+        runCatching { factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true) }
         val reader = factory.newSAXParser().xmlReader
         runCatching { reader.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true) }
         runCatching { reader.setFeature("http://xml.org/sax/features/external-general-entities", false) }
