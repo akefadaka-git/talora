@@ -3,7 +3,7 @@
 - **Document ID:** TALORA-A2-TDR-002
 - **Version:** 1.0.0
 - **Date:** 19 November 2026
-- **Status:** A2 decision register; ODR-01–ODR-13 Owner-approved (ODR-13 approved 19 November 2026); ODR-14 architecture reconciled subject to external vendor/legal gates; ODR-15 resolved; A2 remains PARTIAL / NOT CLOSED due D01
+- **Status:** A2 decision register; ODR-01–ODR-13 Owner-approved; ODR-14 architecture reconciled subject to external vendor/legal gates; ODR-15 resolved; D01 VERIFIED-CLOSED for bounded development-only baseline selection; A2 remains PARTIAL / NOT CLOSED pending remaining lifecycle, offline-security, Amharic-evidence and dependency/licensing gates
 - **Branch:** `docs/a1-import-export-referral-entitlements`
 - **Base A2 assessment:** `TALORA_A2_Impact_Assessment_Native_Format_Export_Economy_v1.0.0.md`
 - **Implementation:** NOT AUTHORIZED
