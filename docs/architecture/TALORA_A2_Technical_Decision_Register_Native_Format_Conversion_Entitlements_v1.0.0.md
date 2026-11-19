@@ -3,7 +3,7 @@
 - **Document ID:** TALORA-A2-TDR-002
 - **Version:** 1.0.0
 - **Date:** 19 November 2026
-- **Status:** A2 decision register; ODR-01–ODR-12 Owner-approved; ODR-13/14 evidence reconciled with external gates; ODR-15 resolved; A2 remains PARTIAL / NOT CLOSED
+- **Status:** A2 decision register; ODR-01–ODR-13 Owner-approved (ODR-13 approved 19 November 2026); ODR-14 architecture reconciled subject to external vendor/legal gates; ODR-15 resolved; A2 remains PARTIAL / NOT CLOSED due D01
 - **Branch:** `docs/a1-import-export-referral-entitlements`
 - **Base A2 assessment:** `TALORA_A2_Impact_Assessment_Native_Format_Export_Economy_v1.0.0.md`
 - **Implementation:** NOT AUTHORIZED
@@ -154,7 +154,7 @@ A format's fidelity level must be measured per format version and construct set,
 
 ## 5. A2-ADR-03 — Import/export compatibility matrix
 
-The following is a planning matrix, not a statement of implemented support or completed legal clearance.
+The following is the Owner-approved bounded v1 product support scope (19 November 2026). It is not a statement of implemented support, completed dependency licensing, or completed compatibility testing.
 
 | Format | Import direction | Export direction | Initial fidelity expectation | A2 priority |
 |---|---|---|---|---|
@@ -164,7 +164,7 @@ The following is a planning matrix, not a statement of implemented support or co
 | Fountain | Required | Required | L0/L1 for supported Fountain constructs | P1 |
 | DOCX | Required | Required | L1/L2 depending on document features | P1 |
 | RTF | Assess and support where reliable | Required | L1/L2 | P1 |
-| Final Draft FDX | Assess lawful, documented interchange | Assess lawful, documented interchange | L1/L2, format-version-specific | P1 |
+| Final Draft FDX | Excluded from initial v1 promise | Excluded from initial v1 promise | No v1 support claim; reconsider only after lawful official route, versioned fixtures and compatibility review | Deferred |
 | HTML | Assess | Assess | L1/L2 for defined semantic subset | P2 |
 | Fade In native format | No promise absent documented lawful route | No promise absent documented lawful route | L4 until verified | Research |
 | Celtx native/project format | No promise absent official export/interchange route | No promise absent official export/interchange route | L4 until verified | Research |
@@ -399,7 +399,7 @@ The client must not be authoritative for page counts, referral qualification, pa
 | ODR-10 | Project fork/transfer license behavior | Fork is new project; transfer requires explicit operation | **APPROVED — 19 Nov 2026** |
 | ODR-11 | Non-paginated Free export limit | Deterministic TALORA canonical pagination; export complete semantic content fitting pages 1–5; disclose partial range/boundary; bind to revision/profile/renderer | **APPROVED — 19 Nov 2026** |
 | ODR-12 | Offline entitlement validity | Signed bounded cache; numeric period after security review | **APPROVED DEFAULT — numeric period deferred to security review** |
-| ODR-13 | Initial format support and licensing | Use a bounded open/documented v1 support matrix; defer FDX/Fade In/Celtx native formats pending lawful, documented and tested routes | **RECONCILED — v1 matrix recommendation documented; Owner confirmation and exact dependency license review remain open** |
+| ODR-13 | Initial format support and licensing | Owner-approved bounded v1 support matrix; defer FDX/Fade In/Celtx native formats pending lawful, documented and tested routes | **APPROVED — Owner confirmation recorded 19 Nov 2026; exact dependency/fixture license review remains a pre-implementation gate** |
 | ODR-14 | Payment provider and prices | Provider-neutral ledger; Chapa and ArifPay primary due-diligence shortlist; Telebirr direct alternative; SantimPay and other NBE-commercialized operators for comparison; no selection or price until written merchant/legal verification | **RECONCILED AT A2 ARCHITECTURE LEVEL — no provider selected; vendor and legal gates remain mandatory before payment implementation** |
 | ODR-15 | Existing A1 freeze status | Record explicit 18 Nov 2026 Owner approval of the 11-document A1 baseline at SHA `599bcb4a71bd7ca7e1b5945c8034f29ecff4bc06`; correct the carried-forward baseline record without rewriting the historical commit | **RESOLVED — approval and immutable baseline recorded; current A1 record updated** |
 
@@ -414,12 +414,12 @@ The original 11-document A1 specification was explicitly approved by the Owner o
 ## 18. A2 exit criteria and present disposition
 
 A2 is **PARTIAL / NOT CLOSED**. The product/export/entitlement decision set is substantially reconciled, but the following closure blockers remain:
-- Owner confirmation of the recommended bounded v1 format support matrix in the compatibility research memo (ODR-13). The exact parser/writer dependency licenses, transitive dependencies and fixtures must be verified before implementation.
+- ODR-13 product-scope approval is recorded. The exact parser/writer dependency licenses, transitive dependencies, fixtures and distribution obligations must still be verified before implementation.
 - IROKA D01: no single compatible immutable component graph has been established. The current main reference and candidate G03/G05/G08/CIW/G01/G02/G11 branches are not one verified graph. See the mirrored TALORA–IROKA contract v0.1.2 and A2 closure assessment.
 - External payment-provider merchant eligibility, fees, settlement, refunds, recurring/one-off terms, payment methods, sandbox access and legal review remain mandatory before payment implementation (ODR-14).
 - Independent security review, exact dependency/SBOM review and A4 test evidence remain future gates; no evidence is claimed as complete.
 - A traceable A3 backlog can be planned from this register, but A3 implementation requires separate explicit Owner authorization.
 
-**Resolved:** ODR-01–ODR-12 Owner-approved; ODR-11 policy recorded; ODR-15 A1 approval discrepancy corrected. ODR-14 architecture is provider-neutral and reconciled, with vendor/legal validation deferred to the pre-implementation gate. ODR-13 evidence is reconciled, but final v1 support-matrix confirmation remains open.
+**Resolved:** ODR-01–ODR-13 Owner-approved; ODR-11 policy and ODR-13 bounded v1 format scope recorded; ODR-15 A1 approval discrepancy corrected. ODR-14 architecture is provider-neutral and reconciled, with vendor/legal validation deferred to the pre-implementation gate.
 
-**Current gate:** A2 CLOSURE ASSESSMENT = PARTIAL / NOT READY FOR OWNER CLOSURE APPROVAL because D01 has no compatible immutable integration baseline and ODR-13's final support list is not yet Owner-frozen. A3 implementation, PR merge and deployment remain unauthorized.
+**Current gate:** A2 CLOSURE ASSESSMENT = PARTIAL / NOT READY FOR OWNER CLOSURE APPROVAL because D01 has no compatible immutable integration baseline. ODR-13 product scope is Owner-approved; exact dependency/fixture license review remains a pre-implementation gate. A3 implementation, PR merge and deployment remain unauthorized.
