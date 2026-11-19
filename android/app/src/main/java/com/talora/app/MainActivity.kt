@@ -117,6 +117,7 @@ private fun TaloraHome(store: ProjectStore) {
                 busy = true
                 status = ""
                 try {
+                    saveCurrent()
                     val imported = withContext(Dispatchers.IO) {
                         val bytes = context.contentResolver.openInputStream(uri)?.use { it.readBounded(TaloraArchive.MAX_ARCHIVE_BYTES) }
                             ?: error("Unable to read the selected file.")
@@ -213,10 +214,18 @@ private fun TaloraHome(store: ProjectStore) {
                         onClick = {
                             if (project.id != selectedId) {
                                 scope.launch {
-                                    saveCurrent()
-                                    selectedId = project.id
-                                    title = project.title
-                                    body = project.body
+                                    busy = true
+                                    try {
+                                        saveCurrent()
+                                        selectedId = project.id
+                                        title = project.title
+                                        body = project.body
+                                        status = ""
+                                    } catch (error: Exception) {
+                                        status = error.message ?: "Unable to switch project."
+                                    } finally {
+                                        busy = false
+                                    }
                                 }
                             }
                         },
@@ -241,6 +250,7 @@ private fun TaloraHome(store: ProjectStore) {
             OutlinedTextField(
                 value = title,
                 onValueChange = { title = it },
+                enabled = !busy,
                 label = { Text(titleLabel) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
@@ -248,6 +258,7 @@ private fun TaloraHome(store: ProjectStore) {
             OutlinedTextField(
                 value = body,
                 onValueChange = { body = it },
+                enabled = !busy,
                 label = { Text(editorLabel) },
                 modifier = Modifier.fillMaxWidth().weight(1f),
                 minLines = 8
