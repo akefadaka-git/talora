@@ -50,12 +50,15 @@ Schema changes require a new schema version and an explicit migration path. Vers
 - Local SQLite schema version 2 adds project creation time, script type, language tag, metadata, current revision reference, revision snapshots, and binary asset storage.
 - Project, revision, and asset IDs are remapped on collision; archive references are updated consistently.
 - Project switching and import flush the current editor state before changing the active project.
+- Users can create named revision snapshots, browse revision history, and restore a selected snapshot.
+- Users can attach files through Android's document picker, inspect attachment names/types/sizes, and remove attachments.
+- Package import/export preserves revision snapshots and attached binary assets.
 - Import/export errors are surfaced in the app; archive reads remain bounded by the codec size limits.
 
 ## Remaining work
 
-- Add automated database migration and import/export integration tests, including a real version-1 database fixture.
-- Add editor workflows for viewing, creating, restoring, and comparing revision snapshots.
-- Add asset attachment, preview, replacement, and removal workflows.
+- Verify the new Robolectric database migration and package round-trip tests on the exact branch head.
+- Add revision comparison and richer revision metadata/editing.
+- Add asset preview, replacement, and save-as workflows.
 - Add export/import progress for large packages and stronger recovery for provider interruptions.
 - Define entitlement enforcement separately from the file format; the archive itself must not encode or grant premium/referral rights.
