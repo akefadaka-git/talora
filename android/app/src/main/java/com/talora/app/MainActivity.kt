@@ -1,6 +1,7 @@
 package com.talora.app
 
 import android.net.Uri
+import android.provider.OpenableColumns
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -66,6 +67,9 @@ private fun TaloraHome(store: ProjectStore) {
     var status by remember { mutableStateOf("") }
     var busy by remember { mutableStateOf(false) }
     var pendingExport by remember { mutableStateOf<ByteArray?>(null) }
+    var revisions by remember { mutableStateOf(emptyList<TaloraRevisionSummary>()) }
+    var assets by remember { mutableStateOf(emptyList<TaloraAssetSummary>()) }
+    var changeNote by remember { mutableStateOf("") }
 
     val untitled = if (amharic) "ርዕስ የሌለው ፕሮጀክት" else "Untitled project"
     val createLabel = if (amharic) "አዲስ ጽሑፍ" else "New script"
@@ -109,6 +113,36 @@ private fun TaloraHome(store: ProjectStore) {
         }
     }
 
+    val assetLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri: Uri? ->
+        val projectId = selectedId
+        if (uri != null && projectId != null) {
+            scope.launch {
+                busy = true
+                try {
+                    val asset = withContext(Dispatchers.IO) {
+                        val bytes = context.contentResolver.openInputStream(uri)?.use {
+                            it.readBounded(TaloraArchive.MAX_ENTRY_BYTES)
+                        } ?: error("Unable to read the selected asset.")
+                        val name = context.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
+                            ?.use { cursor ->
+                                if (cursor.moveToFirst()) cursor.getString(0) else null
+                            } ?: uri.lastPathSegment?.substringAfterLast('/') ?: "attachment"
+                        val mediaType = context.contentResolver.getType(uri) ?: "application/octet-stream"
+                        store.addAsset(projectId, name.substringAfterLast('/').take(255), mediaType, bytes)
+                    }
+                    assets = withContext(Dispatchers.IO) { store.listAssets(projectId) }
+                    status = if (amharic) "አባሪው ተጨምሯል።" else "Asset attached."
+                } catch (error: Exception) {
+                    status = error.message ?: "Unable to attach asset."
+                } finally {
+                    busy = false
+                }
+            }
+        }
+    }
+
     val importLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocument()
     ) { uri: Uri? ->
@@ -143,6 +177,20 @@ private fun TaloraHome(store: ProjectStore) {
 
     LaunchedEffect(Unit) {
         projects = withContext(Dispatchers.IO) { store.listProjects() }
+    }
+
+    LaunchedEffect(selectedId) {
+        val id = selectedId
+        if (id == null) {
+            revisions = emptyList()
+            assets = emptyList()
+        } else {
+            val related = withContext(Dispatchers.IO) {
+                store.listRevisions(id) to store.listAssets(id)
+            }
+            revisions = related.first
+            assets = related.second
+        }
     }
 
     LaunchedEffect(selectedId, title, body) {
@@ -263,6 +311,120 @@ private fun TaloraHome(store: ProjectStore) {
                 modifier = Modifier.fillMaxWidth().weight(1f),
                 minLines = 8
             )
+            OutlinedTextField(
+                value = changeNote,
+                onValueChange = { changeNote = it },
+                enabled = !busy,
+                label = { Text(if (amharic) "የስሪት ማስታወሻ (አማራጭ)" else "Revision note (optional)") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button(
+                    enabled = !busy,
+                    onClick = {
+                        val projectId = selectedId ?: return@Button
+                        scope.launch {
+                            busy = true
+                            try {
+                                saveCurrent()
+                                withContext(Dispatchers.IO) {
+                                    store.createRevision(projectId, title, ProjectTextPolicy.preserveSourceText(body), changeNote)
+                                }
+                                revisions = withContext(Dispatchers.IO) { store.listRevisions(projectId) }
+                                changeNote = ""
+                                status = if (amharic) "የስሪት ቅጂ ተቀምጧል።" else "Revision snapshot saved."
+                            } catch (error: Exception) {
+                                status = error.message ?: "Unable to save revision."
+                            } finally {
+                                busy = false
+                            }
+                        }
+                    },
+                    modifier = Modifier.weight(1f)
+                ) { Text(if (amharic) "ስሪት አስቀምጥ" else "Save revision") }
+                TextButton(
+                    enabled = !busy,
+                    onClick = { assetLauncher.launch(arrayOf("*/*")) }
+                ) { Text(if (amharic) "አባሪ ጨምር" else "Attach asset") }
+            }
+            if (revisions.isNotEmpty()) {
+                Text(if (amharic) "የስሪት ታሪክ" else "Revision history", style = MaterialTheme.typography.titleSmall)
+                LazyColumn(modifier = Modifier.fillMaxWidth().height(104.dp)) {
+                    items(revisions, key = { it.id }) { revision ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(revision.title, style = MaterialTheme.typography.bodySmall)
+                                Text(
+                                    revision.changeNote ?: java.text.DateFormat.getDateTimeInstance().format(java.util.Date(revision.createdAt)),
+                                    style = MaterialTheme.typography.labelSmall
+                                )
+                            }
+                            TextButton(
+                                enabled = !busy,
+                                onClick = {
+                                    val projectId = selectedId ?: return@TextButton
+                                    scope.launch {
+                                        busy = true
+                                        try {
+                                            val restored = withContext(Dispatchers.IO) {
+                                                store.restoreRevision(projectId, revision.id)
+                                            }
+                                            title = restored.title
+                                            body = restored.body
+                                            revisions = withContext(Dispatchers.IO) { store.listRevisions(projectId) }
+                                            status = if (amharic) "ስሪቱ ተመልሷል።" else "Revision restored."
+                                        } catch (error: Exception) {
+                                            status = error.message ?: "Unable to restore revision."
+                                        } finally {
+                                            busy = false
+                                        }
+                                    }
+                                }
+                            ) { Text(if (amharic) "መልስ" else "Restore") }
+                        }
+                    }
+                }
+            }
+            Text(if (amharic) "አባሪዎች" else "Attachments", style = MaterialTheme.typography.titleSmall)
+            if (assets.isEmpty()) {
+                Text(if (amharic) "አባሪ የለም" else "No attachments", style = MaterialTheme.typography.bodySmall)
+            } else {
+                LazyColumn(modifier = Modifier.fillMaxWidth().height(88.dp)) {
+                    items(assets, key = { it.id }) { asset ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(asset.fileName, style = MaterialTheme.typography.bodySmall)
+                                Text("${asset.mediaType} · ${asset.sizeBytes} bytes", style = MaterialTheme.typography.labelSmall)
+                            }
+                            TextButton(
+                                enabled = !busy,
+                                onClick = {
+                                    val projectId = selectedId ?: return@TextButton
+                                    scope.launch {
+                                        busy = true
+                                        try {
+                                            withContext(Dispatchers.IO) { store.removeAsset(projectId, asset.id) }
+                                            assets = withContext(Dispatchers.IO) { store.listAssets(projectId) }
+                                            status = if (amharic) "አባሪው ተወግዷል።" else "Asset removed."
+                                        } catch (error: Exception) {
+                                            status = error.message ?: "Unable to remove asset."
+                                        } finally {
+                                            busy = false
+                                        }
+                                    }
+                                }
+                            ) { Text(if (amharic) "አስወግድ" else "Remove") }
+                        }
+                    }
+                }
+            }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Button(
                     enabled = !busy,
