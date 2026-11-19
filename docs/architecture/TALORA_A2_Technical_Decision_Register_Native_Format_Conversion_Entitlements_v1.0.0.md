@@ -166,8 +166,8 @@ The following is the Owner-approved bounded v1 product support scope (19 Novembe
 | RTF | Assess and support where reliable | Required | L1/L2 | P1 |
 | Final Draft FDX | Excluded from initial v1 promise | Excluded from initial v1 promise | No v1 support claim; reconsider only after lawful official route, versioned fixtures and compatibility review | Deferred |
 | HTML | Assess | Assess | L1/L2 for defined semantic subset | P2 |
-| Fade In native format | No promise absent documented lawful route | No promise absent documented lawful route | L4 until verified | Research |
-| Celtx native/project format | No promise absent official export/interchange route | No promise absent official export/interchange route | L4 until verified | Research |
+| Fade In native format | Excluded from initial v1 promise | Excluded from initial v1 promise | No v1 support claim; reconsider only after documented lawful and testable interchange route | Deferred |
+| Celtx native/project format | Excluded from initial v1 promise | Excluded from initial v1 promise | No v1 support claim; reconsider only after official documented and testable interchange route | Deferred |
 | Other screenplay apps | Per-format assessment | Per-format assessment | Must be independently validated | Ongoing |
 
 ### Compatibility release rule
