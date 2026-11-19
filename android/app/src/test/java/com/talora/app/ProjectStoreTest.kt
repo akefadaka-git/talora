@@ -47,6 +47,31 @@ class ProjectStoreTest {
     }
 
     @Test
+    fun largeScriptPersistsAndIsRecoveredAfterStoreReopen() {
+        val project = store.createProject("Long-form draft")
+        val source = buildString {
+            repeat(12_000) { append("INT. LOCATION - DAY\\nሰላም — dialogue and action\\n") }
+        }
+        store.updateProject(project.id, "Long-form draft", source)
+        store.close()
+        store = ProjectStore(context)
+        val recovered = store.getProject(project.id)
+        assertEquals(source, recovered?.body)
+    }
+
+    @Test
+    fun projectLibrarySummariesScaleWithoutLoadingBodies() {
+        repeat(80) { index ->
+            val project = store.createProject("Project $index")
+            store.updateProject(project.id, project.title, "x".repeat(4_000))
+        }
+        val summaries = store.listProjectSummaries()
+        assertEquals(80, summaries.size)
+        assertTrue(summaries.all { it.body.isEmpty() })
+        assertEquals(4_000, store.getProject(summaries.first().id)?.body?.length)
+    }
+
+    @Test
     fun revisionSnapshotsCanBeListedAndRestored() {
         val project = store.createProject("Draft")
         store.updateProject(project.id, "First title", "First draft")
