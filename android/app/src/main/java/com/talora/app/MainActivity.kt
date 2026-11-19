@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -138,6 +139,52 @@ private fun TaloraHome(store: ProjectStore) {
         }
     }
 
+    val textExportLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument("text/plain")
+    ) { uri: Uri? ->
+        val bytes = pendingExport
+        pendingExport = null
+        if (uri != null && bytes != null) {
+            scope.launch {
+                busy = true
+                try {
+                    withContext(Dispatchers.IO) {
+                        context.contentResolver.openOutputStream(uri, "wt")?.use { it.write(bytes) }
+                            ?: error("Unable to open the selected destination.")
+                    }
+                    status = if (amharic) "ጽሑፉ ተልኳል።" else "Text script exported."
+                } catch (error: Exception) {
+                    status = error.message ?: "Text export failed."
+                } finally {
+                    busy = false
+                }
+            }
+        }
+    }
+
+    val pdfExportLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument("application/pdf")
+    ) { uri: Uri? ->
+        val bytes = pendingExport
+        pendingExport = null
+        if (uri != null && bytes != null) {
+            scope.launch {
+                busy = true
+                try {
+                    withContext(Dispatchers.IO) {
+                        context.contentResolver.openOutputStream(uri, "wt")?.use { it.write(bytes) }
+                            ?: error("Unable to open the selected destination.")
+                    }
+                    status = if (amharic) "PDF ተልኳል።" else "PDF exported."
+                } catch (error: Exception) {
+                    status = error.message ?: "PDF export failed."
+                } finally {
+                    busy = false
+                }
+            }
+        }
+    }
+
     val assetSaveLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.CreateDocument("*/*")
     ) { uri: Uri? ->
@@ -211,21 +258,46 @@ private fun TaloraHome(store: ProjectStore) {
                 status = ""
                 try {
                     saveCurrent()
-                    val imported = withContext(Dispatchers.IO) {
-                        val bytes = context.contentResolver.openInputStream(uri)?.use { it.readBounded(TaloraArchive.MAX_ARCHIVE_BYTES) }
+                    val selectedName = withContext(Dispatchers.IO) {
+                        context.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
+                            ?.use { cursor -> if (cursor.moveToFirst()) cursor.getString(0) else null }
+                            ?: uri.lastPathSegment?.substringAfterLast('/') ?: "imported-script"
+                    }
+                    val selectedMime = context.contentResolver.getType(uri)
+                    val textFormat = ScriptInterchange.detectImportFormat(selectedName, selectedMime)
+                    val bytes = withContext(Dispatchers.IO) {
+                        val limit = if (textFormat != null) TaloraArchive.MAX_ENTRY_BYTES else TaloraArchive.MAX_ARCHIVE_BYTES
+                        context.contentResolver.openInputStream(uri)?.use { it.readBounded(limit) }
                             ?: error("Unable to read the selected file.")
-                        TaloraArchive.decode(bytes)
                     }
-                    val (importedProject, refreshedProjects) = withContext(Dispatchers.IO) {
-                        val created = store.importPackage(imported)
-                        created to store.listProjects()
+                    if (textFormat != null) {
+                        val importedText = withContext(Dispatchers.Default) { ScriptInterchange.decodeUtf8(bytes) }
+                        val importedType = if (textFormat == TextImportFormat.FOUNTAIN) "screenplay" else scriptType
+                        val importedTitle = selectedName.substringBeforeLast('.').ifBlank { untitled }
+                        val (createdProject, refreshedProjects) = withContext(Dispatchers.IO) {
+                            val created = store.createProject(importedTitle, importedType)
+                            store.updateProjectDetails(created.id, importedTitle, importedText, importedType)
+                            created.copy(title = importedTitle, body = importedText, scriptType = importedType) to store.listProjects()
+                        }
+                        projects = refreshedProjects
+                        selectedId = createdProject.id
+                        title = createdProject.title
+                        body = createdProject.body
+                        scriptType = createdProject.scriptType
+                        status = if (amharic) "የጽሑፍ ፕሮጀክት ገብቷል።" else "Text script imported."
+                    } else {
+                        val imported = withContext(Dispatchers.Default) { TaloraArchive.decode(bytes) }
+                        val (importedProject, refreshedProjects) = withContext(Dispatchers.IO) {
+                            val created = store.importPackage(imported)
+                            created to store.listProjects()
+                        }
+                        projects = refreshedProjects
+                        selectedId = importedProject.id
+                        title = importedProject.title
+                        body = importedProject.body
+                        scriptType = importedProject.scriptType
+                        status = if (amharic) "ፕሮጀክቱ ተጨምሯል።" else "TALORA project imported."
                     }
-                    projects = refreshedProjects
-                    selectedId = importedProject.id
-                    title = importedProject.title
-                    body = importedProject.body
-                    scriptType = importedProject.scriptType
-                    status = if (amharic) "ፕሮጀክቱ ተጨምሯል።" else "TALORA project imported."
                 } catch (error: Exception) {
                     status = error.message ?: if (amharic) "ፋይሉን ማስገባት አልተቻለም።" else "Import failed."
                 } finally {
@@ -306,7 +378,7 @@ private fun TaloraHome(store: ProjectStore) {
             ) { Text(createLabel) }
             TextButton(
                 enabled = !busy,
-                onClick = { importLauncher.launch(arrayOf(TALORA_MIME_TYPE, "application/zip", "application/octet-stream")) }
+                onClick = { importLauncher.launch(arrayOf(TALORA_MIME_TYPE, "application/zip", "application/octet-stream", "text/plain")) }
             ) { Text(if (amharic) "ክፈት" else "Open") }
         }
 
@@ -366,6 +438,33 @@ private fun TaloraHome(store: ProjectStore) {
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
+            Row(
+                modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                val elements = if (scriptType == "screenplay") {
+                    listOf("Scene", "Action", "Character", "Dialogue", "Transition")
+                } else {
+                    listOf("Act", "Scene", "Direction", "Character", "Dialogue")
+                }
+                elements.forEach { element ->
+                    TextButton(enabled = !busy, onClick = {
+                        val template = when (scriptType to element) {
+                            "screenplay" to "Scene" -> "INT. LOCATION - DAY"
+                            "screenplay" to "Action" -> "Action description."
+                            "screenplay" to "Character" -> "CHARACTER NAME"
+                            "screenplay" to "Dialogue" -> "Dialogue text."
+                            "screenplay" to "Transition" -> "CUT TO:"
+                            "stage_play" to "Act" -> "ACT I"
+                            "stage_play" to "Scene" -> "SCENE 1"
+                            "stage_play" to "Direction" -> "[Stage direction]"
+                            "stage_play" to "Character" -> "CHARACTER NAME:"
+                            else -> "    Dialogue text."
+                        }
+                        body = if (body.isBlank()) template else body.trimEnd() + "\n\n" + template
+                    }) { Text(element) }
+                }
+            }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 TextButton(onClick = { scriptType = "screenplay" }, enabled = !busy) {
                     Text(if (scriptType == "screenplay") "● Screenplay" else "Screenplay")
@@ -590,13 +689,8 @@ private fun TaloraHome(store: ProjectStore) {
                             busy = true
                             try {
                                 saveCurrent()
-                                val packageData = withContext(Dispatchers.IO) {
-                                    store.exportPackage(projectId)
-                                }
-                                val packageBytes = withContext(Dispatchers.Default) {
-                                    TaloraArchive.encode(packageData)
-                                }
-                                pendingExport = packageBytes
+                                val packageData = withContext(Dispatchers.IO) { store.exportPackage(projectId) }
+                                pendingExport = withContext(Dispatchers.Default) { TaloraArchive.encode(packageData) }
                                 exportLauncher.launch(safeTaloraFileName(title))
                             } catch (error: Exception) {
                                 status = error.message ?: "Export preparation failed."
@@ -608,6 +702,32 @@ private fun TaloraHome(store: ProjectStore) {
                     modifier = Modifier.weight(1f)
                 ) { Text(if (amharic) "ወደ ውጭ ላክ" else "Export .talora") }
                 Text(savedLabel, style = MaterialTheme.typography.labelMedium)
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                TextButton(enabled = !busy, onClick = {
+                    pendingExport = ScriptInterchange.exportPlainText(body)
+                    textExportLauncher.launch(safeScriptFileName(title, "txt"))
+                }) { Text("TXT") }
+                TextButton(enabled = !busy && scriptType == "screenplay", onClick = {
+                    if (scriptType == "screenplay") {
+                        pendingExport = ScriptInterchange.exportFountain(scriptType, body)
+                        textExportLauncher.launch(safeScriptFileName(title, "fountain"))
+                    }
+                }) { Text("Fountain") }
+                TextButton(enabled = !busy, onClick = {
+                    scope.launch {
+                        busy = true
+                        try {
+                            saveCurrent()
+                            pendingExport = withContext(Dispatchers.Default) { ScriptPdfExporter.create(title, body) }
+                            pdfExportLauncher.launch(safeScriptFileName(title, "pdf"))
+                        } catch (error: Exception) {
+                            status = error.message ?: "PDF export preparation failed."
+                        } finally {
+                            busy = false
+                        }
+                    }
+                }) { Text("PDF") }
             }
         }
         if (status.isNotBlank()) {
@@ -745,8 +865,12 @@ private fun InputStream.readBounded(maxBytes: Int): ByteArray {
 }
 
 private fun safeTaloraFileName(title: String): String {
+    return safeScriptFileName(title, "talora")
+}
+
+private fun safeScriptFileName(title: String, extension: String): String {
     val base = title.trim().replace(Regex("[^A-Za-z0-9_-]+"), "-").trim('-').take(60)
-    return "${base.ifBlank { "talora-project" }}.talora"
+    return "${base.ifBlank { "talora-project" }}.$extension"
 }
 
 private const val TALORA_MIME_TYPE = "application/vnd.talora.project+zip"
