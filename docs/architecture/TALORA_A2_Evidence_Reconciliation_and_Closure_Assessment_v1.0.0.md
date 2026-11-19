@@ -400,3 +400,25 @@ No exact TALORA parser/writer/renderer/OCR dependency has been selected, pinned,
 **A2 remains PARTIAL / NOT READY FOR FINAL CLOSURE APPROVAL.** The D01 blocker is closed only for the bounded development/test baseline. Remaining design proposals require Owner decisions; licensing, payment and legal matters require external evidence; Amharic acceptance requires rights-cleared corpus and competent reviewer approval. A2 closure cannot claim these as complete merely because gates are documented.
 
 No implementation, merge, PR approval, paid activation, production data use or deployment is authorized. A3 remains NOT AUTHORIZED; A4 NOT STARTED; A5 NOT AUTHORIZED.
+
+
+### 10.8 Owner approval — offline validity and Amharic acceptance plan (19 November 2026)
+
+**Owner decision: APPROVED.** The Owner approved (1) a maximum seven-calendar-day offline paid-entitlement cache validity window measured from last successful server synchronization, and (2) the Amharic/Ethiopic acceptance-plan baseline described below. These are approved A2 design decisions, not evidence of implementation or successful verification.
+
+**Offline entitlement:** seven calendar days is the maximum cache window, not a guaranteed authorization period. Earlier invalidation or fail-closed behavior applies when signature, scope, device binding, expiry, trustworthy time or revocation state cannot be established. Paid/watermark-free export fails closed in those cases; local project access and editing remain available. Offline commerce, referral qualification/reward, ownership transfer and entitlement mutation remain prohibited. Threat modelling and independent security review are still mandatory for rooted devices, clock rollback, backup/restore, reinstall, key rotation, revocation propagation, delayed reconciliation and key compromise/recovery.
+
+**Amharic/Ethiopic acceptance plan:** minimum 30 rights-cleared synthetic/commissioned screenplay and stage-play fixtures; at least two independent competent Amharic/Ethiopic reviewers; zero missing/duplicated/reordered code points in lossless `.talora` round trips; zero silent normalization changes; zero missing-glyph substitutions, clipping or overlap; deterministic pagination and semantic boundaries for identical inputs; disclosure of all lossy transformations; and zero open critical/high defects at release gate. Text fidelity, shaping/glyph coverage, editing, search, pagination and visual layout are evaluated separately. Private scripts require explicit permission; fixture provenance and commercial test-use/redistribution rights must be documented. Noto Sans Ethiopic remains an unselected candidate pending exact binary/release and license/embedding verification.
+
+**Evidence distinction:** approval of the plan does not establish that the corpus exists, reviewers are appointed, tests have run, font/dependencies are cleared, or Amharic acceptance has passed. Those remain evidence and A4/release gates.
+
+### 10.9 Revised A2 status after Owner approval
+
+| Exit criterion | Current status | Evidence / remaining work |
+|---|---|---|
+| Offline cache maximum validity | **VERIFIED-CLOSED FOR A2 POLICY** | Owner approved seven-calendar-day maximum from last successful sync; independent threat model/security review remains open |
+| Amharic/Ethiopic acceptance-plan definition | **VERIFIED-CLOSED FOR A2 PLAN** | Owner approved minimum 30 rights-cleared fixtures, at least two independent reviewers and measurable acceptance targets; corpus/reviewer/test evidence remains outstanding |
+| Amharic/Ethiopic workflow acceptance | **PARTIAL / NOT VERIFIED** | No completed rights-cleared corpus, reviewer sign-off or measured test report |
+| Overall A2 | **PARTIAL / NOT CLOSED** | Other entitlement/legal, dependency/licensing, external payment and integration evidence gates remain |
+
+No A3 implementation, merge, PR approval, A4 verification execution or A5 deployment is authorized by this approval. Existing main branches remain outside this documentation-only update.
