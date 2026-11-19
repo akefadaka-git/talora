@@ -3,7 +3,7 @@
 - **Document ID:** TALORA-A2-RM-003
 - **Version:** 1.0.0
 - **Research date:** 19 November 2026
-- **Status:** A2 research evidence and recommendation; ODR-11 awaits Owner decision; payment provider not selected
+- **Status:** A2 research evidence; ODR-11 Owner-approved 19 November 2026; payment provider not selected
 - **Branch:** `docs/a1-import-export-referral-entitlements`
 - **Implementation:** NOT AUTHORIZED
 
@@ -14,7 +14,7 @@ Two A2 gaps were investigated:
 1. TXT and Fountain have no intrinsic, stable page count. Fountain is a plain-text screenplay markup language; a five-page limit therefore needs a TALORA-defined counting profile rather than a claim that the text file itself contains pages.
 2. Ethiopia has multiple payment-gateway operators shown by the National Bank of Ethiopia (NBE) as licensed and commercialized. The public evidence supports a shortlist for merchant due diligence, but it does not establish TALORA merchant acceptance, pricing, settlement terms, recurring-payment support, foreign-currency collection, or production readiness.
 
-## 2. ODR-11 — Proposed Free limit for TXT and Fountain
+## 2. ODR-11 — Approved Free limit for TXT and Fountain
 
 ### Problem
 
@@ -22,7 +22,7 @@ The Owner-approved Free rule is five pages per export. TXT and Fountain are plai
 
 A byte or character cap would be arbitrary, would vary with language and script, and could disadvantage Amharic/Ethiopic text. Counting newline characters would also be easy to manipulate and would not reflect screenplay/stage-play layout.
 
-### Recommended rule for Owner decision
+### Owner-approved rule — 19 November 2026
 
 **Use a deterministic TALORA canonical pagination profile as the entitlement measure for every export format.**
 
@@ -52,7 +52,7 @@ A byte or character cap would be arbitrary, would vary with language and script,
 - Stage-play layout requires its own versioned profile; do not reuse screenplay assumptions without testing.
 - Golden tests must cover Amharic/Ethiopic, Latin, mixed script, long character names, dialogue, stage directions and unusual Unicode sequences.
 
-**Disposition:** This is the recommended resolution of ODR-11, not yet Owner-approved.
+**Disposition:** APPROVED by the Owner on 19 November 2026. Concrete pagination-profile geometry, fonts/metrics and renderer version remain future engineering specifications and require deterministic verification before release.
 
 ## 3. Ethiopia payment-provider evidence
 
@@ -62,6 +62,7 @@ The NBE's public “Payment Instrument Issuers/System Operators” register list
 
 - Arif Pay Financial Technology S.C — POS & payment gateway operator; license NPS/PSO/003/2021.
 - Chapa Financial Technology S.C — POS & payment gateway operator; license NPS/PSO/005/2022.
+- StarPay Financial Service S.C — payment gateway operator; license NPS-PSO/013/2025; current status “Commercialized”.
 - Santim Pay Financial Technology S.C — POS & payment gateway operator; license NPS/PSO/006/2022.
 - Addis Pay Financial Technology S.C — POS & payment gateway operator; license NPS/PSO/007/2022.
 - Yagout Pay Financial Technology S.C — POS & payment gateway operator; license NPS/PSO/008/2023.
@@ -136,4 +137,44 @@ Obtain written answers for each candidate:
 - Fountain's public developer page describes its reference code as MIT-licensed; this does not by itself settle every trademark, fixture, sample-script or third-party dependency issue. Review the exact repository LICENSE and provenance before reuse.
 - Final Draft, Fade In and Celtx proprietary-format rights remain separate per-format questions; this memo does not clear them.
 
-**Current A2 status:** ODR-11 recommendation prepared, awaiting Owner decision. ODR-14 has a documented shortlist and due-diligence questions but remains externally unresolved. No provider selected. A2 is not closed; A3 implementation, merge and deployment remain unauthorized.
+## 6. Evidence reconciliation update — 19 November 2026
+
+### 6.1 ODR-11 approval record
+
+The Owner explicitly approved the canonical-pagination policy on 19 November 2026. The A2 Technical Decision Register is the authoritative decision record. This memo's earlier “awaiting Owner decision” wording is superseded by that approval.
+
+### 6.2 Current provider documentation recheck
+
+A current recheck of public provider documentation confirms the following implementation-relevant details:
+
+- **Chapa v2:** Test and live environments are documented separately. Private keys are backend-only. The current v2 webhook guide specifies HMAC-SHA256 over the exact raw request body using the webhook secret, constant-time signature comparison, durable/idempotent event processing, and server-side transaction verification before fulfillment. The verification endpoint returns transaction status and should be checked against expected amount, currency and merchant reference. This is stronger and more precise than relying on a redirect or a client callback.
+- **Chapa documentation version caution:** older merchant-handbook examples reconstruct the body with JSON serialization. The current v2 security guidance says to verify the exact raw body. An implementation must pin one current API/documentation version and must not mix incompatible webhook recipes.
+- **ArifPay:** the current developer portal documents a sandbox, C2B checkout/direct flows, transaction verification, lifecycle/webhook handling and test methods. Public documentation does not establish TALORA merchant onboarding, fees, settlement, refunds, contractual service levels or recurring-billing eligibility.
+- **Telebirr:** the NBE register lists Ethiotelecom/Telebirr as commercialized; its developer portal publishes a C2B integration guide. That does not establish TALORA's merchant eligibility, pricing, settlement or refund/reversal arrangements.
+
+No provider account was created, no sandbox key was obtained or used, no transaction was initiated, and no live payment or paid activation occurred.
+
+### 6.3 Updated NBE register interpretation
+
+The NBE public register currently lists Arif Pay, Chapa, Santim Pay, Addis Pay, Yagout Pay, Fenanpay and StarPay as commercialized payment-gateway operators. It separately lists Telebirr and M-PESA as commercialized mobile-money issuers. Several newer entries remain in pilot phase and are not treated as production-ready candidates.
+
+The register is regulatory status evidence only. It is not evidence of TALORA merchant acceptance, active payment rails for this merchant, price, settlement, recurring billing, or service-level guarantees.
+
+### 6.4 A2 disposition of ODR-14
+
+**A2 architecture decision:** retain a provider-neutral transaction and entitlement ledger; keep Chapa and ArifPay as primary due-diligence candidates, Telebirr C2B as a direct-wallet alternative, and SantimPay/other NBE-commercialized operators as comparison candidates. No provider or price is selected.
+
+**External gate remains mandatory before payment implementation:** obtain written merchant eligibility, KYC requirements, fees, settlement, refund/reversal, recurring/one-off terms, payment-method/currency availability, sandbox access, data-protection terms and support/SLA. Confirm the applicable NBE directives and legal requirements with qualified counsel. No automatic recurring charge is allowed until provider capability, explicit customer consent, cancellation and renewal-notice rules are verified.
+
+### 6.5 Sources added in the current recheck
+
+- NBE current Payment Instrument Issuers/System Operators register: https://nbe.gov.et/payment-instrument-issuers-system-operators/
+- Chapa v2 webhook verification: https://docs.chapa.global/docs/v2/integrations/webhooks
+- Chapa v2 payment verification: https://docs.chapa.global/docs/v2/integrations/verify-payment
+- Chapa v2 security guide: https://docs.chapa.global/docs/v2/security/security-guide
+- Chapa test/live mode: https://docs.chapa.global/docs/v2/integrations/test-live-mode
+- ArifPay API documentation: https://developer.arifpay.net/docs/api/overview
+- ArifPay sandbox: https://developer.arifpay.net/sandbox
+- NBE ONPS/10/2025 amendment: https://nbe.gov.et/files/onps-10-2025-oversight-of-the-natioanl-payment-system-licensing-and-authorization-of-payment-instrument-issuer-amendment-directive/
+
+**Current A2 status:** ODR-11 is Owner-approved. ODR-14 is reconciled at the architecture/shortlist level, but provider selection and merchant/legal due diligence remain external pre-implementation gates. No provider selected; no paid activation or live transaction performed. A3 implementation, merge and deployment remain unauthorized.
