@@ -332,3 +332,71 @@ No repository main branch was modified by this assessment. No implementation, me
 **D01 disposition:** OWNER-APPROVED — FREEZE BOUNDED DEVELOPMENT BASELINE. The earlier conclusion that no baseline of any kind was selectable is superseded only for this explicitly bounded scope. Full IROKA graph integration remains NOT VERIFIED. D01 is closed for baseline selection only; remaining integration/security work stays gated.
 
 **Stage gates:** A1 VERIFIED-CLOSED; A2 remains PARTIAL / NOT CLOSED pending other A2 exit criteria; A3 NOT AUTHORIZED; A4 NOT STARTED; merge NOT AUTHORIZED; A5 NOT AUTHORIZED. No implementation, branch mutation, merge or deployment is authorized by this decision.
+
+
+## 10. Supplemental remaining-A2 reconciliation — 19 November 2026
+
+This section supersedes earlier statements in Sections 1, 7, 8 and 9 that D01 has no selectable baseline. The Owner subsequently approved and froze the bounded development-only IROKA baseline. It does not supersede the wider-graph incompatibility findings or authorize A3.
+
+### 10.1 D01 current authoritative disposition
+
+**D01: VERIFIED-CLOSED for selection/freeze of the bounded development-only baseline.**
+
+- IROKA repository: ake fadaka-git/iroka (canonical slug: ake fadaka-git/iroka).
+- Branch: integration/talora-a3-private-api.
+- Frozen verified source code commit: 8056cea136f42436d896078046796eba2129092b.
+- Documentation-only branch snapshot at approval: 00b323750fb120f80d56191069d10a825e66dc41.
+- PR #129 remains OPEN / DRAFT / UNMERGED.
+- Exact source-head CI run 44457815902 PASS; snapshot run 44458023955 PASS.
+- Three-crate graph: iroka-kernel, iroka-brain, iroka-talora-api.
+
+Scope is development/test only, deterministic fake/local execution, synthetic-only inputs, no remote provider and no persistent memory. It is not a production network service. No runnable network host, production workload-token verifier/key lifecycle, durable task/event store, effective in-flight cancellation, governed G05 memory, G03/G08 workflow, G05/G02/G11 authority graph, CIW integration, TALORA backend network client, end-to-end network test, SBOM or independent security review is established. The wider IROKA graph remains NOT VERIFIED. D03 remains API_ONLY; the baseline freeze grants no IROKA source copying, vendoring, modification, SDK packaging, redistribution or sublicensing rights.
+
+### 10.2 Entitlement lifecycle reconciliation
+
+The existing Owner-approved product defaults are settled: Free five-page export; Premium all supported formats and full-project export while active; referral first-ten once-per-account lifetime reward for one full-script watermarked PDF, no expiry while in good standing; watermark-free one-time PDF license for one project and its revisions; one/three/six/twelve-month watermark-free PDF terms; failed/cancelled export jobs do not consume credits; completed jobs are idempotently accounted.
+
+The operational state machines are now documented as proposals in the A2 Technical Decision Register: distinct payment, entitlement, export-job and referral ledgers; server-side verification; acceptance-time entitlement snapshot and short-lived completion lease; refund/chargeback, dispute, account deletion and organization ownership rules. These detailed refund, chargeback, partial-refund, cancellation, account deletion and transfer rules remain PROPOSED / REQUIRE OWNER AND LEGAL APPROVAL. No provider has been selected and no merchant agreement or consumer-law opinion exists.
+
+Referral count/output/recurrence/expiry are Owner-approved. Activation definition, fraud thresholds, manual-review triggers, appeal deadline/reviewer independence, reversal rules, account-good-standing definition and retention remain PROPOSED / REQUIRE OWNER APPROVAL.
+
+### 10.3 Offline security reconciliation
+
+ODR-12 remains approved only as a signed, bounded cache with numeric validity deferred to security review. The register now specifies a proposed device-bound signed snapshot, Android Keystore protection, pinned server verification key/key rotation, rollback/replay detection, no offline payment/referral/ownership mutation, online reconciliation and preservation of local editing/source projects after cache expiry.
+
+A seven-calendar-day maximum cache validity is recorded as a PROPOSAL ONLY, not an approved numeric policy or security guarantee. It requires threat modelling and independent security review for rooted devices, clock rollback, backup/restore, reinstall, key rotation, revocation and delayed reconciliation. Paid/watermark-free export must fail closed when entitlement validity/time cannot be established; local editing remains available.
+
+### 10.4 Amharic/Ethiopic acceptance evidence
+
+A1 and A2 already define required language/script behaviors and test classes. Additional public evidence identifies Noto Sans Ethiopic as a candidate with 566 glyphs/505 supported characters across four Ethiopic blocks and an upstream SIL Open Font License 1.1 statement. It is not yet pinned, selected or validated for TALORA. Unicode Ethiopic block/extension documentation is linked in the decision register.
+
+No rights-cleared TALORA screenplay/stage-play corpus, approved reviewer roster, golden pagination fixtures or measured acceptance report exists in the repository. The proposed 30-fixture synthetic/commissioned corpus, two independent competent reviewers and measurable zero-loss/zero-clipping/deterministic-pagination thresholds remain PROPOSED / REQUIRE OWNER AND LANGUAGE-REVIEW APPROVAL. No full Amharic workflow acceptance claim is made.
+
+### 10.5 Dependency and licensing reconciliation
+
+ODR-13 product support scope is Owner-approved: .talora, PDF, TXT, Fountain, DOCX and RTF in the bounded v1 matrix; FDX, Fade In native and Celtx native/project formats excluded from the initial promise. This closes product scope only.
+
+No exact TALORA parser/writer/renderer/OCR dependency has been selected, pinned, installed or license-audited. No TALORA dependency lockfile, SBOM, fixture provenance register, round-trip tests or legal opinion was found. Fountain MIT reference-code availability and Noto Sans Ethiopic OFL 1.1 are candidate routes only; they do not clear any particular package checkout, transitive dependencies, fixtures, font binary, trademarks or distribution obligations. Each dependency requires exact version/commit/hash, SPDX/license text, notices, dependency closure, vulnerability review, distribution/embedding analysis and SBOM. Each fixture requires documented provenance and commercial test-use rights. IROKA use remains API_ONLY.
+
+### 10.6 Revised A2 exit assessment
+
+| Exit criterion | Current status | Evidence / unresolved item |
+|---|---|---|
+| Original A1 baseline | VERIFIED-CLOSED | Owner-approved immutable baseline and A1 amendment |
+| ODR-01–ODR-13 product/technical defaults | VERIFIED-CLOSED FOR POLICY | Product defaults recorded; implementation remains gated |
+| D01 bounded IROKA baseline selection | VERIFIED-CLOSED — BOUNDED SCOPE | Frozen SHA 8056cea...; exact-head CI pass; not production-ready |
+| Wider IROKA component graph | NOT VERIFIED | G03/G08 and G05/G02/G11 incompatibility remains; outside bounded baseline |
+| Detailed refund/chargeback/cancellation/account lifecycle | PARTIAL | State-machine proposal recorded; Owner/legal decisions remain |
+| Referral activation/fraud/review/appeal operations | PARTIAL | Owner-approved reward rules; detailed operating thresholds and appeals unresolved |
+| Offline entitlement security | PARTIAL | Signed bounded cache direction approved; numeric validity and independent review unresolved |
+| Amharic acceptance evidence | PARTIAL | Requirements and candidate font evidence; rights-cleared corpus, reviewers and thresholds not approved |
+| Format product support scope | VERIFIED-CLOSED FOR POLICY | ODR-13 approved |
+| Parser/writer/renderer/font dependency licensing | PARTIAL / PRE-IMPLEMENTATION GATE | No exact dependency selected, pinned or audited; no SBOM/fixture register |
+| Payment provider and legal readiness | PARTIAL / EXTERNAL GATE | Provider-neutral design/shortlist only; no provider or merchant terms selected |
+| A3 backlog traceability | PARTIAL | Work packages identified; no A3 authorization |
+
+### 10.7 A2 closure decision
+
+**A2 remains PARTIAL / NOT READY FOR FINAL CLOSURE APPROVAL.** The D01 blocker is closed only for the bounded development/test baseline. Remaining design proposals require Owner decisions; licensing, payment and legal matters require external evidence; Amharic acceptance requires rights-cleared corpus and competent reviewer approval. A2 closure cannot claim these as complete merely because gates are documented.
+
+No implementation, merge, PR approval, paid activation, production data use or deployment is authorized. A3 remains NOT AUTHORIZED; A4 NOT STARTED; A5 NOT AUTHORIZED.
