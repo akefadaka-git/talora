@@ -26,6 +26,10 @@ class ProjectStore(context: Context) :
 
     private val json = Json { encodeDefaults = true; ignoreUnknownKeys = false }
 
+    override fun onConfigure(db: SQLiteDatabase) {
+        db.setForeignKeyConstraintsEnabled(true)
+    }
+
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
             """
@@ -137,7 +141,17 @@ class ProjectStore(context: Context) :
             val sourceId = source.document.id
             val idExists = db.rawQuery("SELECT 1 FROM projects WHERE id = ?", arrayOf(sourceId)).use { it.moveToFirst() }
             val projectId = if (idExists) UUID.randomUUID().toString() else sourceId
-            val document = source.document.copy(id = projectId)
+            val revisionIdMap = source.revisions.associate { revision ->
+                revision.id to uniqueId(db, "project_revisions", revision.id)
+            }
+            val assetIdMap = source.assets.associate { asset ->
+                asset.id to uniqueId(db, "project_assets", asset.id)
+            }
+            val document = source.document.copy(
+                id = projectId,
+                revisionIds = source.document.revisionIds.map { revisionIdMap.getValue(it) },
+                assetIds = source.document.assetIds.map { assetIdMap.getValue(it) }
+            )
             val now = System.currentTimeMillis()
             val project = TaloraProject(
                 id = projectId,
@@ -148,12 +162,12 @@ class ProjectStore(context: Context) :
                 scriptType = document.scriptType,
                 languageTag = document.languageTag,
                 metadata = document.metadata,
-                currentRevisionId = source.currentRevisionId
+                currentRevisionId = source.currentRevisionId?.let { revisionIdMap.getValue(it) }
             )
             db.insertOrThrow("projects", null, project.toContentValues())
             source.revisions.forEach { revision ->
                 val values = ContentValues().apply {
-                    put("id", revision.id)
+                    put("id", revisionIdMap.getValue(revision.id))
                     put("project_id", projectId)
                     put("created_at", revision.createdAt)
                     put("title", revision.title)
@@ -164,7 +178,7 @@ class ProjectStore(context: Context) :
             }
             source.assets.forEach { asset ->
                 val values = ContentValues().apply {
-                    put("id", asset.id)
+                    put("id", assetIdMap.getValue(asset.id))
                     put("project_id", projectId)
                     put("file_name", asset.fileName)
                     put("media_type", asset.mediaType)
@@ -238,6 +252,11 @@ class ProjectStore(context: Context) :
             assetIds = assets.map { it.id }
         )
         return TaloraPackage(document, revisions, assets, project.currentRevisionId)
+    }
+
+    private fun uniqueId(db: SQLiteDatabase, table: String, requestedId: String): String {
+        val exists = db.rawQuery("SELECT 1 FROM $table WHERE id = ?", arrayOf(requestedId)).use { it.moveToFirst() }
+        return if (exists) UUID.randomUUID().toString() else requestedId
     }
 
     private fun android.database.Cursor.toProject() = TaloraProject(
