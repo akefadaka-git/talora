@@ -5,7 +5,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
-import androidx.test.uiautomator.UiObject2
 import androidx.test.uiautomator.Until
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -65,7 +64,7 @@ class TaloraDeviceSmokeTest {
         assertTrue("Editor title field is missing", fields.isNotEmpty())
         fields[0].text = "TALORA SAF Roundtrip"
         if (fields.size > 1) fields[1].text = "SAF import export verification payload."
-        device.waitForIdle()
+        instrumentation.waitForIdleSync()
         Thread.sleep(1_500)
 
         device.findObject(By.text("ወደ ውጭ ላክ")).click()
