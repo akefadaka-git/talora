@@ -122,17 +122,20 @@ private fun TaloraHome(store: ProjectStore) {
                             ?: error("Unable to read the selected file.")
                         TaloraArchive.decode(bytes)
                     }
-                    val localProject = withContext(Dispatchers.IO) {
+                    require(imported.revisions.isEmpty() && imported.assets.isEmpty()) {
+                        "This app build cannot yet persist TALORA revision history or linked assets. The import was rejected without changing your projects."
+                    }
+                    val (createdId, refreshedProjects) = withContext(Dispatchers.IO) {
                         val created = store.createProject(imported.document.title.ifBlank { untitled })
                         store.updateProject(
                             created.id,
                             imported.document.title,
                             ProjectTextPolicy.preserveSourceText(imported.document.content)
                         )
-                        store.listProjects()
+                        created.id to store.listProjects()
                     }
-                    projects = localProject
-                    val importedProject = localProject.first()
+                    projects = refreshedProjects
+                    val importedProject = refreshedProjects.first { it.id == createdId }
                     selectedId = importedProject.id
                     title = importedProject.title
                     body = importedProject.body
