@@ -540,3 +540,29 @@ Corpus size, reviewers and thresholds above are proposals pending Owner approval
 - **A4/release verification, not A2 completion evidence:** implementation tests, deterministic pagination, Amharic visual/regression runs, security penetration review, operational payment/referral simulations.
 
 No source code, parser, font, payment provider, live key, paid service or production system was activated or modified by this reconciliation.
+
+
+### 20. Owner approval — offline validity and Amharic acceptance plan (19 November 2026)
+
+**Owner decision: APPROVED.** The Owner approved the two proposals below for the A2 design baseline. This approval records policy/design choices; it does not certify security, language quality, implementation, or release readiness.
+
+#### 20.1 Offline entitlement cache — seven-calendar-day maximum
+
+- The maximum offline validity window for a cached paid entitlement snapshot is **seven calendar days from the last successful server synchronization**.
+- This is a maximum authorization window, not a promise that every device remains eligible for seven days. Earlier invalidation, key rotation, account/entitlement revocation, detected rollback/replay, device-key invalidation or inability to establish trustworthy time may require earlier fail-closed behavior.
+- Paid and watermark-free export must fail closed when signature, scope, device binding, expiry or time integrity cannot be established. Local project access and editing remain available; cache expiry must not destroy or lock the user's source work.
+- Offline purchase, renewal, refund, chargeback, referral qualification/reward, ownership transfer and entitlement mutation remain prohibited.
+- **Mandatory evidence remains open:** threat model and independent security review covering rooted/compromised devices, clock rollback, backup/restore, reinstall, key rotation, revocation propagation, delayed reconciliation, key compromise and recovery. The seven-day choice is not a security certification and does not waive those gates.
+
+#### 20.2 Amharic/Ethiopic acceptance plan
+
+The Owner approved the proposed acceptance-plan baseline:
+
+- Build a minimum **30-fixture** rights-cleared corpus, using synthetic and/or specifically commissioned screenplay and stage-play material. Cover Amharic-only, mixed Ethiopic/Latin, punctuation, numerals, combining marks and relevant Unicode edge cases.
+- Obtain sign-off from at least **two independent competent Amharic/Ethiopic reviewers**. Reviewer competence and independence must be documented; names and availability are not presumed by this approval.
+- Acceptance targets: zero missing, duplicated or reordered code points in lossless `.talora` round trips; zero silent normalization changes; zero missing-glyph substitutions, clipping or text overlap in the approved corpus; deterministic page count and semantic page-boundary mapping for identical revision/profile/renderer inputs; all lossy transformations disclosed; zero open critical/high defects at the release gate.
+- Evaluate text fidelity, shaping/glyph coverage, editing interactions, search, pagination and visual layout separately. A font coverage scan alone is insufficient.
+- No private user script may enter the corpus without explicit permission. Fixture provenance, rights-holder, written permission/license, commercial test-use and redistribution rights, source hash and retention rule must be recorded.
+- Noto Sans Ethiopic remains a candidate only until an exact release/binary is pinned and its license, notices, embedding and actual platform/rendering coverage are verified.
+
+**Approval boundary:** the Owner approves this plan and its stated targets. This does not mean the corpus exists, reviewers have been appointed, the tests have run, Noto has been selected, or Amharic acceptance has passed. Those are evidence and A4/release gates. No A3 implementation is authorized by this decision.
