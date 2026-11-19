@@ -311,3 +311,24 @@ The appropriate next action remains read-only A2 work: reconcile exact IROKA com
 - **A5:** NOT AUTHORIZED.
 
 No repository main branch was modified by this assessment. No implementation, merge, paid service activation, production provider activation or deployment was performed.
+
+
+## 12. Owner-approved D01 bounded development baseline — 19 November 2026
+
+**Owner decision: APPROVED.** The Owner explicitly approved freezing the exact bounded development-only TALORA integration baseline proposed in the D01 reconciliation. This approval is limited to the existing immutable IROKA service-core snapshot and does not authorize new A3 implementation, source composition, merge, deployment or production use.
+
+**Frozen source-code baseline:** IROKA repository `akefadaka-git/iroka`, branch `integration/talora-a3-private-api`, verified code commit `8056cea136f42436d896078046796eba2129092b`.
+
+**Current documentation-only branch snapshot at approval:** `00b323750fb120f80d56191069d10a825e66dc41`. The two commits between the verified code head and this snapshot change only the implementation-status document. The source-code baseline remains `8056cea...`.
+
+**Base:** IROKA main `1aea1447eadf1d827d702fd6c4034fa058aac21e`. **PR:** [#129](https://github.com/akefadaka-git/iroka/pull/129), OPEN / DRAFT / UNMERGED.
+
+**Immutable verification evidence:** [GitHub Actions run 44457815902](https://github.com/akefadaka-git/iroka/actions/runs/44457815902) passed formatting, workspace compilation, no-default-features compilation, 45 BRAIN tests, 71 Kernel tests, 2 integration tests, 13 TALORA API tests and Clippy on the exact code head. [Run 44458023955](https://github.com/akefadaka-git/iroka/actions/runs/44458023955) passed on documentation snapshot `00b323...`.
+
+**Approved scope:** development/test only; private API core; deterministic fake/local execution; synthetic inputs; bounded task contracts; no remote provider; no persistent memory; no production creative data. The workspace consists of `iroka-kernel`, `iroka-brain` and `iroka-talora-api`, with committed Cargo manifests and lockfile.
+
+**Explicit exclusions and limitations:** no runnable network listener/HTTP host, production workload-token verifier, issuer/revocation configuration or key rotation; no durable task/event persistence or effective in-flight cancellation; no G05 governed memory, G03/G08 workflow, G05/G02/G11 authority graph or CIW integration; no TALORA backend network client, end-to-end network test, SBOM or independent security review. The fake/local adapter is synchronous and process-local. This baseline is not production-ready and does not establish compatibility of the wider IROKA component graph.
+
+**D01 disposition:** OWNER-APPROVED — FREEZE BOUNDED DEVELOPMENT BASELINE. The earlier conclusion that no baseline of any kind was selectable is superseded only for this explicitly bounded scope. Full IROKA graph integration remains NOT VERIFIED. D01 is closed for baseline selection only; remaining integration/security work stays gated.
+
+**Stage gates:** A1 VERIFIED-CLOSED; A2 remains PARTIAL / NOT CLOSED pending other A2 exit criteria; A3 NOT AUTHORIZED; A4 NOT STARTED; merge NOT AUTHORIZED; A5 NOT AUTHORIZED. No implementation, branch mutation, merge or deployment is authorized by this decision.
