@@ -56,10 +56,18 @@ object RevisionDiff {
         ) suffix++
 
         val result = mutableListOf<RevisionDiffLine>()
-        for (i in 0 until prefix) result += RevisionDiffLine(RevisionDiffKind.UNCHANGED, left[i])
+        val prefixShown = minOf(prefix, 3)
+        for (i in 0 until prefixShown) result += RevisionDiffLine(RevisionDiffKind.UNCHANGED, left[i])
+        if (prefix > prefixShown) {
+            result += RevisionDiffLine(RevisionDiffKind.UNCHANGED, "… ${prefix - prefixShown} common leading lines omitted …")
+        }
         result += RevisionDiffLine(RevisionDiffKind.REMOVED, "… ${left.size - prefix - suffix} earlier-version lines changed/removed …")
         result += RevisionDiffLine(RevisionDiffKind.ADDED, "… ${right.size - prefix - suffix} later-version lines changed/added …")
-        for (i in suffix downTo 1) result += RevisionDiffLine(RevisionDiffKind.UNCHANGED, left[left.size - i])
+        val suffixShown = minOf(suffix, 3)
+        if (suffix > suffixShown) {
+            result += RevisionDiffLine(RevisionDiffKind.UNCHANGED, "… ${suffix - suffixShown} common trailing lines omitted …")
+        }
+        for (i in suffixShown downTo 1) result += RevisionDiffLine(RevisionDiffKind.UNCHANGED, left[left.size - i])
         return result
     }
 }
