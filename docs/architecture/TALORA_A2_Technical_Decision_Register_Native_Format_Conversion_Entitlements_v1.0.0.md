@@ -237,7 +237,7 @@ Additional terminal or review states:
 
 Use account verification plus a meaningful first-use event, such as creating and saving a first project. Do not require uploading a script or sharing private creative content to qualify.
 
-### Reward semantics requiring Owner decision
+### Reward semantics — Owner-approved defaults (19 November 2026)
 
 - Is the milestone once per referring account lifetime, or repeatable for each additional group of ten qualified referrals?
 - Does the reward apply to one full PDF export only, or one full export in any supported Free-eligible format?
@@ -275,9 +275,9 @@ The backend entitlement ledger should store:
 
 Expiration must not invalidate prior downloads. The policy for in-progress exports at expiry must be defined; recommendation: entitlement is evaluated at job acceptance and a short-lived job token permits that accepted job to finish.
 
-### Scope confirmation required
+### Approved initial scope — 19 November 2026
 
-The product request specifically describes watermark-free PDF export. Recommendation: watermark entitlement applies to PDF only in initial release; other formats should not carry a TALORA watermark unless the Owner approves format-specific branding. Confirm before closure.
+The Owner approved watermark-free entitlement for PDF only in the initial release. Other formats should not carry a TALORA watermark unless the Owner separately approves format-specific branding.
 
 ## 9. A2-ADR-07 — Payment and commerce boundary
 
