@@ -1,18 +1,17 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 android {
     namespace = "com.talora.app"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.talora.app"
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 1
         versionName = "0.1.0-test"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -37,10 +36,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-
     buildFeatures {
         compose = true
     }
@@ -63,5 +58,5 @@ dependencies {
 
     androidTestImplementation("androidx.test:runner:1.7.0")
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
-    androidTestImplementation("androidx.test.uiautomator:uiautomator:2.3.0")
+    androidTestImplementation("androidx.test.uiautomator:uiautomator:2.4.1")
 }
