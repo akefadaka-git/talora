@@ -1,11 +1,14 @@
 package com.talora.app
 
-import android.util.Xml
-import org.xmlpull.v1.XmlPullParser
-import org.xmlpull.v1.XmlSerializer
+import javax.xml.XMLConstants
+import javax.xml.parsers.SAXParserFactory
+import org.xml.sax.Attributes
+import org.xml.sax.EntityResolver
+import org.xml.sax.InputSource
+import org.xml.sax.helpers.DefaultHandler
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import java.io.StringWriter
+import java.io.StringReader
 import java.nio.ByteBuffer
 import java.nio.charset.CodingErrorAction
 import java.util.Locale
@@ -67,26 +70,14 @@ object ScriptInterchange {
 
     fun exportFdx(title: String, scriptType: String, source: String): ByteArray {
         require(source.length <= 1_000_000) { "Script is too large to export." }
-        val writer = StringWriter()
-        val xml = Xml.newSerializer()
-        xml.setOutput(writer)
-        xml.startDocument("UTF-8", true)
-        xml.startTag(null, "FinalDraft")
-        xml.attribute(null, "DocumentType", "Script")
-        xml.attribute(null, "Template", "No")
-        xml.attribute(null, "Version", "1")
-        xml.startTag(null, "TitlePage")
-        xml.startTag(null, "Content")
-        xml.startTag(null, "Paragraph")
-        xml.attribute(null, "Type", "Title")
-        xml.startTag(null, "Text"); xml.text(title); xml.endTag(null, "Text")
-        xml.endTag(null, "Paragraph")
-        xml.endTag(null, "Content")
-        xml.endTag(null, "TitlePage")
-        xml.startTag(null, "Content")
-        val lines = source.split('\n')
+        fun esc(value: String): String = value.replace("&", "&amp;").replace("<", "&lt;")
+            .replace(">", "&gt;").replace("\"", "&quot;").replace("'", "&apos;")
+        val out = StringBuilder("""<?xml version="1.0" encoding="UTF-8"?>
+<FinalDraft DocumentType="Script" Template="No" Version="1">
+<TitlePage><Content><Paragraph Type="Title"><Text>""")
+        out.append(esc(title)).append("</Text></Paragraph></Content></TitlePage><Content>")
         var previousWasCharacter = false
-        lines.forEach { raw ->
+        source.split('\n').forEach { raw ->
             val line = raw.removeSuffix("\r")
             val trimmed = line.trim()
             val type = when {
@@ -95,62 +86,60 @@ object ScriptInterchange {
                     trimmed.startsWith("INT/EXT.", true) || trimmed.startsWith("I/E.", true) -> "Scene Heading"
                 trimmed.matches(Regex("""^(CUT TO:|FADE OUT\.?|FADE IN:|DISSOLVE TO:)$""", RegexOption.IGNORE_CASE)) -> "Transition"
                 trimmed.startsWith("(") && trimmed.endsWith(")") -> "Parenthetical"
-                trimmed == trimmed.uppercase(Locale.ROOT) &&
-                    trimmed.any { it.isLetter() } && trimmed.length <= 45 && !previousWasCharacter -> "Character"
+                trimmed == trimmed.uppercase(Locale.ROOT) && trimmed.any { it.isLetter() } &&
+                    trimmed.length <= 45 && !previousWasCharacter -> "Character"
                 previousWasCharacter -> "Dialogue"
                 else -> "Action"
             }
-            xml.startTag(null, "Paragraph"); xml.attribute(null, "Type", type)
-            xml.startTag(null, "Text"); xml.text(line); xml.endTag(null, "Text")
-            xml.endTag(null, "Paragraph")
+            out.append("<Paragraph Type=\"").append(type).append("\"><Text>")
+                .append(esc(line)).append("</Text></Paragraph>")
             previousWasCharacter = type == "Character" || type == "Parenthetical"
         }
-        xml.endTag(null, "Content")
-        xml.endTag(null, "FinalDraft")
-        xml.endDocument()
-        xml.flush()
-        return writer.toString().toByteArray(Charsets.UTF_8)
+        out.append("</Content></FinalDraft>")
+        return out.toString().toByteArray(Charsets.UTF_8)
     }
 
     fun importFdx(source: String): String {
         require(source.length <= MAX_DOCUMENT_BYTES) { "FDX document exceeds the import size limit." }
-        val parser = Xml.newPullParser()
-        parser.setInput(source.reader())
         val output = mutableListOf<String>()
+        var inTitlePage = false
         var inScriptContent = false
-        var paragraphDepth = 0
-        var textDepth = 0
+        var inParagraph = false
+        var inText = false
         var paragraph = StringBuilder()
-        var titlePageDepth = 0
         var totalChars = 0
-        while (parser.eventType != XmlPullParser.END_DOCUMENT) {
-            when (parser.eventType) {
-                XmlPullParser.START_TAG -> when (parser.name.substringAfter(':')) {
-                    "TitlePage" -> titlePageDepth++
-                    "Content" -> if (titlePageDepth == 0) inScriptContent = true
-                    "Paragraph" -> if (inScriptContent && titlePageDepth == 0) {
-                        paragraphDepth++
+        val handler = object : DefaultHandler() {
+            override fun startElement(uri: String?, localName: String?, qName: String?, attributes: Attributes?) {
+                when (localName?.ifEmpty { qName?.substringAfter(':') } ?: qName?.substringAfter(':')) {
+                    "TitlePage" -> inTitlePage = true
+                    "Content" -> if (!inTitlePage) inScriptContent = true
+                    "Paragraph" -> if (inScriptContent && !inTitlePage) {
+                        inParagraph = true
                         paragraph = StringBuilder()
                     }
-                    "Text" -> if (paragraphDepth > 0) textDepth++
-                }
-                XmlPullParser.TEXT -> if (textDepth > 0) {
-                    paragraph.append(parser.text)
-                    totalChars += parser.text.length
-                    require(totalChars <= 1_000_000) { "FDX script exceeds the text limit." }
-                }
-                XmlPullParser.END_TAG -> when (parser.name) {
-                    "Text" -> if (textDepth > 0) textDepth--
-                    "Paragraph" -> if (paragraphDepth > 0) {
-                        paragraphDepth--
-                        output += paragraph.toString()
-                    }
-                    "Content" -> if (titlePageDepth == 0) inScriptContent = false
-                    "TitlePage" -> if (titlePageDepth > 0) titlePageDepth--
+                    "Text" -> if (inParagraph) inText = true
                 }
             }
-            parser.next()
+            override fun characters(ch: CharArray, start: Int, length: Int) {
+                if (inText) {
+                    paragraph.append(ch, start, length)
+                    totalChars += length
+                    require(totalChars <= 1_000_000) { "FDX script exceeds the text limit." }
+                }
+            }
+            override fun endElement(uri: String?, localName: String?, qName: String?) {
+                when (localName?.ifEmpty { qName?.substringAfter(':') } ?: qName?.substringAfter(':')) {
+                    "Text" -> inText = false
+                    "Paragraph" -> if (inParagraph) {
+                        output += paragraph.toString()
+                        inParagraph = false
+                    }
+                    "Content" -> if (!inTitlePage) inScriptContent = false
+                    "TitlePage" -> inTitlePage = false
+                }
+            }
         }
+        parseXml(source, handler)
         require(output.isNotEmpty()) { "FDX file contains no script paragraphs." }
         return output.joinToString("\n")
     }
@@ -206,9 +195,9 @@ object ScriptInterchange {
                 require(entries <= MAX_DOCX_ENTRIES) { "DOCX contains too many package entries." }
                 val name = entry.name
                 require(!name.startsWith("/") && !name.split('/').any { it == ".." }) { "Unsafe DOCX package path." }
+                val buffer = ByteArray(8192)
                 if (name == "word/document.xml") {
                     val output = ByteArrayOutputStream()
-                    val buffer = ByteArray(8192)
                     while (true) {
                         val read = zip.read(buffer)
                         if (read < 0) break
@@ -218,7 +207,6 @@ object ScriptInterchange {
                     }
                     documentXml = output.toByteArray()
                 } else {
-                    val buffer = ByteArray(8192)
                     while (true) {
                         val read = zip.read(buffer)
                         if (read < 0) break
@@ -230,28 +218,49 @@ object ScriptInterchange {
             }
         }
         val xml = documentXml ?: error("DOCX package is missing word/document.xml.")
-        val parser = Xml.newPullParser()
-        parser.setInput(ByteArrayInputStream(xml), "UTF-8")
         val paragraphs = mutableListOf<String>()
         var inParagraph = false
+        var inText = false
         var current = StringBuilder()
-        while (parser.eventType != XmlPullParser.END_DOCUMENT) {
-            when (parser.eventType) {
-                XmlPullParser.START_TAG -> when (parser.name.substringAfter(':')) {
+        val handler = object : DefaultHandler() {
+            override fun startElement(uri: String?, localName: String?, qName: String?, attributes: Attributes?) {
+                when (localName?.ifEmpty { qName?.substringAfter(':') } ?: qName?.substringAfter(':')) {
                     "p" -> { inParagraph = true; current = StringBuilder() }
-                    "t" -> if (inParagraph) current.append(parser.nextText())
+                    "t" -> if (inParagraph) inText = true
                     "tab" -> if (inParagraph) current.append('\t')
                     "br", "cr" -> if (inParagraph) current.append('\n')
                 }
-                XmlPullParser.END_TAG -> if (parser.name.substringAfter(':') == "p" && inParagraph) {
-                    paragraphs += current.toString()
-                    inParagraph = false
+            }
+            override fun characters(ch: CharArray, start: Int, length: Int) {
+                if (inParagraph && inText) current.append(ch, start, length)
+            }
+            override fun endElement(uri: String?, localName: String?, qName: String?) {
+                when (localName?.ifEmpty { qName?.substringAfter(':') } ?: qName?.substringAfter(':')) {
+                    "t" -> inText = false
+                    "p" -> if (inParagraph) {
+                        paragraphs += current.toString()
+                        inParagraph = false
+                    }
                 }
             }
-            parser.next()
         }
+        parseXml(xml.toString(Charsets.UTF_8), handler)
         require(paragraphs.isNotEmpty()) { "DOCX contains no readable paragraphs." }
         return paragraphs.dropWhile { it.isBlank() }.joinToString("\n")
+    }
+
+    private fun parseXml(source: String, handler: DefaultHandler) {
+        val factory = SAXParserFactory.newInstance().apply {
+            isNamespaceAware = false
+            setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true)
+        }
+        val reader = factory.newSAXParser().xmlReader
+        runCatching { reader.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true) }
+        runCatching { reader.setFeature("http://xml.org/sax/features/external-general-entities", false) }
+        runCatching { reader.setFeature("http://xml.org/sax/features/external-parameter-entities", false) }
+        reader.entityResolver = EntityResolver { _, _ -> InputSource(StringReader("")) }
+        reader.contentHandler = handler
+        reader.parse(InputSource(StringReader(source)))
     }
 
     fun exportRtf(source: String): ByteArray {
