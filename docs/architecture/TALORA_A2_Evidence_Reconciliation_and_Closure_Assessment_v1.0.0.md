@@ -180,10 +180,29 @@ Additional dependency findings:
 - G05's logical contract is not an implemented memory API. The G05/G01/G02/G11 amendment leaves canonical organization authority and reviewer delegation prerequisites open; the affected operations must fail closed.
 - G08 A2 draft records a missing authoritative tenant resolver and stale Kernel lineage.
 - CIW A2 contract records that the public Kernel API does not supply tenant membership, session lifecycle, conversation persistence or streaming.
-- CIW PR #23 candidate head `69f3c181791a8dd3c5baf3d18d4556f8f316b1a1` was based on `813b24cbf81f049f2675fbb5492bdc9f262a9d87`; comparison to current main was DIVERGED (172 ahead / 22 behind). It is not adopted.
+- CIW PR #23 candidate head `69f3c181791a8dd3c5baf3d18d4556f8f316b1a1` was based on `813b24cbf81f049f2675fbb5492bdc9f262a9d87`; comparison to current main was DIVERGED (172 ahead / 25 behind). It is not adopted.
 - G04 executable API and G06 perception integration were not verified in the inspected Brain A2 report.
 
 **D01 result: RECONCILIATION PERFORMED; NO COMPATIBLE IMMUTABLE GRAPH SELECTED.** No branch is selected as the integration baseline. No arbitrary branch composition, cherry-pick, merge or source vendoring is permitted.
+
+## 7.4 Exact runtime candidate heads and dependency reconciliation
+
+The exact candidate branch heads were retrieved from GitHub, and workspace manifests/lockfiles were inspected.
+
+| Domain candidate | Exact branch HEAD | Comparison to IROKA main `1aea1447eadf1d827d702fd6c4034fa058aac21e` | Workspace/dependency evidence |
+|---|---|---|---|
+| G01/G02/G11 Kernel A3 | `bb8b9f0ee81b59e793c30cc5c9a0357d3ed48e4a` | 0 ahead / 7 behind; branch is an ancestor of main | PR #13 implementation is in main lineage; main still lacks the proposed TALORA API service crate |
+| G05 reviewer/SQLite | `47edea227fdf1dc7b6ac1667b7e7f9cbb5b4cf39` | 155 ahead / 3 behind; merge base `1a6f30cc3e64b8551f8e725c4cad8fcc3fa2c472` | Workspace adds G04/G05; G05 uses SQLite `rusqlite 0.32.1`; Cargo.lock blob `8944877dd6d2ac88a21e02c0ce84da9873033909` |
+| G05 PostgreSQL/G11 multi-worker | `2bfac619b9601330b3343f86277bb5ba29ae22b2` | 334 ahead / 3 behind; same merge base `1a6f30cc3e64b8551f8e725c4cad8fcc3fa2c472` | Adds PostgreSQL `0.19.12`, `postgres-native-tls 0.5.0`, `native-tls 0.2.12`, `tokio-postgres 0.7.18` alongside SQLite; Cargo.lock blob `e01999aeab00fa657ac4f5d02ec36d4305ad880d` |
+| G08 durable coordinator | `2cfcf8db9437824cc8181ad8af1e8d819b936e2c` | 81 ahead / 3 behind; same merge base `1a6f30cc3e64b8551f8e725c4cad8fcc3fa2c472` | G08 modules added to Kernel on separate branch; root workspace/lockfile matches main, but source ancestry is divergent |
+| CIW answer-only chat | `69f3c181791a8dd3c5baf3d18d4556f8f316b1a1` | 172 ahead / 25 behind; merge base `813b24cbf81f049f2675fbb5492bdc9f262a9d87` | Adds `iroka-conversation`, SQLite and separate workspace; Cargo.lock blob `c6caa987bb11aa8342bd5dd7981fefb646e0c7ac` |
+| G03 Brain core | `9d68b580e06bb8335a626524d64b345c3a5a38aa` | 10 ahead / 3 behind; merge base `1a6f30cc3e64b8551f8e725c4cad8fcc3fa2c472` | Adds `iroka-brain` with `serde`/`serde_json`; Cargo.lock blob `5171bde5fd4a34737d20b3d0622f45367cc12025` |
+
+The current main workspace is intentionally small: root `Cargo.toml` blob `d64d3143b762589346fb19ee77e6f40d4af8c77c` lists only `crates/iroka-kernel`; `Cargo.lock` blob is `ad864ae2b098c1cdea7a81d2d2fc8cdcf9fddf63`. It does not contain the proposed TALORA-facing service API crate.
+
+The two G05 runtime candidates are mutually DIVERGED: G05 SQLite/reviewer versus G05 PostgreSQL is 210 ahead / 31 behind, merge base `c57e4298005222ce476f685972062983c78d626f`. G05 PostgreSQL versus G08 is 81 ahead / 334 behind; G05 PostgreSQL versus Brain A3 is 10 ahead / 334 behind; CIW A3 versus G05 PostgreSQL is 356 ahead / 172 behind. The lockfiles differ. Some crates share versions, but that does not establish compatible workspace membership, trait/API contracts, tenant authority, or runtime behavior.
+
+**D01 conclusion strengthened:** exact candidate heads and dependency manifests are now identified, but no compatible immutable graph exists as an evidenced, tested, approved unit. The proper status is **RECONCILIATION COMPLETE — BASELINE NOT SELECTABLE / BLOCKED**, not “baseline selected.” A future read-only assessment must prove the selected graph's dependency resolution, API surfaces, tenant/policy/memory/audit authority boundaries and exact-head tests before the Owner can consider freezing it.
 
 ## 8. A2 exit assessment
 
@@ -207,7 +226,7 @@ Additional dependency findings:
 
 ## 9. Remaining closure blockers
 
-1. **D01 — IROKA integration graph:** obtain exact branch HEADs, dependency manifests, public API surfaces, ancestry and compatible test/security evidence for the proposed API service graph. Do not choose an integration baseline until this passes.
+1. **D01 — IROKA integration graph:** exact candidate branch HEADs, workspace manifests, lockfiles and ancestry have now been captured. They show divergent G05/G08/CIW/G03 code lines and no TALORA-facing API service in current main. Further read-only build/API/dependency/security compatibility assessment is required before any immutable graph can be proposed. Do not choose an integration baseline until that evidence passes.
 2. **ODR-13 — v1 format support matrix:** Owner must approve or amend the bounded v1 format list. Exact dependency and fixture licensing remains mandatory before implementation.
 3. **A2 completeness for entitlements:** close detailed refund/chargeback, renewal/cancellation, fraud review/appeal, account deletion and organization/project transfer state transitions as design decisions.
 4. **Offline/security numeric boundaries:** approve a numeric offline entitlement validity policy only after security threat analysis; define the approved fallback behavior.
