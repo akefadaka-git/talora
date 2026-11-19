@@ -383,7 +383,7 @@ private fun TaloraHome(store: ProjectStore) {
                 minLines = 8
             )
             Text(
-                "${body.length} characters · ${body.count { it == '\\n' } + 1} lines",
+                "${body.length} characters · ${body.count { it == 10.toChar() } + 1} lines",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
