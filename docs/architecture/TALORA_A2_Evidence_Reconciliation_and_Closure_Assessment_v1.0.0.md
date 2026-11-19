@@ -269,7 +269,7 @@ No work package may start without a separate explicit Owner authorization identi
 
 ## 11. Decision and stage-gate recommendation
 
-**A2 closure recommendation: DO NOT CLOSE YET.** The evidence work is materially advanced, but D01 remains unresolved and ODR-13's launch format matrix is not Owner-frozen. The A2 integration baseline is therefore not complete.
+**A2 closure recommendation: DO NOT CLOSE YET.** The evidence work is materially advanced and ODR-13's bounded v1 launch format matrix is Owner-approved. D01 remains unresolved: no compatible immutable IROKA integration baseline has been established. The A2 integration baseline is therefore not complete.
 
 The appropriate next action remains read-only A2 work: reconcile exact IROKA component/API commits and dependencies, then present a single compatible baseline proposal; close the remaining entitlement/security/localization design details.
 
