@@ -88,7 +88,7 @@ jobs:
 
   android-emulator-smoke:
     name: Install, launch, lifecycle, SAF and accessibility smoke tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
       - name: Checkout exact source revision
@@ -119,11 +119,11 @@ jobs:
       - name: Run Android 16 emulator tests
         uses: ReactiveCircus/android-emulator-runner@v2
         with:
-          api-level: "37.0"
+          api-level: "36"
           target: google_apis
           arch: x86_64
           profile: pixel_2
-          channel: canary
+          channel: stable
           disable-animations: true
           script: gradle -p android connectedDebugAndroidTest --no-daemon
 
