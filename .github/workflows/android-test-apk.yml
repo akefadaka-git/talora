@@ -4,10 +4,12 @@ on:
   push:
     branches:
       - "feat/android-offline-test-mvp"
+      - "feat/a3-device-ci-stabilization"
   pull_request:
     branches:
       - main
       - "docs/talora-iroka-a2-reconciliation-v0.1.1"
+      - "feat/android-offline-test-mvp"
   workflow_dispatch:
 
 permissions:
@@ -88,7 +90,7 @@ jobs:
 
   android-emulator-smoke:
     name: Install, launch, lifecycle, SAF and accessibility smoke tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
       - name: Checkout exact source revision
@@ -118,12 +120,16 @@ jobs:
 
       - name: Run Android 16 emulator tests
         uses: ReactiveCircus/android-emulator-runner@v2
+        env:
+          # Hosted Ubuntu runners do not expose KVM. Recent emulator builds
+          # require explicit opt-in to the TCG software CPU backend.
+          ANDROID_I_WANT_MY_TCG: "yes"
         with:
-          api-level: "37.0"
+          api-level: "36"
           target: google_apis
           arch: x86_64
           profile: pixel_2
-          channel: canary
+          channel: stable
           disable-animations: true
           script: gradle -p android connectedDebugAndroidTest --no-daemon
 

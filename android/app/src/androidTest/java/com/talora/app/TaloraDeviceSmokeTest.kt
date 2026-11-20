@@ -76,7 +76,7 @@ class TaloraDeviceSmokeTest {
         saveButton!!.click()
 
         assertTrue("TALORA did not report successful SAF export",
-            device.wait(Until.hasObject(By.text("የTALORA ፋይል ተቀምጧል።"), 15_000)))
+            device.wait(Until.hasObject(By.text("የTALORA ፋይል ተቀምጧል။")), 15_000))
 
         val openButton = device.findObject(By.text("ክፈት"))
         assertNotNull("Open action is missing after export", openButton)
@@ -95,7 +95,7 @@ class TaloraDeviceSmokeTest {
         archive!!.click()
 
         assertTrue("TALORA did not report successful SAF import",
-            device.wait(Until.hasObject(By.text("ፕሮጀክቱ ተጨምሯል።"), 15_000)))
+            device.wait(Until.hasObject(By.text("ፕሮጀክቱ ተጨምሯል።")), 15_000))
         assertTrue("Imported project title is missing",
             device.wait(Until.hasObject(By.text("TALORA SAF Roundtrip")), 10_000))
     }
