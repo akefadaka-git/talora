@@ -120,6 +120,10 @@ jobs:
 
       - name: Run Android 16 emulator tests
         uses: ReactiveCircus/android-emulator-runner@v2
+        env:
+          # Hosted Ubuntu runners do not expose KVM. Recent emulator builds
+          # require explicit opt-in to the TCG software CPU backend.
+          ANDROID_I_WANT_MY_TCG: "yes"
         with:
           api-level: "36"
           target: google_apis
