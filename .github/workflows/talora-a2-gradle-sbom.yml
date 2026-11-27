@@ -29,7 +29,7 @@ jobs:
       - name: Checkout exact TALORA Android source revision
         uses: actions/checkout@v4
         with:
-          ref: ${{ env.TALORA_SOURCE_SHA }}
+          ref: "911531b762aece4a6df800c91488b87cfee47bce"
           path: talora-source
           persist-credentials: false
 
@@ -66,7 +66,7 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: ${{ env.GRADLE_VERSION }}
+          gradle-version: "9.3.1"
 
       - name: Install Android SDK API 37
         shell: bash
@@ -124,8 +124,15 @@ jobs:
                   classpath 'org.cyclonedx.bom:org.cyclonedx.bom.gradle.plugin:3.6.1'
               }
           }
+          rootProject {
+              apply plugin: 'org.cyclonedx.bom'
+          }
           allprojects {
-              pluginManager.apply('org.cyclonedx.bom')
+              tasks.matching { it.name == 'cyclonedxDirectBom' }.configureEach {
+                  includeBuildEnvironment = true
+                  includeMetadataResolution = true
+                  failOnUnresolvedDependencies = true
+              }
           }
           GRADLE_INIT
           gradle -p android --init-script /tmp/talora-cyclonedx.init.gradle cyclonedxBom --no-daemon --console=plain > ../evidence/gradle/cyclonedx-generation.log 2>&1
