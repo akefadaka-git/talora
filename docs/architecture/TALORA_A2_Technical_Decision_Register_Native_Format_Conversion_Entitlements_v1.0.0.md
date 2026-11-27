@@ -648,3 +648,33 @@ The IROKA workspace manifest at branch integration/talora-a3-private-api has blo
 | A3 backlog traceability | PARTIAL | Work packages identified; no expansion of A3 authority |
 
 **Overall A2: PARTIAL / NOT READY FOR FINAL CLOSURE APPROVAL.** Remaining Owner decisions are the detailed lifecycle defaults in §21.2. External legal/vendor/data-residency gates and exact dependency/fixture rights must remain explicit pre-implementation or production blockers; they cannot be marked passed by design documentation. No merge, A4 verification or A5 deployment is authorized by this assessment.
+
+
+---
+
+## 22. Subsequent Owner commercial decision — advertising and rewarded lower-tier access (27 November 2026)
+
+The Owner approved a supplementary commercial direction on 27 November 2026. The full versioned decision is preserved in [TALORA A2 Commercial Decision Addendum 002](TALORA_A2_Commercial_Decision_Addendum_002_Rewarded_Ads_v1.0.0.md).
+
+**Binding direction:**
+- The Free experience must remain meaningfully useful without payment.
+- TALORA may earn advertising revenue from users who do not purchase premium access.
+- Rewarded ads are opt-in and grant **temporary access only to selected capabilities from the lower premium tier**.
+- Rewarded ads do not grant the full premium tier, permanent access, paid-purchase status, referral rewards, or watermark-free project/export rights.
+- Ads must not interrupt typing, editing, saving, importing, exporting, or project recovery; ad unavailability must not block ordinary Free-tier use.
+- No ad network, SDK, price, duration, quota, tracking behavior or payment provider is selected or activated by this decision.
+
+**Still open:** exact rewarded-access duration, eligible capability keys, daily/weekly caps, stacking/cooldown rules, provider, consent/age controls, personalization and privacy/data-flow review.
+
+**A2 interpretation:** high-level monetization direction and lower-tier-only rewarded access are **VERIFIED-CLOSED FOR POLICY DIRECTION**. Operational parameters and legal/privacy/provider evidence remain **OPEN / PARTIAL**. The existing project, referral, page-cap, subscription and watermark-free entitlements remain separate and are not silently replaced.
+
+## 23. FDX and implementation evidence reconciliation (27 November 2026)
+
+The subsequent read-only source reconciliation is preserved in [TALORA A2 FDX, Licensing and Technical Reconciliation Addendum 003](TALORA_A2_FDX_Licensing_Technical_Reconciliation_Addendum_003_v1.0.0.md).
+
+- ODR-13 remains **VERIFIED-CLOSED FOR V1 POLICY**: FDX is excluded from the initial v1 supported-format promise. Experimental FDX parser/writer code in the Android branch does not supersede this decision or establish Final Draft interoperability.
+- Exact Android direct dependency declarations have been inventoried, but transitive dependency closure, license/NOTICE review, vulnerability disposition and SBOM remain **PARTIAL / NOT CLEARED**.
+- Noto Sans Ethiopic and Noto Serif Ethiopic remain approved product font choices, but the inspected Android tree contains no bundled font binaries/resources or font notices: **MISSING**.
+- Authorized golden-format fixture rights and the approved Amharic/Ethiopic acceptance corpus/reviewer evidence remain **MISSING / NOT VERIFIED**.
+- Later device smoke runs for PR #3 and PR #5 failed at the TALORA home-screen assertion: **FAIL** for device acceptance.
+- Overall A2 remains **PARTIAL / NOT CLOSED**. No implementation, merge, A4 execution or deployment is authorized.
