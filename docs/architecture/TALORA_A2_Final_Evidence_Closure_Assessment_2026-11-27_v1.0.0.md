@@ -381,3 +381,17 @@ The attempt to inspect the Actions page through the separate browser automation 
 Verify the push-triggered Actions run for branch `a2/evidence-gradle-sbom-2026-11-27`. If it ran, inspect its job logs and download the evidence artifact; if it did not run, use the repository's GitHub Actions page to manually dispatch the workflow on that branch. Do not change the workflow or source until a concrete failure is identified.
 
 **A2 remains PARTIAL / NOT VERIFIED-CLOSED** until the outputs are produced, validated and linked to the exact source SHA.
+
+
+### Workflow configuration refinement — 27 November 2026
+
+A review of the CycloneDX Gradle plugin's configuration documentation identified that build-environment dependencies are excluded from Direct SBOMs by default. The isolated workflow was refined to set `includeBuildEnvironment = true`, enable metadata enrichment, and fail if a dependency in a scanned configuration remains unresolved. This is necessary so buildscript/plugin dependency configurations are included in the direct SBOM rather than only appearing in separate `buildEnvironment` text reports.
+
+The workflow also uses literal, pinned source SHA and Gradle version values in the action `with` inputs, avoiding dependence on expression-context availability there.
+
+- Refinement commit: `b05fc394c1bb792ef0f4138a82bbc43457dc40a7`
+- Workflow blob SHA after refinement: `24a0a4bbba25775ba440aee00848abfc52927378`
+- Re-fetch verification: source SHA pin, Gradle pin, `includeBuildEnvironment=true`, metadata enrichment and unresolved-dependency failure setting all present.
+- Workflow execution and artifact production remain **NOT VERIFIED**. The optional browser inspection route was unavailable due to its own external wallet balance; no top-up is requested. The connected GitHub toolset in this session does not expose a list-runs operation for push-triggered Actions runs or a run-dispatch operation.
+
+The CycloneDX plugin is applied through a temporary init script, not added to TALORA's build files. Its own tooling dependency is therefore outside the application/build-environment SBOM boundary and should be recorded as evidence-tooling metadata, not misrepresented as a TALORA runtime dependency.
