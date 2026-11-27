@@ -303,3 +303,34 @@ The official Noto Ethiopic v2.102 releases and SIL OFL 1.1 are cited as upstream
 ## 10. Owner-approved review-timing amendment — 27 November 2026
 
 Amendment 004, [TALORA A2 Independent Review Timing Amendment](TALORA_A2_Independent_Review_Timing_Amendment_004_v1.0.0.md), is binding for reviewer cadence. The two independent competent reviewers are required once at the final pre-A5 release-acceptance gate against the exact release candidate. They are not required at A1, A2, each A3 development step or routine A4 internal verification. Targeted re-review is required only where a material post-review change affects the reviewed acceptance surface. The 30-fixture rights-cleared corpus, fixture rights register and substantive acceptance criteria remain unchanged. Final review is NOT DUE at A2.
+
+
+## 11. A2 evidence-gap closure continuation — 27 November 2026
+
+Following the Owner's explicit authorization, documentation-only evidence work continued on PR #6. No A3 work, application-source modification, workflow modification/rerun, merge or deployment was performed.
+
+### Gradle dependency evidence
+
+The exact Android build files were inspected at source SHA `911531b762aece4a6df800c91488b87cfee47bce`, the PR #5 source head. Direct plugin and dependency declarations, repository configuration, Android SDK targets, Java compatibility and the existing successful Gradle build event are now recorded in [TALORA A2 Gradle Dependency Evidence Assessment 005](TALORA_A2_Gradle_Dependency_Evidence_Assessment_005_v1.0.0.md).
+
+Run #117 (ID `44690787519`) verified the exact source SHA, used Temurin 17.0.21+9 and Gradle 9.3.1, and completed `gradle -p android testDebugUnitTest lintDebug assembleDebug --no-daemon` successfully. However, the Gradle setup action explicitly had `dependency-graph: disabled` and the log set `GITHUB_DEPENDENCY_GRAPH_ENABLED: false`. No dependency report or SBOM was uploaded. Thus the build proves that dependency resolution was sufficient for that successful build, but it does not provide the complete resolved graph, dependency artifact hashes/provenance, SPDX/CycloneDX SBOM, complete license/NOTICE review or vulnerability disposition. These remain **MISSING / NOT CLEARED**. No workflow or build configuration was changed to obtain them.
+
+### Fixture rights
+
+A controlled 30-slot register and acquisition plan is now recorded in [TALORA A2 Fixture Rights Register and Acquisition Plan 006](TALORA_A2_Fixture_Rights_Register_Acquisition_Plan_006_v1.0.0.md). It defines the permission scope, provenance, rights-holder, attribution, retention and hash evidence required before use. It does not create or presume any rights.
+
+All 30 fixture entries remain **MISSING** pending original/commissioned material and documented rights-holder grants or licenses. No fixture files were added and no fixture rights are claimed.
+
+### Current disposition
+
+- Gradle direct declarations and build execution evidence: **VERIFIED**.
+- Resolved dependency/plugin graph, SBOM, artifact-level provenance, license/NOTICE and vulnerability review: **MISSING / NOT CLEARED**.
+- Fixture register template/acquisition requirements: **DOCUMENTED**.
+- Thirty rights-cleared fixture files and rights evidence: **MISSING**.
+- Final two-reviewer review: **NOT DUE — PRE-A5**, per Owner-approved Amendment 004.
+- Device acceptance: **FAIL / P0 BLOCKER** remains, based on Run #117 and Run #111.
+- A2 overall: **PARTIAL / NOT VERIFIED-CLOSED**.
+
+### Immediate next step
+
+The next technical evidence item is a separately authorized, reproducible Gradle evidence execution that emits the full configuration-specific dependency/plugin graph and SPDX or CycloneDX SBOM tied to the exact Android source SHA, followed by license/NOTICE and vulnerability review. The current workflow does not emit these outputs, so this cannot be honestly completed by documentation alone without a suitable already-authorized execution capability. Fixture rights clearance proceeds in parallel by obtaining original/commissioned fixtures and the corresponding rights-holder grants; no reviewer appointment is needed until the pre-A5 gate.
