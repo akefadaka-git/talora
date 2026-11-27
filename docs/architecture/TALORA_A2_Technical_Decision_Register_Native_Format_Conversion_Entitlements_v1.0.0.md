@@ -506,7 +506,7 @@ No rights-cleared TALORA screenplay/stage-play acceptance corpus, signed reviewe
 **Proposed acceptance corpus — Owner/reviewer approval required:**
 - Commission or author original synthetic screenplay and stage-play samples; record author, permission/license, allowed uses, source hash and fixture ID for each. Do not place private user scripts in tests without separate explicit consent.
 - Minimum proposed set: 30 fixtures, including Amharic-only, Amharic/Latin mixed-script and punctuation/numeral/Unicode-edge cases, spanning screenplay and stage-play layouts. Include character names, scene headings, dialogue, action, stage directions, long names, Ethiopic wordspace/punctuation and supported numeral forms.
-- Review by at least two independent competent Amharic/Ethiopic readers/editors, with qualification and sign-off recorded. Extend to Afaan Oromo, Tigrinya and Maale only when each language's launch scope and competent reviewers are approved.
+- Final pre-A5 review by two independent competent Amharic/Ethiopic readers/editors, with qualification, independence and sign-off recorded against the release candidate; see Owner-approved Amendment 004. No repeated reviewer sign-off during A1–A4. Extend to Afaan Oromo, Tigrinya and Maale only when each language's launch scope and competent reviewers are approved.
 - Acceptance thresholds: zero missing, duplicated or reordered text code points in lossless .talora round trips; zero silent normalization changes; zero missing-glyph/tofu substitutions for the approved corpus; zero clipped/overlapping text; deterministic page count and semantic page-boundary mapping for identical revision/profile/renderer inputs; all L2/L3 losses disclosed; zero open critical/high defects at release gate. Human reviewers sign off visual regressions; remaining medium/low issues are documented.
 - Track text fidelity, shaping/glyph, editing interaction, search, pagination and visual-layout results separately. Font coverage scans alone are not acceptance.
 
@@ -559,7 +559,7 @@ No source code, parser, font, payment provider, live key, paid service or produc
 The Owner approved the proposed acceptance-plan baseline:
 
 - Build a minimum **30-fixture** rights-cleared corpus, using synthetic and/or specifically commissioned screenplay and stage-play material. Cover Amharic-only, mixed Ethiopic/Latin, punctuation, numerals, combining marks and relevant Unicode edge cases.
-- Obtain sign-off from at least **two independent competent Amharic/Ethiopic reviewers**. Reviewer competence and independence must be documented; names and availability are not presumed by this approval.
+- Obtain sign-off from at least **two independent competent Amharic/Ethiopic reviewers at the final pre-A5 release-acceptance gate only**, under Owner-approved Amendment 004. Reviewer competence and independence must be documented; names and availability are not presumed by this approval. No recurring A1–A4 review is required.
 - Acceptance targets: zero missing, duplicated or reordered code points in lossless `.talora` round trips; zero silent normalization changes; zero missing-glyph substitutions, clipping or text overlap in the approved corpus; deterministic page count and semantic page-boundary mapping for identical revision/profile/renderer inputs; all lossy transformations disclosed; zero open critical/high defects at the release gate.
 - Evaluate text fidelity, shaping/glyph coverage, editing interactions, search, pagination and visual layout separately. A font coverage scan alone is insufficient.
 - No private user script may enter the corpus without explicit permission. Fixture provenance, rights-holder, written permission/license, commercial test-use and redistribution rights, source hash and retention rule must be recorded.
@@ -574,7 +574,7 @@ This section is the current reconciliation authority where earlier sections cont
 ### 21.1 Supersession and consistency corrections
 
 - **Offline validity:** Section 19.3's seven-day statement labelled NOT OWNER-APPROVED and Section 19.6's statement that numeric validity still requires Owner approval are superseded by Owner approval in Section 20.1 and closure assessment Section 10.8. The binding A2 policy is a maximum of seven calendar days from last successful synchronization, with earlier fail-closed behavior where signature, device binding, revocation, expiry or trustworthy time cannot be established. Independent threat modelling/security review remains open.
-- **Amharic acceptance plan:** Section 19.4's pending-approval language is superseded by Owner approval in Section 20.2. The 30-fixture/two-reviewer/zero-loss acceptance-plan definition is approved; corpus creation, reviewer appointment and measured acceptance remain NOT DONE / NOT VERIFIED.
+- **Amharic acceptance plan:** Section 19.4's pending-approval language is superseded by Owner approval in Section 20.2. The 30-fixture/two-reviewer/zero-loss acceptance-plan definition is approved. Owner-approved Amendment 004 moves the two-reviewer activity to the final pre-A5 release-acceptance gate; no intermediate A1–A4 reviewer attestations are required. Corpus creation and rights clearance remain NOT DONE / NOT VERIFIED; final review is NOT DUE.
 - **D01:** the earlier no-selectable-graph conclusion applies to the wider IROKA component graph. It is superseded only for the bounded development/test baseline frozen at SHA 8056cea136f42436d896078046796eba2129092b. D01 is VERIFIED-CLOSED for bounded baseline selection, not for full graph composition, production service readiness or source redistribution.
 
 ### 21.2 Entitlement lifecycle — proposed operational defaults for Owner decision
@@ -638,7 +638,7 @@ The IROKA workspace manifest at branch integration/talora-a3-private-api has blo
 | A1 baseline | VERIFIED-CLOSED | Original approved immutable baseline preserved |
 | ODR-01–ODR-13 product defaults | VERIFIED-CLOSED FOR POLICY | Bounded v1 product/format scope; not implementation or license clearance |
 | Offline validity | VERIFIED-CLOSED FOR A2 POLICY | Seven-calendar-day maximum; security review remains open |
-| Amharic acceptance plan | VERIFIED-CLOSED FOR A2 PLAN | 30-fixture/two-reviewer acceptance-plan definition; no corpus/test pass claimed |
+| Amharic acceptance plan | VERIFIED-CLOSED FOR A2 PLAN | 30-fixture/zero-loss criteria retained; two independent reviewers scheduled once at final pre-A5 gate by Amendment 004; no corpus/test pass claimed |
 | D01 IROKA baseline selection | VERIFIED-CLOSED — BOUNDED DEVELOPMENT/TEST SCOPE | SHA 8056cea... and exact-head CI pass; wider graph and production readiness not closed |
 | Detailed entitlement/referral lifecycle | PARTIAL — OWNER DECISIONS REQUIRED | Proposed operating rules in §21.2; not yet approved |
 | TALORA dependency/fixture distribution rights | PARTIAL / PRE-IMPLEMENTATION GATE | No parser/writer/renderer/font pinned; no SBOM or fixture rights register |
@@ -648,3 +648,63 @@ The IROKA workspace manifest at branch integration/talora-a3-private-api has blo
 | A3 backlog traceability | PARTIAL | Work packages identified; no expansion of A3 authority |
 
 **Overall A2: PARTIAL / NOT READY FOR FINAL CLOSURE APPROVAL.** Remaining Owner decisions are the detailed lifecycle defaults in §21.2. External legal/vendor/data-residency gates and exact dependency/fixture rights must remain explicit pre-implementation or production blockers; they cannot be marked passed by design documentation. No merge, A4 verification or A5 deployment is authorized by this assessment.
+
+
+---
+
+## 22. Subsequent Owner commercial decision — advertising and rewarded lower-tier access (27 November 2026)
+
+The Owner approved a supplementary commercial direction on 27 November 2026. The full versioned decision is preserved in [TALORA A2 Commercial Decision Addendum 002](TALORA_A2_Commercial_Decision_Addendum_002_Rewarded_Ads_v1.0.0.md).
+
+**Binding direction:**
+- The Free experience must remain meaningfully useful without payment.
+- TALORA may earn advertising revenue from users who do not purchase premium access.
+- Rewarded ads are opt-in and grant **temporary access only to selected capabilities from the lower premium tier**.
+- Rewarded ads do not grant the full premium tier, permanent access, paid-purchase status, referral rewards, or watermark-free project/export rights.
+- Ads must not interrupt typing, editing, saving, importing, exporting, or project recovery; ad unavailability must not block ordinary Free-tier use.
+- No ad network, SDK, price, duration, quota, tracking behavior or payment provider is selected or activated by this decision.
+
+**Still open:** exact rewarded-access duration, eligible capability keys, daily/weekly caps, stacking/cooldown rules, provider, consent/age controls, personalization and privacy/data-flow review.
+
+**A2 interpretation:** high-level monetization direction and lower-tier-only rewarded access are **VERIFIED-CLOSED FOR POLICY DIRECTION**. Operational parameters and legal/privacy/provider evidence remain **OPEN / PARTIAL**. The existing project, referral, page-cap, subscription and watermark-free entitlements remain separate and are not silently replaced.
+
+## 23. FDX and implementation evidence reconciliation (27 November 2026)
+
+The subsequent read-only source reconciliation is preserved in [TALORA A2 FDX, Licensing and Technical Reconciliation Addendum 003](TALORA_A2_FDX_Licensing_Technical_Reconciliation_Addendum_003_v1.0.0.md).
+
+- ODR-13 remains **VERIFIED-CLOSED FOR V1 POLICY**: FDX is excluded from the initial v1 supported-format promise. Experimental FDX parser/writer code in the Android branch does not supersede this decision or establish Final Draft interoperability.
+- Exact Android direct dependency declarations have been inventoried, but transitive dependency closure, license/NOTICE review, vulnerability disposition and SBOM remain **PARTIAL / NOT CLEARED**.
+- Noto Sans Ethiopic and Noto Serif Ethiopic remain approved product font choices, but the inspected Android tree contains no bundled font binaries/resources or font notices: **MISSING**.
+- Authorized golden-format fixture rights and the approved Amharic/Ethiopic acceptance corpus/reviewer evidence remain **MISSING / NOT VERIFIED**.
+- Later device smoke runs for PR #3 and PR #5 failed at the TALORA home-screen assertion: **FAIL** for device acceptance.
+- Overall A2 remains **PARTIAL / NOT CLOSED**. No implementation, merge, A4 execution or deployment is authorized.
+
+
+---
+
+## 24. Final evidence-closure assessment — 27 November 2026
+
+The consolidated Owner-facing assessment is preserved in [TALORA A2 Final Evidence-Closure Assessment](TALORA_A2_Final_Evidence_Closure_Assessment_2026-11-27_v1.0.0.md).
+
+**Final disposition: A2 PARTIAL / NOT VERIFIED-CLOSED.**
+
+Evidence reconciled:
+- Exact direct Gradle plugin and dependency declarations have been inventoried from the Android build files.
+- The resolved dependency graph, complete plugin/transitive license review, artifact checksums, vulnerability disposition and SPDX/CycloneDX SBOM remain **MISSING / NOT CLEARED**. No lockfile, verification metadata or SBOM artifact was found; CI artifacts contain test/lint/APK/emulator outputs, not a resolved dependency graph.
+- Exact Noto Sans Ethiopic v2.102 and Noto Serif Ethiopic v2.102 release tags/assets, Google Fonts metadata, upstream source commit and SIL OFL 1.1 license were verified. Actual release archives/TTFs were not downloaded and hashed; no font binaries or OFL notice are present in the inspected TALORA app tree. Font app integration and rendering are **PARTIAL / NOT VERIFIED**.
+- Existing tests use short synthetic inline strings and generated in-memory data. No 30-item rights-cleared Amharic/Ethiopic corpus or full format-fixture permission register was found. The two-reviewer final release review is **NOT DUE — PRE-A5 GATE** under Amendment 004; no intermediate reviewer attestations are required.
+- PR #3 Run #111 (head `97e02c0da28d8cbbdc41aff1fbb05958d58fe050`) and PR #5 Run #117 (head `911531b762aece4a6df800c91488b87cfee47bce`) both passed the build/unit/APK job and failed the separate device/emulator job at the TALORA home-screen launch assertion. Both remain explicit P0 acceptance blockers.
+- The technical requirement trace confirms partial native archive and text interchange foundations, no v1 FDX support under ODR-13, limited DOCX/RTF fidelity, unaccepted PDF pagination, missing semantic screenplay/stage-play model evidence, missing font/corpus evidence and no verified TALORA-to-IROKA network E2E path.
+
+The official Noto release records and OFL 1.1 establish a viable upstream font licensing route, not the presence or verification of binaries in TALORA. Direct dependency declarations do not constitute a resolved dependency inventory or SBOM. No third-party fixture rights are inferred.
+
+**Owner recommendation:** do not close A2. The outstanding evidence requires an exact resolved build/SBOM, binary acquisition and hash verification, app packaging/render tests, rights-holder permissions or commissioned rights-cleared fixtures, and successful device acceptance after separately authorized implementation and verification. Two independent reviewers will assess the final release candidate once at the pre-A5 gate under Owner-approved Amendment 004.
+
+No source code, dependency, workflow, database, production configuration or main branch was changed. No workflow was rerun. A3, merge, A4 and A5 remain separately gated and unauthorized.
+
+
+---
+
+## 25. Owner amendment — independent review timing (27 November 2026)
+
+Owner-approved Amendment 004 is recorded in [TALORA A2 Independent Review Timing Amendment 004](TALORA_A2_Independent_Review_Timing_Amendment_004_v1.0.0.md). It supersedes only the timing of independent language/document-quality review: two independent competent reviewers review the final release candidate once immediately before A5 deployment authorization. No repeated reviewer sign-off is required at A1, A2, A3 development steps or routine A4 internal verification. The 30-fixture rights-cleared corpus, rights register, zero-loss/glyph/rendering acceptance criteria and requirement to resolve critical/high defects remain unchanged. Rights clearance is required before fixture use. Final review is NOT DUE at A2. This amendment does not authorize A3, merge, deployment or A5.
