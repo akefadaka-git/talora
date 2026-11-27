@@ -334,3 +334,50 @@ All 30 fixture entries remain **MISSING** pending original/commissioned material
 ### Immediate next step
 
 The next technical evidence item is a separately authorized, reproducible Gradle evidence execution that emits the full configuration-specific dependency/plugin graph and SPDX or CycloneDX SBOM tied to the exact Android source SHA, followed by license/NOTICE and vulnerability review. The current workflow does not emit these outputs, so this cannot be honestly completed by documentation alone without a suitable already-authorized execution capability. Fixture rights clearance proceeds in parallel by obtaining original/commissioned fixtures and the corresponding rights-holder grants; no reviewer appointment is needed until the pre-A5 gate.
+
+
+## 12. Dedicated Gradle dependency/SBOM evidence workflow — Owner-authorized execution setup
+
+On 27 November 2026, the Owner explicitly authorized a dedicated isolated GitHub Actions workflow on a separate A2 evidence branch. The authorization permits workflow configuration and execution for dependency evidence only; it does not authorize application source changes, A3, merge or deployment.
+
+### Workflow setup
+
+- Repository: `akefadaka-git/talora`
+- Isolated branch: `a2/evidence-gradle-sbom-2026-11-27`
+- Workflow file: `.github/workflows/talora-a2-gradle-sbom.yml`
+- Workflow commit: `83dabab59156f18f8c3107f263e65d83f8073db8`
+- Workflow file blob: `ef682a2c0006a880c40fd552e91d8085e780dd0d`
+- Exact Android source SHA selected for checkout: `911531b762aece4a6df800c91488b87cfee47bce`
+- Gradle: 9.3.1; JDK: 17.
+- CycloneDX Gradle plugin: 3.6.1.
+- OSV-Scanner: v2.7.1.
+
+The workflow is restricted to the isolated branch (push of the workflow file) or manual dispatch. It grants only `contents: read`, uses checkout with persisted credentials disabled, and uploads evidence as a workflow artifact. It does not commit generated dependency metadata, change application files, alter existing workflows, publish dependency graphs to GitHub Dependency Graph, or remediate dependencies.
+
+### Planned outputs
+
+1. Full `:app:dependencies` tree covering all configurations.
+2. App and root `buildEnvironment` plugin/buildscript dependency reports.
+3. Gradle-generated SHA-256 dependency verification metadata, copied to the evidence bundle rather than committed to source.
+4. CycloneDX aggregate JSON/XML and direct project SBOMs.
+5. License metadata inventory, missing-license list and discovered repository/cache LICENSE/NOTICE/COPYING paths.
+6. OSV-Scanner vulnerability report against the generated SBOM.
+7. Run metadata and SHA-256 manifest for evidence files.
+
+The CycloneDX plugin's published documentation states that version 3.x supports Gradle 8.4 or newer and generates aggregate/direct SBOMs from resolved Gradle dependency graphs. Gradle's documentation states that `dependencies` reports selected direct/transitive versions and that `--write-verification-metadata sha256` resolves configurations and records artifact checksums. OSV-Scanner documentation supports scanning CycloneDX SBOM files. These are tool capabilities, not proof that this TALORA run has succeeded.
+
+### Execution status and limitations
+
+- Workflow file committed and fetched back from the isolated branch: **VERIFIED**.
+- Exact source SHA is hard-pinned in the workflow and checked after checkout: **CONFIGURED; RUN NOT YET VERIFIED**.
+- Workflow run start, completion and job result: **NOT VERIFIED** in this assessment.
+- Dependency graph, generated verification metadata, SBOM, license/NOTICE inventory and vulnerability report: **NOT YET RECEIVED / NOT VERIFIED**.
+- No artifact IDs, report hashes or vulnerability counts are asserted at this stage.
+
+The attempt to inspect the Actions page through the separate browser automation service could not start because that service reported an insufficient wallet balance. No top-up is requested or required by this project; this is a limitation of that optional inspection route, not evidence of a GitHub Actions billing requirement. The workflow was committed through the connected GitHub integration. Its actual run and artifacts still require confirmation from GitHub Actions.
+
+### Immediate next step
+
+Verify the push-triggered Actions run for branch `a2/evidence-gradle-sbom-2026-11-27`. If it ran, inspect its job logs and download the evidence artifact; if it did not run, use the repository's GitHub Actions page to manually dispatch the workflow on that branch. Do not change the workflow or source until a concrete failure is identified.
+
+**A2 remains PARTIAL / NOT VERIFIED-CLOSED** until the outputs are produced, validated and linked to the exact source SHA.
