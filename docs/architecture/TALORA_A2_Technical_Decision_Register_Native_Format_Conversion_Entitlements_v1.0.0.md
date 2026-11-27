@@ -678,3 +678,26 @@ The subsequent read-only source reconciliation is preserved in [TALORA A2 FDX, L
 - Authorized golden-format fixture rights and the approved Amharic/Ethiopic acceptance corpus/reviewer evidence remain **MISSING / NOT VERIFIED**.
 - Later device smoke runs for PR #3 and PR #5 failed at the TALORA home-screen assertion: **FAIL** for device acceptance.
 - Overall A2 remains **PARTIAL / NOT CLOSED**. No implementation, merge, A4 execution or deployment is authorized.
+
+
+---
+
+## 24. Final evidence-closure assessment — 27 November 2026
+
+The consolidated Owner-facing assessment is preserved in [TALORA A2 Final Evidence-Closure Assessment](TALORA_A2_Final_Evidence_Closure_Assessment_2026-11-27_v1.0.0.md).
+
+**Final disposition: A2 PARTIAL / NOT VERIFIED-CLOSED.**
+
+Evidence reconciled:
+- Exact direct Gradle plugin and dependency declarations have been inventoried from the Android build files.
+- The resolved dependency graph, complete plugin/transitive license review, artifact checksums, vulnerability disposition and SPDX/CycloneDX SBOM remain **MISSING / NOT CLEARED**. No lockfile, verification metadata or SBOM artifact was found; CI artifacts contain test/lint/APK/emulator outputs, not a resolved dependency graph.
+- Exact Noto Sans Ethiopic v2.102 and Noto Serif Ethiopic v2.102 release tags/assets, Google Fonts metadata, upstream source commit and SIL OFL 1.1 license were verified. Actual release archives/TTFs were not downloaded and hashed; no font binaries or OFL notice are present in the inspected TALORA app tree. Font app integration and rendering are **PARTIAL / NOT VERIFIED**.
+- Existing tests use short synthetic inline strings and generated in-memory data. No 30-item rights-cleared Amharic/Ethiopic corpus, full format-fixture permission register or two independent reviewer attestations were found. Fixture rights and language acceptance are **MISSING**.
+- PR #3 Run #111 (head `97e02c0da28d8cbbdc41aff1fbb05958d58fe050`) and PR #5 Run #117 (head `911531b762aece4a6df800c91488b87cfee47bce`) both passed the build/unit/APK job and failed the separate device/emulator job at the TALORA home-screen launch assertion. Both remain explicit P0 acceptance blockers.
+- The technical requirement trace confirms partial native archive and text interchange foundations, no v1 FDX support under ODR-13, limited DOCX/RTF fidelity, unaccepted PDF pagination, missing semantic screenplay/stage-play model evidence, missing font/corpus evidence and no verified TALORA-to-IROKA network E2E path.
+
+The official Noto release records and OFL 1.1 establish a viable upstream font licensing route, not the presence or verification of binaries in TALORA. Direct dependency declarations do not constitute a resolved dependency inventory or SBOM. No third-party fixture rights are inferred.
+
+**Owner recommendation:** do not close A2. The outstanding evidence requires an exact resolved build/SBOM, binary acquisition and hash verification, app packaging/render tests, rights-holder permissions or commissioned rights-cleared fixtures, two independent reviewers, and successful device acceptance after separately authorized implementation and verification.
+
+No source code, dependency, workflow, database, production configuration or main branch was changed. No workflow was rerun. A3, merge, A4 and A5 remain separately gated and unauthorized.
