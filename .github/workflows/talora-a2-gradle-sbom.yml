@@ -1,0 +1,224 @@
+name: TALORA A2 Gradle dependency and SBOM evidence
+
+on:
+  push:
+    branches:
+      - "a2/evidence-gradle-sbom-2026-11-27"
+    paths:
+      - ".github/workflows/talora-a2-gradle-sbom.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: talora-a2-gradle-sbom-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  dependency-evidence:
+    name: Resolve Gradle graph, SBOM, licenses and vulnerabilities
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      TALORA_SOURCE_SHA: "911531b762aece4a6df800c91488b87cfee47bce"
+      GRADLE_VERSION: "9.3.1"
+      CYCLONEDX_GRADLE_PLUGIN: "3.6.1"
+      OSV_SCANNER_VERSION: "v2.7.1"
+    steps:
+      - name: Checkout exact TALORA Android source revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TALORA_SOURCE_SHA }}
+          path: talora-source
+          persist-credentials: false
+
+      - name: Verify exact source revision and record run metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          actual="$(git -C talora-source rev-parse HEAD)"
+          test "$actual" = "$TALORA_SOURCE_SHA"
+          mkdir -p evidence
+          {
+            echo "repository=akefadaka-git/talora"
+            echo "source_sha=$actual"
+            echo "workflow_ref=$GITHUB_WORKFLOW_REF"
+            echo "workflow_sha=$GITHUB_WORKFLOW_SHA"
+            echo "run_id=$GITHUB_RUN_ID"
+            echo "run_attempt=$GITHUB_RUN_ATTEMPT"
+            echo "runner_os=$RUNNER_OS"
+            echo "runner_arch=$RUNNER_ARCH"
+            echo "gradle_version=$GRADLE_VERSION"
+            echo "cyclonedx_gradle_plugin=$CYCLONEDX_GRADLE_PLUGIN"
+            echo "osv_scanner_version=$OSV_SCANNER_VERSION"
+            date -u +"started_utc=%Y-%m-%dT%H:%M:%SZ"
+          } > evidence/run-metadata.txt
+          git -C talora-source status --short > evidence/source-working-tree-status.txt
+          test ! -s evidence/source-working-tree-status.txt
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: ${{ env.GRADLE_VERSION }}
+
+      - name: Install Android SDK API 37
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDK_ROOT="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          SDKMANAGER="$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
+          if [ ! -x "$SDKMANAGER" ]; then
+            SDKMANAGER="$(find "$SDK_ROOT/cmdline-tools" -type f -name sdkmanager | head -n 1)"
+          fi
+          test -x "$SDKMANAGER"
+          yes | "$SDKMANAGER" --licenses >/dev/null
+          "$SDKMANAGER" --channel=3 --install "platforms;android-37.0" "build-tools;37.0.0"
+          java -version 2> evidence/java-version.txt
+          gradle --version > evidence/gradle-version.txt
+          "$SDKMANAGER" --list_installed > evidence/android-sdk-packages.txt
+
+      - name: Capture complete Gradle project dependency trees
+        working-directory: talora-source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ../evidence/gradle
+          gradle -p android :app:dependencies --console=plain --no-daemon > ../evidence/gradle/app-all-configurations.txt 2>&1
+          gradle -p android :app:buildEnvironment --console=plain --no-daemon > ../evidence/gradle/app-build-environment.txt 2>&1
+          gradle -p android buildEnvironment --console=plain --no-daemon > ../evidence/gradle/root-build-environment.txt 2>&1
+          grep -q "BUILD SUCCESSFUL" ../evidence/gradle/app-all-configurations.txt
+          grep -q "BUILD SUCCESSFUL" ../evidence/gradle/app-build-environment.txt
+          grep -q "BUILD SUCCESSFUL" ../evidence/gradle/root-build-environment.txt
+
+      - name: Generate Gradle SHA-256 dependency verification metadata
+        working-directory: talora-source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ../evidence/gradle
+          gradle -p android --write-verification-metadata sha256 help --no-daemon > ../evidence/gradle/verification-bootstrap.log 2>&1
+          test -s android/gradle/verification-metadata.xml
+          cp android/gradle/verification-metadata.xml ../evidence/gradle/verification-metadata.xml
+          grep -q "BUILD SUCCESSFUL" ../evidence/gradle/verification-bootstrap.log
+
+      - name: Generate CycloneDX aggregate and direct SBOMs
+        working-directory: talora-source
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > /tmp/talora-cyclonedx.init.gradle <<'GRADLE_INIT'
+          initscript {
+              repositories {
+                  gradlePluginPortal()
+                  google()
+                  mavenCentral()
+              }
+              dependencies {
+                  classpath 'org.cyclonedx.bom:org.cyclonedx.bom.gradle.plugin:3.6.1'
+              }
+          }
+          allprojects {
+              pluginManager.apply('org.cyclonedx.bom')
+          }
+          GRADLE_INIT
+          gradle -p android --init-script /tmp/talora-cyclonedx.init.gradle cyclonedxBom --no-daemon --console=plain > ../evidence/gradle/cyclonedx-generation.log 2>&1
+          test -s android/build/reports/cyclonedx/bom.json
+          cp android/build/reports/cyclonedx/bom.json ../evidence/bom.json
+          test -s android/build/reports/cyclonedx/bom.xml
+          cp android/build/reports/cyclonedx/bom.xml ../evidence/bom.xml
+          find android -path '*/build/reports/cyclonedx-direct/bom.json' -type f -size +0c -print -exec cp --parents {} ../evidence/ \;
+          grep -q "BUILD SUCCESSFUL" ../evidence/gradle/cyclonedx-generation.log
+
+      - name: Build license and NOTICE inventory from resolved SBOM
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, pathlib, collections
+          bom = json.loads(pathlib.Path("evidence/bom.json").read_text())
+          components = bom.get("components", [])
+          rows = []
+          counts = collections.Counter()
+          missing = []
+          for c in components:
+              found = []
+              for entry in c.get("licenses", []) or []:
+                  lic = entry.get("license", {})
+                  expr = entry.get("expression")
+                  value = expr or lic.get("id") or lic.get("name")
+                  if value:
+                      found.append(value)
+              for value in found:
+                  counts[value] += 1
+              row = {
+                  "group": c.get("group"),
+                  "name": c.get("name"),
+                  "version": c.get("version"),
+                  "purl": c.get("purl"),
+                  "licenses": sorted(set(found)),
+                  "copyright": c.get("copyright"),
+                  "externalReferences": c.get("externalReferences", [])
+              }
+              rows.append(row)
+              if not found:
+                  missing.append(row)
+          pathlib.Path("evidence/license-inventory.json").write_text(json.dumps({
+              "bomSerialNumber": bom.get("serialNumber"),
+              "componentCount": len(components),
+              "licenseCounts": dict(sorted(counts.items())),
+              "components": rows,
+              "componentsWithoutDeclaredLicense": missing,
+              "limitations": "POM/SBOM metadata is an inventory lead, not legal clearance. Missing license metadata requires upstream artifact and license/NOTICE inspection."
+          }, indent=2) + "\n")
+          print(f"SBOM components: {len(components)}; components with no declared license: {len(missing)}")
+          PY
+          find talora-source -type f \( -iname 'LICENSE*' -o -iname 'NOTICE*' -o -iname 'COPYING*' \) -not -path '*/.git/*' -print | sort > evidence/repository-license-notice-files.txt
+          find "$HOME/.gradle/caches/modules-2/files-2.1" -type f \( -iname 'LICENSE*' -o -iname 'NOTICE*' -o -iname 'COPYING*' \) -print 2>/dev/null | sort > evidence/cached-artifact-license-notice-files.txt || true
+
+      - name: Install pinned OSV-Scanner
+        uses: actions/setup-go@v6
+        with:
+          go-version: "1.26.2"
+          cache: false
+
+      - name: Scan resolved CycloneDX SBOM for known vulnerabilities
+        shell: bash
+        run: |
+          set -euo pipefail
+          go install "github.com/google/osv-scanner/v2/cmd/osv-scanner@${OSV_SCANNER_VERSION}"
+          "$(go env GOPATH)/bin/osv-scanner" --version | tee evidence/osv-scanner-version.txt
+          set +e
+          "$(go env GOPATH)/bin/osv-scanner" scan source -L evidence/bom.json --format json --output-file evidence/osv-vulnerability-report.json
+          scan_status=$?
+          set -e
+          echo "$scan_status" > evidence/osv-scanner-exit-code.txt
+          if [ ! -s evidence/osv-vulnerability-report.json ]; then
+            echo '{"error":"OSV-Scanner did not produce a report; see scanner log."}' > evidence/osv-vulnerability-report.json
+          fi
+          # A finding is evidence to triage, not an automatic source change or remediation.
+          exit 0
+
+      - name: Record artifact hashes and completion metadata
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          date -u +"completed_utc=%Y-%m-%dT%H:%M:%SZ" >> evidence/run-metadata.txt
+          find evidence -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 -r sha256sum > evidence/SHA256SUMS
+          du -ah evidence | sort -h > evidence/file-sizes.txt
+
+      - name: Upload complete A2 dependency evidence bundle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: talora-a2-gradle-sbom-evidence-${{ github.run_id }}
+          path: evidence/
+          if-no-files-found: error
+          retention-days: 30
