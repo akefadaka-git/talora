@@ -21,7 +21,7 @@ The requested evidence-closure work has been advanced as far as the currently av
 
 1. A complete resolved dependency graph, dependency license/notice review, integrity/vulnerability disposition and generated SBOM do not exist in the inspected repository evidence.
 2. The exact official Noto Ethiopic v2.102 release artifacts and OFL 1.1 license are identified, but the actual binary files have not been downloaded, hashed, placed in the TALORA tree or verified in the app build; no app notices are bundled.
-3. No 30-item rights-cleared Amharic/Ethiopic acceptance corpus, complete format golden-fixture rights register or two independent reviewer attestations were found.
+3. No 30-item rights-cleared Amharic/Ethiopic acceptance corpus or complete format golden-fixture rights register was found. The two-reviewer requirement is now scheduled once at the final pre-A5 release-acceptance gate under Owner-approved Amendment 004; no final review is due or claimed at A2.
 4. Android device/UI acceptance remains failed on two exact PR heads; the technical product trace still contains semantic screenplay/stage-play, pagination, font and interoperability gaps.
 
 A2 has resolved important policy questions, including the FDX v1 exclusion and the rewarded-ad direction. Policy closure is not implementation acceptance.
@@ -180,7 +180,7 @@ Preferred routes are original commissioned scripts with a written assignment/lic
 
 ### 4.4 Amharic/Ethiopic acceptance corpus
 
-The previously approved acceptance plan requires at least 30 rights-cleared screenplay/stage-play fixtures and two independent competent reviewers. The current repository does not contain that corpus or the reviewer records.
+The previously approved acceptance plan requires at least 30 rights-cleared screenplay/stage-play fixtures. Owner-approved Amendment 004 places the two independent competent reviewers' review at the final pre-A5 release-acceptance gate, not in A2 or each development step. The current repository does not contain the required corpus or rights register; the final review is NOT DUE at this stage.
 
 Required review dimensions include:
 - Amharic/Ethiopic character and combining-mark preservation;
@@ -262,7 +262,7 @@ This commercial direction is **VERIFIED-CLOSED FOR POLICY DIRECTION**, not imple
 | Font app notices/integration | MISSING | OFL/copyright notice in package and exact APK inspection | A3 then A4 |
 | Format fixture rights | MISSING | Written permission/license and complete provenance register | Owner/rights-holder evidence |
 | 30-item Amharic/Ethiopic corpus | MISSING | 30 rights-cleared fixtures with hashes and metadata | Evidence acquisition |
-| Independent language review | MISSING | Two competent reviewers' signed reports | Independent review |
+| Independent language review | NOT DUE — PRE-A5 GATE | Two competent reviewers' signed reports against the exact release candidate; Amendment 004 governs timing | Pre-A5 release acceptance |
 | Android launch/device tests | FAIL | Repair evidence and successful exact-head device runs | A3/A4 |
 | Screenplay/stage-play model and pagination | GAP | Approved typed model, trace and conformance tests | A2 design then A3/A4 |
 | External format interoperability | PARTIAL | Independent application/version golden tests for each claimed format | A2 plan then A3/A4 |
@@ -280,7 +280,7 @@ This commercial direction is **VERIFIED-CLOSED FOR POLICY DIRECTION**, not imple
 
 ### Owner decision requested
 
-The evidence supports only one honest conclusion: **do not close A2 yet**. The remaining evidence cannot be fabricated or inferred. The Owner must ensure the necessary build evidence is produced, lawful fixture permissions are obtained or original fixtures are commissioned with explicit rights, and independent reviewers are appointed. A3 implementation remains separately gated.
+The evidence supports only one honest conclusion: **do not close A2 yet**. The remaining evidence cannot be fabricated or inferred. The necessary build evidence must be produced and lawful fixture permissions obtained or original fixtures commissioned with explicit rights. Under Owner-approved Amendment 004, the two independent reviewers are appointed for the final pre-A5 release-candidate review, not repeatedly during development. A3 implementation remains separately gated.
 
 ## 11. Scope and integrity statement
 
@@ -298,3 +298,8 @@ The official Noto Ethiopic v2.102 releases and SIL OFL 1.1 are cited as upstream
 - [Noto Ethiopic upstream OFL.txt](https://github.com/notofonts/ethiopic/blob/main/OFL.txt)
 - [Gradle official dependency verification and security guidance](https://docs.gradle.org/current/userguide/dependency_verification.html)
 - [Android Developers dependency verification guidance](https://developer.android.com/build/dependency-verification)
+
+
+## 10. Owner-approved review-timing amendment — 27 November 2026
+
+Amendment 004, [TALORA A2 Independent Review Timing Amendment](TALORA_A2_Independent_Review_Timing_Amendment_004_v1.0.0.md), is binding for reviewer cadence. The two independent competent reviewers are required once at the final pre-A5 release-acceptance gate against the exact release candidate. They are not required at A1, A2, each A3 development step or routine A4 internal verification. Targeted re-review is required only where a material post-review change affects the reviewed acceptance surface. The 30-fixture rights-cleared corpus, fixture rights register and substantive acceptance criteria remain unchanged. Final review is NOT DUE at A2.
