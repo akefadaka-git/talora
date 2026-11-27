@@ -287,3 +287,14 @@ The evidence supports only one honest conclusion: **do not close A2 yet**. The r
 This assessment is based on read-only inspection of the public TALORA repository, exact source files and existing workflow run/job/artifact metadata, plus official Noto Ethiopic release/metadata/license records and official Gradle dependency-verification guidance. No source code, dependency, workflow, database, production configuration, main branch or existing approval record was modified. No workflow was rerun, no paid service was activated, no PR was merged, and no deployment was performed.
 
 The official Noto Ethiopic v2.102 releases and SIL OFL 1.1 are cited as upstream provenance, not as evidence that the font binaries are already present in TALORA. The declared Gradle dependencies are not represented as a resolved graph or SBOM.
+
+
+## 12. External authoritative references
+
+- [Noto Sans Ethiopic Google Fonts metadata](https://github.com/google/fonts/blob/main/ofl/notosansethiopic/METADATA.pb)
+- [Noto Serif Ethiopic Google Fonts metadata](https://github.com/google/fonts/blob/main/ofl/notoserifethiopic/METADATA.pb)
+- [Noto Sans Ethiopic v2.102 release](https://github.com/notofonts/ethiopic/releases/tag/NotoSansEthiopic-v2.102)
+- [Noto Serif Ethiopic v2.102 release](https://github.com/notofonts/ethiopic/releases/tag/NotoSerifEthiopic-v2.102)
+- [Noto Ethiopic upstream OFL.txt](https://github.com/notofonts/ethiopic/blob/main/OFL.txt)
+- [Gradle official dependency verification and security guidance](https://docs.gradle.org/current/userguide/dependency_verification.html)
+- [Android Developers dependency verification guidance](https://developer.android.com/build/dependency-verification)
